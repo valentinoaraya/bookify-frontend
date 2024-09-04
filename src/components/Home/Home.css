@@ -1,0 +1,31 @@
+.dataHome {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    h1 {
+        font-size: 4rem;
+        font-weight: 900;
+        margin-bottom: 2rem;
+    }
+
+    h2 {
+        margin-bottom: 2rem;
+    }
+
+    button {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        padding: 1rem;
+        margin-bottom: 2rem;
+
+        p {
+            color: var(--color-fondo);
+            font-size: 1.2rem;
+            margin-right: 1.2rem;
+        }
+    }
+}
