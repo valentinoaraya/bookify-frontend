@@ -1,0 +1,39 @@
+.loginContainer {
+    margin-bottom: 2rem;
+    border-bottom: 1px solid var(--blanco);
+}
+
+.registerContainer {
+    margin-top: 2rem;
+}
+
+.formLoginRegister {
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: start;
+
+    div {
+        margin: 1rem 0;
+    }
+
+    label {
+        margin-right: 1rem;
+    }
+
+    input {
+        padding: .2rem;
+        border: none;
+        border-radius: 10px;
+        color: black;
+    }
+
+    button {
+        margin-bottom: 2rem;
+        padding: .5rem;
+        color: var(--color-fondo);
+        align-self: center;
+        width: 100%;
+    }
+}
