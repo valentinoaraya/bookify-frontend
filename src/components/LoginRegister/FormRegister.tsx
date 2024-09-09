@@ -40,7 +40,7 @@ const FormRegister = ({ loginTo }: { loginTo: "users" | "companies" }) => {
 
             const formData = { name, lastName, email, password, phone, location }
 
-            const response = await fetch(`http://localhost:3000/${loginTo}/register`, {
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL || "http://localhost:3000"}/${loginTo}/register`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"

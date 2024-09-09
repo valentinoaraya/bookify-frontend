@@ -1,3 +1,5 @@
+/* Contenedores */
+
 .loginContainer {
     margin-bottom: 2rem;
     border-bottom: 1px solid var(--blanco);
@@ -6,6 +8,8 @@
 .registerContainer {
     margin-top: 2rem;
 }
+
+/* Formularios */
 
 .formLoginRegister {
 
@@ -16,6 +20,7 @@
 
     div {
         margin: 1rem 0;
+        width: 100%;
     }
 
     label {
@@ -27,6 +32,11 @@
         border: none;
         border-radius: 10px;
         color: black;
+        background-color: var(--blanco);
+    }
+
+    a {
+        width: 100%;
     }
 
     button {
@@ -34,6 +44,7 @@
         padding: .5rem;
         color: var(--color-fondo);
         align-self: center;
+        cursor: pointer;
         width: 100%;
     }
 }
