@@ -1,11 +1,13 @@
 import React, { useState } from "react"
-import { Link } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 import "./LoginRegister.css"
 
 const FormLogin = ({ loginTo }: { loginTo: "users" | "companies" }) => {
 
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
+
+    const navigate = useNavigate()
 
     const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setEmail(e.target.value)
@@ -33,6 +35,9 @@ const FormLogin = ({ loginTo }: { loginTo: "users" | "companies" }) => {
             const data = await response.json()
 
             console.log(data)
+
+            navigate(loginTo === "users" ? "/user-panel" : "/company-panel")
+
         } catch (error: any) {
             console.log(error)
         }
@@ -63,9 +68,8 @@ const FormLogin = ({ loginTo }: { loginTo: "users" | "companies" }) => {
                     required
                 />
             </div>
-            <Link to={loginTo === "users" ? "/user-panel" : "/company-panel"}>
-                <button type="submit">Iniciar Sesión</button>
-            </Link>
+
+            <button type="submit">Iniciar Sesión</button>
         </form>
     );
 }

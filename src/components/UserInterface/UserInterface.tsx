@@ -7,7 +7,8 @@ interface User {
     lastName: string,
     email: string,
     phone: string,
-    appointments: any[]
+    appointments: any[], // Cambiar luego y escribir el tipo
+    servicesUsed: any[]  // Cambiar luego y escribir el tipo
 }
 
 const UserInterface = () => {
@@ -77,6 +78,12 @@ const UserInterface = () => {
                             </div>
                             <div className="latestServices">
                                 <h2>Ultimos servicios utilizados:</h2>
+                                {
+                                    user.servicesUsed ?
+                                        <h3>Si se utilizaron servicios aún</h3>
+                                        :
+                                        <h3>No se utilizaron servicios</h3>
+                                }
                             </div>
                         </div>
                     </>
