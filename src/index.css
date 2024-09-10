@@ -1,8 +1,18 @@
 :root {
   --color-fondo: #0D1B2A;
+  --celeste-clarito: #778DA9;
   --blanco: #E0E1DD;
 }
 
+#root {
+  max-width: 1300px;
+  width: 100%;
+}
+
 body {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   background-color: var(--color-fondo);
 }
