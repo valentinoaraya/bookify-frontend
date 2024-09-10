@@ -2,13 +2,30 @@ import "./UserInterface.css"
 import notImgUser from "../../assets/notImgUser.png"
 import { useEffect, useState } from "react";
 
+interface ServiceUsed {
+    dateUsed: string
+    serviceName: string
+    companyName: string
+}
+
+interface Appointment {
+    _id: string
+    serviceId: {
+        title: string
+    }
+    companyId: {
+        name: string
+    }
+    date: string
+}
+
 interface User {
-    name: string,
-    lastName: string,
-    email: string,
-    phone: string,
-    appointments: any[], // Cambiar luego y escribir el tipo
-    servicesUsed: any[]  // Cambiar luego y escribir el tipo
+    name: string
+    lastName: string
+    email: string
+    phone: string
+    appointments: Appointment[]
+    servicesUsed: ServiceUsed[]
 }
 
 const UserInterface = () => {
@@ -36,8 +53,6 @@ const UserInterface = () => {
         getUser()
 
     }, [])
-
-    console.log(user)
 
     return (
         <section className="sectionUserInterfaceContainer">
@@ -68,7 +83,7 @@ const UserInterface = () => {
                                         <ul>
                                             {
                                                 user.appointments.map((appointment) => {
-                                                    return <li key={appointment}>
+                                                    return <li key={appointment._id}>
                                                         <p>{appointment.serviceId.title} en {appointment.companyId.name} a las {appointment.date}</p>
                                                     </li>
                                                 })
@@ -80,9 +95,9 @@ const UserInterface = () => {
                                 <h2>Ultimos servicios utilizados:</h2>
                                 {
                                     user.servicesUsed ?
-                                        <h3>Si se utilizaron servicios aún</h3>
+                                        <h3>Si se utilizaron servicios aún.</h3>
                                         :
-                                        <h3>No se utilizaron servicios</h3>
+                                        <h3>No se utilizaron servicios.</h3>
                                 }
                             </div>
                         </div>

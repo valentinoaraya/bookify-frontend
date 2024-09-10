@@ -68,7 +68,6 @@ const FormLogin = ({ loginTo }: { loginTo: "users" | "companies" }) => {
                     required
                 />
             </div>
-
             <button type="submit">Iniciar Sesión</button>
         </form>
     );

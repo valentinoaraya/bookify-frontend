@@ -54,6 +54,8 @@
     }
 
     .pendingAppointments {
+        display: flex;
+        flex-direction: column;
         margin: 1.5rem 0;
         height: 40%;
         padding: 1rem;
@@ -63,13 +65,25 @@
         li {
             margin: 1rem 0 0 1rem;
         }
+
+        h3 {
+            align-self: center;
+            margin-top: 3rem;
+        }
     }
 
     .latestServices {
+        display: flex;
+        flex-direction: column;
         height: 40%;
         padding: 1rem;
         border: 1px solid var(--celeste-clarito);
         border-radius: 10px;
+
+        h3 {
+            align-self: center;
+            margin-top: 3rem;
+        }
     }
 }
 
