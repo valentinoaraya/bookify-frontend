@@ -23,7 +23,7 @@ const FormLogin = ({ loginTo }: { loginTo: "users" | "companies" }) => {
         try {
             const formData = { email, password }
 
-            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL || "http://localhost:3000"}/${loginTo}/login`, {
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/${loginTo}/login`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"

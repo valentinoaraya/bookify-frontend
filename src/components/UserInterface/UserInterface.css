@@ -47,10 +47,20 @@
     display: flex;
     flex-direction: column;
 
-    .searchBar {
-        padding: 1rem;
+    .divSearchBar {
+        display: flex;
+        align-items: center;
+        justify-content: center;
         border: 1px solid var(--celeste-clarito);
         border-radius: 10px;
+        padding-right: 1rem;
+    }
+
+    .searchBar {
+        border: none;
+        background-color: transparent;
+        width: 100%;
+        padding: 1rem;
     }
 
     .pendingAppointments {
@@ -92,4 +102,18 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
+}
+
+.companyServiceContanier {
+    display: flex;
+    flex-direction: column;
+    margin-top: 1.5rem;
+
+    ul {
+        padding: 1rem 0;
+    }
+
+    div {
+        margin: .5rem 0;
+    }
 }
