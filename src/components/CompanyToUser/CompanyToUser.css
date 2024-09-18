@@ -1,0 +1,45 @@
+.companyToUserContainer {
+    width: 100%;
+}
+
+.dataCompany {
+    margin-bottom: 2rem;
+
+    h1 {
+        margin-bottom: .5rem;
+    }
+}
+
+.service {
+    margin: 1rem 0;
+    padding: 1rem;
+    border: 1px solid var(--celeste-clarito);
+    border-radius: 10px;
+
+    .serviceNamePriceContainer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        margin-bottom: 1rem;
+
+        h3 {
+            font-size: 1.6rem;
+        }
+
+        .price {
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+    }
+
+    span {
+        font-size: 1.1rem;
+        font-weight: 600;
+    }
+
+    p {
+        margin-bottom: .2rem;
+    }
+
+}

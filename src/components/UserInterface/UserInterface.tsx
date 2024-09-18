@@ -2,43 +2,8 @@ import "./UserInterface.css"
 import notImgUser from "../../assets/notImgUser.png"
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { Company, Service, User } from "../../types";
 
-interface Company {
-    _id: string
-    name: string
-}
-
-interface Service {
-    _id: string
-    title: string
-}
-
-interface ServiceUsed {
-    _id: string
-    dateUsed: string
-    serviceName: string
-    companyName: string
-}
-
-interface Appointment {
-    _id: string
-    serviceId: {
-        title: string
-    }
-    companyId: {
-        name: string
-    }
-    date: string
-}
-
-interface User {
-    name: string
-    lastName: string
-    email: string
-    phone: string
-    appointments: Appointment[]
-    servicesUsed: ServiceUsed[]
-}
 
 const UserInterface = () => {
 
@@ -46,9 +11,6 @@ const UserInterface = () => {
     const [companiesFound, setCompaniesFound] = useState([])
     const [servicesFound, setServicesFound] = useState([])
     let timeout: any = null
-
-    console.log(companiesFound)
-    console.log(servicesFound)
 
     useEffect(() => {
         const getUser = async () => {
@@ -167,7 +129,7 @@ const UserInterface = () => {
                                                 <ul>
                                                     {
                                                         companiesFound.map((comp: Company) => {
-                                                            return <Link key={comp._id} to={`/companies/${comp._id}`}>
+                                                            return <Link key={comp._id} to={`/companies/company/${comp._id}`}>
                                                                 <div>
                                                                     {comp.name}
                                                                 </div>
@@ -184,7 +146,8 @@ const UserInterface = () => {
                                                 <ul>
                                                     {
                                                         servicesFound.map((serv: Service) => {
-                                                            return <Link key={serv._id} to={"/"}>
+                                                            console.log(serv)
+                                                            return <Link key={serv._id} to={`/companies/company/${serv.companyId}`}>
                                                                 <div>
                                                                     {serv.title}
                                                                 </div>
