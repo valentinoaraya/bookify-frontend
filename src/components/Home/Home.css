@@ -1,43 +1,25 @@
-.dataHome {
+.divHome {
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
-
-    h1 {
-        font-size: 4rem;
-        font-weight: 900;
-        margin-bottom: 2rem;
-    }
-
-    h2 {
-        margin-bottom: 2rem;
-    }
-
-    a {
-        width: 100%;
-        text-decoration: none;
-    }
-
-    button {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        width: 100%;
-        padding: 1rem;
-        cursor: pointer;
-
-        p {
-            color: var(--color-fondo);
-            font-size: 1.2rem;
-            margin-right: 1.2rem;
-        }
-    }
+    justify-content: center;
 }
 
-.pExplication {
-    margin: .3rem 0 2rem 0;
-    align-self: flex-start;
-    font-size: .9rem;
-    color: var(--celeste-clarito);
+.divHome h2 {
+    font-size: 1.8rem;
+    font-weight: 400;
+    color: var(--azul-clarito);
+    margin-bottom: 2rem;
+}
+
+.divButtonsHome {
+    width: 100%;
+}
+
+.linkButton {
+    text-decoration: none;
+}
+
+.pDescription {
+    color: var(--azul-clarito);
 }

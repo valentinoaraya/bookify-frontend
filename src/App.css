@@ -3,14 +3,13 @@
 * {
   margin: 0;
   padding: 0;
-  color: var(--blanco);
   font-family: "Archivo", sans-serif;
 }
 
 .mainPage {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
+  justify-content: center;
   min-height: 100vh;
-  margin: 0 2rem;
 }

@@ -1,11 +1,8 @@
 import './App.css'
-import Home from './components/Home/Home'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
-import LoginRegisterCompany from './components/LoginRegister/LoginRegisterCompany'
-import LoginRegisterUser from './components/LoginRegister/LoginRegisterUser'
-import UserInterface from './components/UserInterface/UserInterface'
-import CompanyInterface from './components/CompanyInterface/CompanyInterface'
-import CompanyToUser from './components/CompanyToUser/CompanyToUser'
+import Home from './components/Home/Home'
+import FormLogin from './components/LoginRegisterForms/FormLogin/FormLogin.tsx'
+import FormRegister from './components/LoginRegisterForms/FormRegister/FormRegister.tsx'
 
 function App() {
 
@@ -15,11 +12,8 @@ function App() {
         <main className='mainPage'>
           <Routes>
             <Route path='/' element={<Home />} />
-            <Route path='/login-user' element={<LoginRegisterUser />} />
-            <Route path='/login-company' element={<LoginRegisterCompany />} />
-            <Route path='/user-panel' element={<UserInterface />} />
-            <Route path='/company-panel' element={<CompanyInterface />} />
-            <Route path='/companies/company/:id' element={<CompanyToUser />} />
+            <Route path='/login/:loginTo' element={<FormLogin />} />
+            <Route path='/register/:registerTo' element={<FormRegister />} />
           </Routes>
         </main>
       </BrowserRouter>

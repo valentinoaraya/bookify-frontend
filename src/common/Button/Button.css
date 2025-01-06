@@ -1,0 +1,26 @@
+.button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin-top: 1rem;
+    padding: 1rem 0;
+    font-size: 1.5rem;
+    font-weight: 400;
+    color: var(--blanco);
+    background: linear-gradient(to right, var(--azul-clarito), var(--azul-oscuro));
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all .1s ease;
+    margin-bottom: .4rem;
+}
+
+.button:hover {
+    transform: translateY(-.2rem);
+    box-shadow: 0 .5rem 1rem rgba(0, 0, 0, .2);
+}
+
+.divIcon {
+    margin-left: 1.2rem;
+}
