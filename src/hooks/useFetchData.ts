@@ -2,7 +2,6 @@ import { useState } from "react";
 import { API_URL } from "../config.ts";
 
 export const useFetchData = (url: string, method: string) => {
-    const [data, setData] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
 
@@ -10,20 +9,26 @@ export const useFetchData = (url: string, method: string) => {
         setIsLoading(true);
         try {
             if (method === "GET") {
-                console.log("GET")
-                const response = await fetch(`${API_URL}/${url}`);
+                const response = await fetch(`${API_URL}/${url}`, {
+                    method: "GET",
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: "include"
+                });
                 const data = await response.json();
-                setData(data);
+                return data;
             } else {
                 const response = await fetch(`${API_URL}/${url}`, {
                     method: method,
                     headers: {
                         'Content-Type': 'application/json'
                     },
+                    credentials: "include",
                     body: JSON.stringify(body)
                 });
                 const data = await response.json();
-                setData(data);
+                return data;
             }
         } catch (error: any) {
             setError(error);
@@ -32,5 +37,5 @@ export const useFetchData = (url: string, method: string) => {
         }
     }
 
-    return { data, isLoading, error, fetchData };
+    return { isLoading, error, fetchData };
 }

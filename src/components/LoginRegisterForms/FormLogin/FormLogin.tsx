@@ -1,5 +1,5 @@
 import "./FormLogin.css"
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Button from "../../../common/Button/Button.tsx"
 import { useDataForm } from "../../../hooks/useDataForm.ts";
 import Title from "../../../common/Title/Title.tsx";
@@ -10,18 +10,20 @@ import { useFetchData } from "../../../hooks/useFetchData.ts";
 const FormLogin = () => {
 
     const { loginTo } = useParams();
+    const navigate = useNavigate();
     const { dataForm, handleChange } = useDataForm({ email: "", password: "" });
-    const { data, isLoading, error, fetchData } = useFetchData(
+    const { isLoading, error, fetchData } = useFetchData(
         `${loginTo === "user" ? "users" : "companies"}/login`,
         "POST"
     );
 
-    console.log(data)
-    console.log(error)
+    if (error) console.error(error);
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        fetchData(dataForm);
+        const response = await fetchData(dataForm);
+        if (response.data) navigate(loginTo === "user" ? "/user-panel" : "/company-panel");
+        if (response.error) console.error(response.error)
     }
 
     return (

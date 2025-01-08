@@ -3,6 +3,8 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import Home from './components/Home/Home'
 import FormLogin from './components/LoginRegisterForms/FormLogin/FormLogin.tsx'
 import FormRegister from './components/LoginRegisterForms/FormRegister/FormRegister.tsx'
+import UserPanel from './components/UserCompanyPanels/UserPanel/UserPanel.tsx'
+import CompanyPanel from './components/UserCompanyPanels/CompanyPanel/CompanyPanel.tsx'
 
 function App() {
 
@@ -14,6 +16,8 @@ function App() {
             <Route path='/' element={<Home />} />
             <Route path='/login/:loginTo' element={<FormLogin />} />
             <Route path='/register/:registerTo' element={<FormRegister />} />
+            <Route path='/user-panel' element={<UserPanel />} />
+            <Route path='/company-panel' element={<CompanyPanel />} />
           </Routes>
         </main>
       </BrowserRouter>

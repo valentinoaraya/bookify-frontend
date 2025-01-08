@@ -1,14 +1,16 @@
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import "./FormRegister.css"
 import { useDataForm } from "../../../hooks/useDataForm";
 import Title from "../../../common/Title/Title.tsx";
 import LabelInputComponent from "../LabelInputComponent/LabelInputComponent.tsx";
 import { Link } from "react-router-dom";
 import Button from "../../../common/Button/Button.tsx";
+import { useFetchData } from "../../../hooks/useFetchData.ts";
 
 const FormRegister = () => {
 
     const { registerTo } = useParams();
+    const navigate = useNavigate()
     const { dataForm, handleChange } = useDataForm({
         name: "",
         lastName: "",
@@ -20,10 +22,18 @@ const FormRegister = () => {
         password: "",
         confirmPassword: ""
     })
+    const { isLoading, error, fetchData } = useFetchData(
+        `${registerTo === "user" ? "users" : "companies"}/register`,
+        "POST"
+    )
 
-    const handleSubmit = (e: React.FormEvent) => {
+    if (error) console.error(error)
+
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        console.log(dataForm);
+        const response = await fetchData(dataForm);
+        if (response.data) navigate(registerTo === "user" ? "/user-panel" : "/company-panel")
+        if (response.error) console.error(response.error)
     }
 
     return (
@@ -37,13 +47,40 @@ const FormRegister = () => {
                     required={true}
                     onChange={handleChange}
                 />
-                <LabelInputComponent
-                    label="Apellidos:"
-                    type="text"
-                    name="lastName"
-                    required={true}
-                    onChange={handleChange}
-                />
+                {
+                    registerTo === "user" &&
+                    <LabelInputComponent
+                        label="Apellidos:"
+                        type="text"
+                        name="lastName"
+                        required={true}
+                        onChange={handleChange}
+                    />
+                }
+                {
+                    registerTo === "company" &&
+                    <><LabelInputComponent
+                        label="Ciudad:"
+                        type="text"
+                        name="city"
+                        required={true}
+                        onChange={handleChange}
+                    />
+                        <LabelInputComponent
+                            label="Calle:"
+                            type="text"
+                            name="street"
+                            required={true}
+                            onChange={handleChange}
+                        />
+                        <LabelInputComponent
+                            label="Número de calle:"
+                            type="number"
+                            name="number"
+                            required={true}
+                            onChange={handleChange}
+                        /></>
+                }
                 <LabelInputComponent
                     label="Email:"
                     type="email"
@@ -55,27 +92,6 @@ const FormRegister = () => {
                     label="Teléfono:"
                     type="tel"
                     name="phone"
-                    required={true}
-                    onChange={handleChange}
-                />
-                <LabelInputComponent
-                    label="Ciudad:"
-                    type="text"
-                    name="city"
-                    required={true}
-                    onChange={handleChange}
-                />
-                <LabelInputComponent
-                    label="Calle:"
-                    type="text"
-                    name="street"
-                    required={true}
-                    onChange={handleChange}
-                />
-                <LabelInputComponent
-                    label="Número:"
-                    type="number"
-                    name="number"
                     required={true}
                     onChange={handleChange}
                 />
@@ -93,7 +109,12 @@ const FormRegister = () => {
                     required={true}
                     onChange={handleChange}
                 />
-                <Button type="submit" >Registrarse</Button>
+                <Button
+                    type="submit"
+                    disabled={isLoading}
+                >
+                    Registrarse
+                </Button>
                 <div className="divLinkForm">
                     <p className="pDescriptionForm">¿Ya tienes cuenta?</p>
                     <Link className="linkForm" to={"/login/" + registerTo}>
