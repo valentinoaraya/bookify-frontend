@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import { useFetchData } from "../../../hooks/useFetchData";
-import { Company } from "../../../types";
+import { type Company } from "../../../types";
 import "./CompanyPanel.css"
+import CompanyInterface from "./CompanyInterface/CompanyInterface";
 
 const CompanyPanel = () => {
 
@@ -21,14 +22,16 @@ const CompanyPanel = () => {
     if (isLoading) return <h2>Cargando...</h2>
 
     return (
-        <div>
+        <>
             {
                 !company ?
                     <h2>Empresa no encontrada</h2>
                     :
-                    <h2>{company.name}</h2>
+                    <CompanyInterface
+                        company={company}
+                    />
             }
-        </div>
+        </>
     );
 }
 

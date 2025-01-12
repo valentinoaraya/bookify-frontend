@@ -1,0 +1,42 @@
+.sideBar {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 25%;
+    padding: 2rem 1rem;
+    border-right: 2px solid var(--azul-clarito);
+}
+
+.titleContainer {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.dataUserCompany {
+    width: 100%;
+    margin-top: 2rem;
+}
+
+.dataContainer {
+    margin-top: 1.5rem;
+}
+
+.parrafData {
+    margin: 1rem 0;
+    font-size: 1.1rem;
+
+    span {
+        font-weight: bold;
+    }
+}
+
+.divConfigurations {
+    width: 100%;
+    margin-top: auto;
+}
+
+.divButtonsCompany {
+    width: 100%;
+}

@@ -28,7 +28,7 @@ const FormLogin = () => {
 
     return (
         <div className="divFormLogin">
-            <Title fontSize="2.2rem">Iniciar sesión como {loginTo === "user" ? "usuario" : "empresa"}</Title>
+            <Title fontSize="2.2rem" margin="0 0 .5rem 0">Iniciar sesión como {loginTo === "user" ? "usuario" : "empresa"}</Title>
             <form className="formLogin" onSubmit={handleSubmit}>
                 <LabelInputComponent
                     label="Email:"

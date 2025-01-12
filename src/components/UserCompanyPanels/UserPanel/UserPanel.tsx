@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useFetchData } from "../../../hooks/useFetchData";
 import "./UserPanel.css"
 import { type User } from "../../../types";
+import UserInterface from "./UserInterface/UserInterface";
 
 const UserPanel = () => {
 
@@ -21,17 +22,16 @@ const UserPanel = () => {
     if (isLoading) return <h2>Cargando...</h2>
 
     return (
-        <div>
+        <>
             {
                 !user ?
                     <h2>Usuario no encontrado</h2>
                     :
-                    <div>
-                        <h2>{user.name} {user.lastName}</h2>
-
-                    </div>
+                    <UserInterface
+                        user={user}
+                    />
             }
-        </div>
+        </>
     );
 }
 

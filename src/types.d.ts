@@ -16,10 +16,14 @@ export interface CompanyBasicInfo {
 }
 
 export interface Company extends CompanyBasicInfo {
-    location: string
+    type: "company"
+    city: string
+    street: string
+    number: string
     email: string
     phone: string
     services: Service[]
+    scheduledAppointments: Appointment[]
 }
 
 export interface ServiceUsed {
@@ -31,16 +35,14 @@ export interface ServiceUsed {
 
 export interface Appointment {
     _id: string
-    serviceId: {
-        title: string
-    }
-    companyId: {
-        name: string
-    }
+    serviceId: Service
+    companyId?: Company
+    clientId?: User
     date: string
 }
 
 export interface User {
+    type: "user"
     name: string
     lastName: string
     email: string
@@ -48,3 +50,5 @@ export interface User {
     appointments: Appointment[]
     servicesUsed: ServiceUsed[]
 }
+
+export type View = "appointments" | "services"
