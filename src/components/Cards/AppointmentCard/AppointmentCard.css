@@ -1,0 +1,19 @@
+.appointmentCard {
+    width: 250px;
+    padding: 1rem;
+    margin: 1rem 0;
+    border: 2px solid var(--azul-clarito);
+    border-radius: 10px;
+}
+
+.parrafAppointment {
+    margin: .5rem 0;
+}
+
+.parrafAppointment span {
+    font-weight: bold;
+}
+
+.divDataContainer {
+    margin: 1.5rem 0;
+}

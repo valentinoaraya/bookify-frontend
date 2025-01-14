@@ -1,0 +1,14 @@
+.divInterfaceUserContainer {
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+}
+
+.divUserPanel {
+    width: 100%;
+    padding: 2rem;
+}
+
+.divAppointments {
+    margin: 1rem 0;
+}

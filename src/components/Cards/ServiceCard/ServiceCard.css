@@ -1,0 +1,15 @@
+.serviceCard {
+    width: 250px;
+    padding: 1rem;
+    margin: 1rem 0;
+    border: 2px solid var(--azul-clarito);
+    border-radius: 10px;
+}
+
+.parrafService {
+    margin: .5rem 0;
+}
+
+.parrafService span {
+    font-weight: bold;
+}

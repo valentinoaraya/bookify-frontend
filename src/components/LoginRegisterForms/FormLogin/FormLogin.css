@@ -1,0 +1,22 @@
+.divFormLogin {
+    background-color: var(--gris-claro);
+    border-radius: 20px;
+    padding: 6.5rem 3.5rem;
+    margin: 2rem;
+    box-shadow: 0 0 10px #333333;
+}
+
+.divLinkForm {
+    display: flex;
+    margin-top: 1rem;
+}
+
+.pDescriptionForm {
+    color: var(--azul-oscuro);
+    margin-right: .5rem;
+}
+
+.linkForm {
+    color: var(--azul-clarito);
+    font-weight: bold;
+}
