@@ -3,9 +3,13 @@ import "./FormRegister.css"
 import { useDataForm } from "../../../hooks/useDataForm";
 import Title from "../../../common/Title/Title.tsx";
 import LabelInputComponent from "../LabelInputComponent/LabelInputComponent.tsx";
+import LabelSelectComponent from "../LabelSelectComponent/LabelSelectComponent.tsx";
 import { Link } from "react-router-dom";
 import Button from "../../../common/Button/Button.tsx";
 import { useFetchData } from "../../../hooks/useFetchData.ts";
+import { notifyError } from "../../../utils/notifications.ts";
+import { ToastContainer } from "react-toastify";
+import { BACKEND_API_URL } from "../../../config.ts";
 
 const FormRegister = () => {
 
@@ -16,6 +20,7 @@ const FormRegister = () => {
         lastName: "",
         email: "",
         phone: "",
+        province: "",
         city: "",
         street: "",
         number: "",
@@ -23,14 +28,16 @@ const FormRegister = () => {
         confirmPassword: ""
     })
     const { isLoading, error, fetchData } = useFetchData(
-        `${registerTo === "user" ? "users" : "companies"}/register`,
-        "POST"
+        `${BACKEND_API_URL}/${registerTo === "user" ? "users" : "companies"}/register`,
+        "POST",
+        true
     )
 
     if (error) console.error(error)
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        if (dataForm.password !== dataForm.confirmPassword) return notifyError("Las contraseñas no coinciden")
         const response = await fetchData(dataForm);
         if (response.data) navigate(registerTo === "user" ? "/user-panel" : "/company-panel")
         if (response.error) console.error(response.error)
@@ -38,6 +45,7 @@ const FormRegister = () => {
 
     return (
         <div className="divFormRegister">
+            <ToastContainer />
             <Title fontSize="2.2rem" margin="0 0 .5rem 0">Registrarse como {registerTo === "user" ? "usuario" : "empresa"}</Title>
             <form className="formRegister" onSubmit={handleSubmit}>
                 <LabelInputComponent
@@ -50,7 +58,7 @@ const FormRegister = () => {
                 {
                     registerTo === "user" &&
                     <LabelInputComponent
-                        label="Apellidos:"
+                        label="Apellido:"
                         type="text"
                         name="lastName"
                         required={true}
@@ -59,13 +67,10 @@ const FormRegister = () => {
                 }
                 {
                     registerTo === "company" &&
-                    <><LabelInputComponent
-                        label="Ciudad:"
-                        type="text"
-                        name="city"
-                        required={true}
-                        onChange={handleChange}
-                    />
+                    <>
+                        <LabelSelectComponent
+                            onChange={handleChange}
+                        />
                         <LabelInputComponent
                             label="Calle:"
                             type="text"
@@ -79,7 +84,8 @@ const FormRegister = () => {
                             name="number"
                             required={true}
                             onChange={handleChange}
-                        /></>
+                        />
+                    </>
                 }
                 <LabelInputComponent
                     label="Email:"

@@ -6,6 +6,7 @@ import Title from "../../../common/Title/Title.tsx";
 import { Link } from "react-router-dom";
 import LabelInputComponent from "../LabelInputComponent/LabelInputComponent.tsx";
 import { useFetchData } from "../../../hooks/useFetchData.ts";
+import { BACKEND_API_URL } from "../../../config.ts";
 
 const FormLogin = () => {
 
@@ -13,8 +14,9 @@ const FormLogin = () => {
     const navigate = useNavigate();
     const { dataForm, handleChange } = useDataForm({ email: "", password: "" });
     const { isLoading, error, fetchData } = useFetchData(
-        `${loginTo === "user" ? "users" : "companies"}/login`,
-        "POST"
+        `${BACKEND_API_URL}/${loginTo === "user" ? "users" : "companies"}/login`,
+        "POST",
+        true
     );
 
     if (error) console.error(error);

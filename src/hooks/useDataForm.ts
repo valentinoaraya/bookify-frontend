@@ -6,8 +6,8 @@ interface DataForm {
 
 export const useDataForm = (initialState: DataForm) => {
     const [dataForm, setDataForm] = useState(initialState);
-
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    console.log(dataForm)
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         setDataForm({
             ...dataForm,
             [e.target.name]: e.target.value

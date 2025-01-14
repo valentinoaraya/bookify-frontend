@@ -3,10 +3,11 @@ import { useFetchData } from "../../../hooks/useFetchData";
 import { type Company } from "../../../types";
 import "./CompanyPanel.css"
 import CompanyInterface from "./CompanyInterface/CompanyInterface";
+import { BACKEND_API_URL } from "../../../config";
 
 const CompanyPanel = () => {
 
-    const { isLoading, error, fetchData } = useFetchData("companies/get-company", "GET")
+    const { isLoading, error, fetchData } = useFetchData(`${BACKEND_API_URL}/companies/get-company`, "GET", true)
     const [company, setCompany] = useState<Company | null>(null)
 
     if (error) console.error(error)

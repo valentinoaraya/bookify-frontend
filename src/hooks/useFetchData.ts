@@ -1,7 +1,6 @@
 import { useState } from "react";
-import { API_URL } from "../config.ts";
 
-export const useFetchData = (url: string, method: string) => {
+export const useFetchData = (url: string, method: string, credentials: boolean) => {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
 
@@ -9,22 +8,22 @@ export const useFetchData = (url: string, method: string) => {
         setIsLoading(true);
         try {
             if (method === "GET") {
-                const response = await fetch(`${API_URL}/${url}`, {
+                const response = await fetch(url, {
                     method: "GET",
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    credentials: "include"
+                    credentials: credentials ? "include" : "omit"
                 });
                 const data = await response.json();
                 return data;
             } else {
-                const response = await fetch(`${API_URL}/${url}`, {
+                const response = await fetch(url, {
                     method: method,
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    credentials: "include",
+                    credentials: credentials ? "include" : "omit",
                     body: JSON.stringify(body)
                 });
                 const data = await response.json();

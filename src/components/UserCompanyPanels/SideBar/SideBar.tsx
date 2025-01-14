@@ -79,7 +79,7 @@ const SideBar: React.FC<Props> = ({ data, onViewChange }) => {
             }
             <div className="divConfigurations">
                 <p>Editar datos</p>
-                <p>Cerrar sesiíon</p>
+                <p>Cerrar sesíon</p>
             </div>
         </div>
     );

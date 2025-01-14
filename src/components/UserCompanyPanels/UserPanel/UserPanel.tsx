@@ -3,10 +3,11 @@ import { useFetchData } from "../../../hooks/useFetchData";
 import "./UserPanel.css"
 import { type User } from "../../../types";
 import UserInterface from "./UserInterface/UserInterface";
+import { BACKEND_API_URL } from "../../../config";
 
 const UserPanel = () => {
 
-    const { isLoading, error, fetchData } = useFetchData("users/get-user", "GET")
+    const { isLoading, error, fetchData } = useFetchData(`${BACKEND_API_URL}/users/get-user`, "GET", true)
     const [user, setUser] = useState<User | null>(null)
 
     if (error) console.error(error)

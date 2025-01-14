@@ -18,9 +18,6 @@ const CompanyInterface: React.FC<Props> = ({ company }) => {
         setActiveView(view)
     }
 
-    console.log(company.services)
-    console.log(company.scheduledAppointments)
-
     return (
         <div className="divInterfaceCompanyContainer">
             <SideBar

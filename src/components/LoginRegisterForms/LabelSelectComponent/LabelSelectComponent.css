@@ -1,0 +1,22 @@
+.divInput {
+    display: flex;
+    flex-direction: column;
+    margin: 2.5rem 0;
+}
+
+.divInput label {
+    font-size: 1.5rem;
+    font-weight: bold;
+    background: -webkit-linear-gradient(left, var(--azul-clarito), var(--azul-oscuro));
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.divInput select {
+    margin-top: .5rem;
+    padding: .5rem;
+    border-radius: 10px;
+    border: 1px solid grey;
+    background-color: white;
+}
