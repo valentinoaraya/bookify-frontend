@@ -33,14 +33,20 @@ const FormRegister = () => {
         true
     )
 
-    if (error) console.error(error)
+    if (error) {
+        console.error(error)
+        notifyError("Error del servidor: Inténtalo de nuevo más tarde")
+    }
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (dataForm.password !== dataForm.confirmPassword) return notifyError("Las contraseñas no coinciden")
         const response = await fetchData(dataForm);
         if (response.data) navigate(registerTo === "user" ? "/user-panel" : "/company-panel")
-        if (response.error) console.error(response.error)
+        if (response.error) {
+            console.error(error)
+            notifyError("Error: Inténtalo de nuevo más tarde")
+        }
     }
 
     return (

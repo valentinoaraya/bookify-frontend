@@ -22,7 +22,7 @@ const UserInterface: React.FC<Props> = ({ user }) => {
                     <Title>Turnos pendientes</Title>
                     {
                         user.appointments.length === 0 ?
-                            <div className="noServicesAppointments">
+                            <div className="noServicesAppointmentsUser">
                                 <h3>No tienes turnos agendados</h3>
                             </div>
                             :
@@ -51,7 +51,7 @@ const UserInterface: React.FC<Props> = ({ user }) => {
                                 <h3>Acá van los servicios utilizados por el usuraio</h3>
                             </div>
                             :
-                            <div className="noServicesAppointments">
+                            <div className="noServicesAppointmentsUser">
                                 <h3>No has utilizado servicios aún</h3>
                             </div>
                     }

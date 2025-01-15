@@ -67,7 +67,7 @@ const SideBar: React.FC<Props> = ({ data, onViewChange }) => {
                         onSubmit={() => { onViewChange?.("appointments") }}
                         fontWeight="700"
                     >
-                        Proximos turnos
+                        Próximos turnos
                     </Button>
                     <Button
                         onSubmit={() => { onViewChange?.("services") }}

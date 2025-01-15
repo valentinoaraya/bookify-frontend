@@ -6,16 +6,29 @@ interface DataForm {
 
 export const useDataForm = (initialState: DataForm) => {
     const [dataForm, setDataForm] = useState(initialState);
-    console.log(dataForm)
+
+    const deleteData = () => {
+        setDataForm(initialState)
+    }
+
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-        setDataForm({
-            ...dataForm,
-            [e.target.name]: e.target.value
-        });
+        console.log(dataForm)
+        if (e.target.type === "number") {
+            setDataForm({
+                ...dataForm,
+                [e.target.name]: parseFloat(e.target.value)
+            })
+        } else {
+            setDataForm({
+                ...dataForm,
+                [e.target.name]: e.target.value
+            });
+        }
     }
 
     return {
         dataForm,
-        handleChange
+        handleChange,
+        deleteData
     }
 }

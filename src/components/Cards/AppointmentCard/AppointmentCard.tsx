@@ -26,8 +26,8 @@ const AppointmentCard: React.FC<Props> = ({
 }) => {
 
     const newDate = new Date(date)
-    const stringDate = `${newDate.getDate()} - ${newDate.getMonth() + 1} - ${newDate.getFullYear()}`
-    const time = `${newDate.getHours()}:${newDate.getMinutes()}`
+    const stringDate = `${String(newDate.getDate()).padStart(2, "0")} - ${String(newDate.getMonth() + 1).padStart(2, "0")} - ${newDate.getFullYear()}`
+    const time = `${String(newDate.getHours()).padStart(2, "0")}:${String(newDate.getMinutes()).padStart(2, "0")}`
 
     return (
         <div className="appointmentCard">
