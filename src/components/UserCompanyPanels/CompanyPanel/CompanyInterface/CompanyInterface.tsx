@@ -1,8 +1,7 @@
 import "./CompanyInterface.css"
 import SideBar from "../../SideBar/SideBar";
-import { type Company } from "../../../../types";
+import { type Company, type View, type Service, type Appointment } from "../../../../types";
 import { useState } from "react";
-import { type View } from "../../../../types";
 import Title from "../../../../common/Title/Title";
 import ServiceCard from "../../../Cards/ServiceCard/ServiceCard";
 import AppointmentCard from "../../../Cards/AppointmentCard/AppointmentCard";
@@ -11,6 +10,7 @@ import ModalForm from "../../../ModalForm/ModalForm";
 import { useFetchData } from "../../../../hooks/useFetchData";
 import { BACKEND_API_URL } from "../../../../config";
 import { notifyError } from "../../../../utils/notifications";
+import { ToastContainer } from "react-toastify";
 
 interface Props {
     company: Company
@@ -20,15 +20,13 @@ const CompanyInterface: React.FC<Props> = ({ company }) => {
 
     const [activeView, setActiveView] = useState<View>("appointments")
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
+    const [scheduledAppointments, setScheduledAppointments] = useState<Appointment[]>(company.scheduledAppointments)
+    const [companyServices, setCompanyServices] = useState<Service[]>(company.services)
     const { isLoading, error, fetchData } = useFetchData(
         `${BACKEND_API_URL}/services/create-service`,
         "POST",
         true
     )
-
-    const handleChangeView = (view: View) => {
-        setActiveView(view)
-    }
 
     if (error) {
         console.error(error)
@@ -37,14 +35,22 @@ const CompanyInterface: React.FC<Props> = ({ company }) => {
 
     const handleAddService = async (data: { [key: string]: any }) => {
         const response = await fetchData(data)
-        console.log(response)
+        setIsModalOpen(false)
+        if (response?.data) setCompanyServices((prevCompnayServices: Service[]) => [...prevCompnayServices, response.data])
+        if (response?.error) notifyError("Error al crear el servicio")
+    }
+
+    const onDeleteService = (id: string, scheduledAppointmentsToDelete: string[]) => {
+        setCompanyServices(companyServices.filter(service => service._id !== id))
+        setScheduledAppointments(scheduledAppointments.filter(appointment => !scheduledAppointmentsToDelete.includes(appointment._id)))
     }
 
     return (
         <div className="divInterfaceCompanyContainer">
+            <ToastContainer />
             <SideBar
                 data={{ ...company, type: "company" }}
-                onViewChange={handleChangeView}
+                onViewChange={(view: View) => setActiveView(view)}
             />
             <div className="divCompanyPanel">
                 {
@@ -54,14 +60,14 @@ const CompanyInterface: React.FC<Props> = ({ company }) => {
                                 Próximos turnos
                             </Title>
                             {
-                                company.scheduledAppointments.length === 0 ?
+                                scheduledAppointments.length === 0 ?
                                     <div className="noServicesAppointments">
                                         <h3>No tienes turnos agendados</h3>
                                     </div>
                                     :
                                     <div className="divListContainer">
                                         {
-                                            company.scheduledAppointments.map((appointment) => {
+                                            scheduledAppointments.map((appointment) => {
                                                 return <AppointmentCard
                                                     key={appointment._id}
                                                     title={appointment.serviceId.title}
@@ -82,16 +88,18 @@ const CompanyInterface: React.FC<Props> = ({ company }) => {
                             </Title>
                             <div className="divListContainer">
                                 {
-                                    company.services.length > 0 &&
+                                    companyServices.length > 0 &&
                                     <>
                                         {
-                                            company.services.map(service => {
+                                            companyServices.map(service => {
                                                 return <ServiceCard
                                                     key={service._id}
+                                                    id={service._id}
                                                     title={service.title}
                                                     duration={service.duration}
                                                     price={service.price}
                                                     description={service.description}
+                                                    onDeleteService={onDeleteService}
                                                 />
                                             })
                                         }

@@ -11,8 +11,6 @@ interface Props {
 
 const UserInterface: React.FC<Props> = ({ user }) => {
 
-    console.log(user)
-
     return (
         <div className="divInterfaceUserContainer">
             <SideBar data={{ ...user, type: "user" }} />

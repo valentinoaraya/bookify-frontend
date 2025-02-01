@@ -12,7 +12,6 @@ export const useDataForm = (initialState: DataForm) => {
     }
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-        console.log(dataForm)
         if (e.target.type === "number") {
             setDataForm({
                 ...dataForm,
