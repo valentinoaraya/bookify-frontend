@@ -5,10 +5,11 @@ interface LabelInputComponentProps {
     type: string;
     name: string;
     required: boolean;
+    value?: string | number;
     onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-const LabelInputComponent: React.FC<LabelInputComponentProps> = ({ label, type, name, required, onChange }) => {
+const LabelInputComponent: React.FC<LabelInputComponentProps> = ({ label, type, name, required, value, onChange }) => {
     return (
         <div className="divInput">
             <label>{label}</label>
@@ -17,6 +18,7 @@ const LabelInputComponent: React.FC<LabelInputComponentProps> = ({ label, type, 
                 name={name}
                 required={required}
                 onChange={onChange}
+                value={value}
             />
         </div>
     );

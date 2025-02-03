@@ -45,6 +45,10 @@ const CompanyInterface: React.FC<Props> = ({ company }) => {
         setScheduledAppointments(scheduledAppointments.filter(appointment => !scheduledAppointmentsToDelete.includes(appointment._id)))
     }
 
+    const onUpdateService = (data: { [key: string]: any }) => {
+        setCompanyServices(companyServices.map(service => service._id === data._id ? { ...service, ...data } : service))
+    }
+
     return (
         <div className="divInterfaceCompanyContainer">
             <ToastContainer />
@@ -100,6 +104,7 @@ const CompanyInterface: React.FC<Props> = ({ company }) => {
                                                     price={service.price}
                                                     description={service.description}
                                                     onDeleteService={onDeleteService}
+                                                    onUpdateService={(data) => onUpdateService(data)}
                                                 />
                                             })
                                         }
@@ -116,7 +121,12 @@ const CompanyInterface: React.FC<Props> = ({ company }) => {
             <ModalForm
                 title="Agregar servicio"
                 isOpen={isModalOpen}
-                labels={["title", "description", "price", "duration"]}
+                inputs={[
+                    { type: "text", name: "title", placeholder: "Título" },
+                    { type: "text", name: "description", placeholder: "Descripción" },
+                    { type: "number", name: "price", placeholder: "Precio" },
+                    { type: "number", name: "duration", placeholder: "Duración" }
+                ]}
                 onClose={() => setIsModalOpen(false)}
                 onSubmitForm={(data) => handleAddService(data)}
                 disabledButtons={isLoading}

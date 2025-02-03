@@ -86,7 +86,7 @@ const FormRegister = () => {
                         />
                         <LabelInputComponent
                             label="Número de calle:"
-                            type="number"
+                            type="text"
                             name="number"
                             required={true}
                             onChange={handleChange}

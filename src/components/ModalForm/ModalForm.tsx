@@ -2,13 +2,13 @@ import "./ModalForm.css"
 import Button from "../../common/Button/Button";
 import LabelInputComponent from "../LoginRegisterForms/LabelInputComponent/LabelInputComponent";
 import Title from "../../common/Title/Title";
-import { commonLabels } from "../../utils/commonLabels";
 import { useDataForm } from "../../hooks/useDataForm";
+import { Input } from "../../types";
 
 interface Props {
     title: string;
     isOpen: boolean;
-    labels: string[];
+    inputs: Input[];
     disabledButtons: boolean;
     onClose: () => void;
     onSubmitForm: (data: {
@@ -16,21 +16,21 @@ interface Props {
     }) => void;
 }
 
-const ModalForm: React.FC<Props> = ({ title, labels, isOpen, onClose, onSubmitForm, disabledButtons }) => {
+const ModalForm: React.FC<Props> = ({ title, inputs, isOpen, onClose, onSubmitForm, disabledButtons }) => {
+
+    if (!isOpen) return null
 
     const { dataForm, handleChange, deleteData } = useDataForm({
-        title: "",
-        description: "",
-        price: 0,
-        duration: 0,
+        title: inputs[0].value || "",
+        description: inputs[1].value || "",
+        price: inputs[2].value || 0,
+        duration: inputs[3].value || 0,
     })
 
     const handleCloseForm = () => {
         deleteData()
         onClose()
     }
-
-    if (!isOpen) return null
 
     return (
         <div className="modalOverlay">
@@ -41,16 +41,18 @@ const ModalForm: React.FC<Props> = ({ title, labels, isOpen, onClose, onSubmitFo
                     onSubmit={(e) => {
                         e.preventDefault()
                         onSubmitForm(dataForm)
+                        deleteData()
                     }}
                 >
                     {
-                        labels.map(label => {
+                        inputs.map(input => {
                             return <LabelInputComponent
-                                key={label}
-                                label={commonLabels[label]}
-                                type={label === "price" || label === "duration" ? "number" : "text"}
+                                key={input.name}
+                                label={input.placeholder}
+                                type={input.type}
                                 required={true}
-                                name={label}
+                                name={input.name}
+                                value={dataForm[input.name]}
                                 onChange={handleChange}
                             />
                         })
