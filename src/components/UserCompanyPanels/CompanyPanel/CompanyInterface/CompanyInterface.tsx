@@ -127,6 +127,7 @@ const CompanyInterface: React.FC<Props> = ({ company }) => {
                     { type: "number", name: "price", placeholder: "Precio" },
                     { type: "number", name: "duration", placeholder: "Duración" }
                 ]}
+                initialData={{ title: "", description: "", price: 0, duration: 0 }}
                 onClose={() => setIsModalOpen(false)}
                 onSubmitForm={(data) => handleAddService(data)}
                 disabledButtons={isLoading}

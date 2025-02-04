@@ -10,22 +10,20 @@ interface Props {
     isOpen: boolean;
     inputs: Input[];
     disabledButtons: boolean;
+    initialData: { [key: string]: any };
     onClose: () => void;
     onSubmitForm: (data: {
         [key: string]: any
     }) => void;
 }
 
-const ModalForm: React.FC<Props> = ({ title, inputs, isOpen, onClose, onSubmitForm, disabledButtons }) => {
+const ModalForm: React.FC<Props> = ({ title, inputs, isOpen, onClose, onSubmitForm, disabledButtons, initialData }) => {
 
     if (!isOpen) return null
 
-    const { dataForm, handleChange, deleteData } = useDataForm({
-        title: inputs[0].value || "",
-        description: inputs[1].value || "",
-        price: inputs[2].value || 0,
-        duration: inputs[3].value || 0,
-    })
+    const { dataForm, handleChange, deleteData } = useDataForm(initialData)
+
+    console.log(dataForm)
 
     const handleCloseForm = () => {
         deleteData()

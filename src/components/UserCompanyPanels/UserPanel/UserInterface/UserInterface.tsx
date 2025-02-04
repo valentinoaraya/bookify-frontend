@@ -4,6 +4,7 @@ import { type User } from "../../../../types";
 import Title from "../../../../common/Title/Title";
 import AppointmentCard from "../../../Cards/AppointmentCard/AppointmentCard";
 import SearchBar from "../../../SearchBar/SearchBar";
+import { ToastContainer } from "react-toastify";
 
 interface Props {
     user: User
@@ -13,6 +14,7 @@ const UserInterface: React.FC<Props> = ({ user }) => {
 
     return (
         <div className="divInterfaceUserContainer">
+            <ToastContainer />
             <SideBar data={{ ...user, type: "user" }} />
             <div className="divUserPanel">
                 <SearchBar />

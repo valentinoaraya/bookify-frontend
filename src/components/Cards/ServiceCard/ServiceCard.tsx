@@ -103,11 +103,12 @@ const ServiceCard: React.FC<Props> = ({ id, duration, price, title, description,
                 title="Editar servicio"
                 isOpen={isModalOpen}
                 inputs={[
-                    { type: "text", name: "title", placeholder: "Título", value: title },
-                    { type: "text", name: "description", placeholder: "Descripción", value: description },
-                    { type: "number", name: "price", placeholder: "Precio", value: price },
-                    { type: "number", name: "duration", placeholder: "Duración", value: duration }
+                    { type: "text", name: "title", placeholder: "Título" },
+                    { type: "text", name: "description", placeholder: "Descripción" },
+                    { type: "number", name: "price", placeholder: "Precio" },
+                    { type: "number", name: "duration", placeholder: "Duración" }
                 ]}
+                initialData={{ title, description, price, duration }}
                 onClose={() => setIsModalOpen(false)}
                 onSubmitForm={(data) => updateService(data)}
                 disabledButtons={isLoading}
