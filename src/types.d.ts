@@ -52,3 +52,9 @@ export interface User {
 }
 
 export type View = "appointments" | "services"
+
+export interface Input {
+    type: string;
+    name: string
+    placeholder: string;
+}

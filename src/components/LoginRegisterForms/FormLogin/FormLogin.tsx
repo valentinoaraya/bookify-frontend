@@ -7,6 +7,8 @@ import { Link } from "react-router-dom";
 import LabelInputComponent from "../LabelInputComponent/LabelInputComponent.tsx";
 import { useFetchData } from "../../../hooks/useFetchData.ts";
 import { BACKEND_API_URL } from "../../../config.ts";
+import { ToastContainer } from "react-toastify";
+import { notifyError } from "../../../utils/notifications.ts";
 
 const FormLogin = () => {
 
@@ -19,17 +21,24 @@ const FormLogin = () => {
         true
     );
 
-    if (error) console.error(error);
+    if (error) {
+        console.error(error)
+        notifyError("Error del servidor: Inténtalo de nuevo más tarde")
+    }
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         const response = await fetchData(dataForm);
         if (response.data) navigate(loginTo === "user" ? "/user-panel" : "/company-panel");
-        if (response.error) console.error(response.error)
+        if (response.error) {
+            console.error(response.error)
+            notifyError(`Error: ${response.error}`)
+        }
     }
 
     return (
         <div className="divFormLogin">
+            <ToastContainer />
             <Title fontSize="2.2rem" margin="0 0 .5rem 0">Iniciar sesión como {loginTo === "user" ? "usuario" : "empresa"}</Title>
             <form className="formLogin" onSubmit={handleSubmit}>
                 <LabelInputComponent

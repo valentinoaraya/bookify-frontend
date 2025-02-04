@@ -3,6 +3,11 @@ import "./SideBar.css"
 import Title from "../../../common/Title/Title";
 import Button from "../../../common/Button/Button";
 import { UserIcon, CompanyIcon } from "../../../common/Icons/Icons";
+import ModalForm from "../../ModalForm/ModalForm";
+import { useState } from "react";
+import { useFetchData } from "../../../hooks/useFetchData";
+import { BACKEND_API_URL } from "../../../config";
+import { notifyError, notifySuccess } from "../../../utils/notifications";
 
 interface Props {
     data: User | Company
@@ -10,13 +15,38 @@ interface Props {
 }
 
 const SideBar: React.FC<Props> = ({ data, onViewChange }) => {
+
+    const [dataSideBar, setDataSideBar] = useState<User | Company>(data)
+    const [isModalOpen, setIsModalOpen] = useState(false)
+    const { isLoading, error, fetchData } = useFetchData(
+        `${BACKEND_API_URL}/${data.type === "user" ? "users" : "companies"}/update-${data.type}`,
+        "PUT",
+        true
+    )
+
+    if (error) {
+        console.error(error)
+        notifyError("Error del servidor: Inténtalo de nuevo más tarde")
+    }
+
+    const updateData = async (data: { [key: string]: any }) => {
+        const response = await fetchData(data)
+        console.log(response)
+        setIsModalOpen(false)
+        if (response?.data) {
+            setDataSideBar(response.data)
+            notifySuccess("Datos actualizados")
+        }
+        if (response?.error) notifyError("Error al actualizar los datos")
+    }
+
     return (
         <div className="sideBar">
             <Title fontSize="3.5rem">Bookify</Title>
             <div className="dataUserCompany">
                 <div className="titleContainer">
                     {
-                        data.type === "user" ?
+                        dataSideBar.type === "user" ?
                             <UserIcon
                                 width="32"
                                 height="32"
@@ -30,44 +60,44 @@ const SideBar: React.FC<Props> = ({ data, onViewChange }) => {
                             />
                     }
                     <Title fontSize="1.5rem">
-                        {data.type === "user" ? "Mis datos:" : "Mi empresa:"}
+                        {dataSideBar.type === "user" ? "Mis datos:" : "Mi empresa:"}
                     </Title>
                 </div>
                 <div className="dataContainer">
                     <p className="parrafData">
                         <span>Nombre: </span>
                         {
-                            data.type === "user" ?
-                                `${data.name} ${data.lastName}`
+                            dataSideBar.type === "user" ?
+                                `${dataSideBar.name} ${dataSideBar.lastName}`
                                 :
-                                `${data.name}`
+                                `${dataSideBar.name}`
                         }
                     </p>
                     <p className="parrafData">
                         <span>Teléfono: </span>
-                        {data.phone}
+                        {dataSideBar.phone}
                     </p>
                     <p className="parrafData">
                         <span>Email: </span>
-                        {data.email}
+                        {dataSideBar.email}
                     </p>
                     {
-                        data.type === "company" &&
+                        dataSideBar.type === "company" &&
                         <p className="parrafData">
                             <span>Ubicación: </span>
-                            {data.city} - {data.street} {data.number}
+                            {dataSideBar.city} - {dataSideBar.street} {dataSideBar.number}
                         </p>
                     }
                 </div>
             </div>
             {
-                data.type === "company" &&
+                dataSideBar.type === "company" &&
                 <div className="divButtonsCompany">
                     <Button
                         onSubmit={() => { onViewChange?.("appointments") }}
                         fontWeight="700"
                     >
-                        Proximos turnos
+                        Próximos turnos
                     </Button>
                     <Button
                         onSubmit={() => { onViewChange?.("services") }}
@@ -78,9 +108,65 @@ const SideBar: React.FC<Props> = ({ data, onViewChange }) => {
                 </div>
             }
             <div className="divConfigurations">
-                <p>Editar datos</p>
-                <p>Cerrar sesíon</p>
+                <p
+                    className="parrafConfig"
+                    onClick={() => setIsModalOpen(true)}
+                >
+                    Editar datos
+                </p>
+                <p
+                    className="parrafConfig"
+                    onClick={() => {
+                        // ELIMINAR LA COOKIE DE SESIÓN
+                        window.location.href = "/"
+                    }}
+                >
+                    Cerrar sesión
+                </p>
             </div>
+            <ModalForm
+                title={`Editar datos de ${dataSideBar.type === "user" ? "usuario" : "empresa"}`}
+                inputs={
+                    dataSideBar.type === "user" ?
+                        [
+                            { type: "text", name: "name", placeholder: "Nombre" },
+                            { type: "text", name: "lastName", placeholder: "Apellido" },
+                            { type: "text", name: "phone", placeholder: "Teléfono" },
+                            { type: "email", name: "email", placeholder: "Email" }
+                        ]
+                        :
+                        [
+                            { type: "text", name: "name", placeholder: "Nombre" },
+                            { type: "text", name: "phone", placeholder: "Teléfono" },
+                            { type: "email", name: "email", placeholder: "Email" },
+                            { type: "text", name: "city", placeholder: "Ciudad" },
+                            { type: "text", name: "street", placeholder: "Calle" },
+                            { type: "number", name: "number", placeholder: "Número" }
+                        ]
+                }
+                initialData={
+                    dataSideBar.type === "user" ?
+                        {
+                            name: dataSideBar.name,
+                            lastName: dataSideBar.lastName,
+                            phone: dataSideBar.phone,
+                            email: dataSideBar.email
+                        }
+                        :
+                        {
+                            name: dataSideBar.name,
+                            phone: dataSideBar.phone,
+                            email: dataSideBar.email,
+                            city: dataSideBar.city,
+                            street: dataSideBar.street,
+                            number: dataSideBar.number
+                        }
+                }
+                isOpen={isModalOpen}
+                disabledButtons={isLoading}
+                onClose={() => setIsModalOpen(false)}
+                onSubmitForm={(data) => updateData(data)}
+            />
         </div>
     );
 }
