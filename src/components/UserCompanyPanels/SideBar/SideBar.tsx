@@ -23,9 +23,14 @@ const SideBar: React.FC<Props> = ({ data, onViewChange }) => {
         "PUT",
         true
     )
+    const { isLoading: _isLoadingLogout, error: errorLogout, fetchData: fetchDataLogout } = useFetchData(
+        `${BACKEND_API_URL}/${data.type === "user" ? "users" : "companies"}/logout`,
+        "POST",
+        true
+    )
 
-    if (error) {
-        console.error(error)
+    if (error || errorLogout) {
+        console.error(error || errorLogout)
         notifyError("Error del servidor: Inténtalo de nuevo más tarde")
     }
 
@@ -38,6 +43,14 @@ const SideBar: React.FC<Props> = ({ data, onViewChange }) => {
             notifySuccess("Datos actualizados")
         }
         if (response?.error) notifyError("Error al actualizar los datos")
+    }
+
+    const handleLogout = async () => {
+        const response = await fetchDataLogout({})
+        if (response?.data) {
+            window.location.href = "/"
+        }
+        if (response?.error) notifyError("Error al cerrar sesión")
     }
 
     return (
@@ -116,10 +129,7 @@ const SideBar: React.FC<Props> = ({ data, onViewChange }) => {
                 </p>
                 <p
                     className="parrafConfig"
-                    onClick={() => {
-                        // ELIMINAR LA COOKIE DE SESIÓN
-                        window.location.href = "/"
-                    }}
+                    onClick={handleLogout}
                 >
                     Cerrar sesión
                 </p>
