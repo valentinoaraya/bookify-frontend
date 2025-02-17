@@ -8,20 +8,3 @@
     width: 100%;
     padding: 2rem;
 }
-
-.noServicesAppointments {
-    height: 90vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.noServicesAppointments h3 {
-    font-size: 2rem;
-}
-
-.divListContainer {
-    display: flex;
-    gap: 2rem;
-    flex-wrap: wrap;
-}

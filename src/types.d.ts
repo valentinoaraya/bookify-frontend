@@ -51,7 +51,7 @@ export interface User {
     servicesUsed: ServiceUsed[]
 }
 
-export type View = "appointments" | "services"
+export type View = "appointments" | "services" | "calendar"
 
 export interface Input {
     type: string;

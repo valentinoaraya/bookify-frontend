@@ -23,8 +23,6 @@ const ModalForm: React.FC<Props> = ({ title, inputs, isOpen, onClose, onSubmitFo
 
     const { dataForm, handleChange, deleteData } = useDataForm(initialData)
 
-    console.log(dataForm)
-
     const handleCloseForm = () => {
         deleteData()
         onClose()
