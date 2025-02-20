@@ -8,6 +8,7 @@ export interface Service extends ServiceBasicInfo {
     duration: number
     price: number
     companyId: string
+    availableAppointments: string[]
 }
 
 export interface CompanyBasicInfo {
@@ -55,6 +56,9 @@ export type View = "appointments" | "services" | "calendar"
 
 export interface Input {
     type: string;
-    name: string
-    placeholder: string;
+    name: string;
+    label: string;
+    placeholder?: string;
+    selectOptions?: string[];
+    mainSelectOption?: string;
 }

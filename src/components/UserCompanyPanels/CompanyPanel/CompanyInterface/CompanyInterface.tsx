@@ -38,7 +38,7 @@ const CompanyInterface: React.FC<Props> = ({ company }) => {
                     activeView === "calendar" ?
                         <CalendarServicePanel
                             service={serviceOnCalendar}
-                            scheduledAppointmens={scheduledAppointments}
+                            scheduledAppointments={scheduledAppointments}
                         />
                         :
                         <>

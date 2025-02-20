@@ -78,10 +78,10 @@ const ServicesPanel: React.FC<Props> = ({ companyServices, setCompanyServices, o
                 title="Agregar servicio"
                 isOpen={isModalOpen}
                 inputs={[
-                    { type: "text", name: "title", placeholder: "Título" },
-                    { type: "text", name: "description", placeholder: "Descripción" },
-                    { type: "number", name: "price", placeholder: "Precio" },
-                    { type: "number", name: "duration", placeholder: "Duración" }
+                    { type: "text", name: "title", placeholder: "Título", label: "Título" },
+                    { type: "text", name: "description", placeholder: "Descripción", label: "Descripción" },
+                    { type: "number", name: "price", placeholder: "Precio", label: "Precio" },
+                    { type: "number", name: "duration", placeholder: "Duración", label: "Duración" }
                 ]}
                 initialData={{ title: "", description: "", price: 0, duration: 0 }}
                 onClose={() => setIsModalOpen(false)}
