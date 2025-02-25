@@ -11,7 +11,12 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@fullcalendar/core": "^6.1.15",
+    "@fullcalendar/daygrid": "^6.1.15",
+    "@fullcalendar/react": "^6.1.15",
+    "antd": "^5.24.1",
     "react": "^18.3.1",
+    "react-day-picker": "^9.5.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.26.1",
     "react-toastify": "^11.0.2",

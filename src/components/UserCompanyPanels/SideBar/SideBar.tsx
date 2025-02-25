@@ -2,7 +2,7 @@ import { type Company, type User, type View } from "../../../types";
 import "./SideBar.css"
 import Title from "../../../common/Title/Title";
 import Button from "../../../common/Button/Button";
-import { UserIcon, CompanyIcon } from "../../../common/Icons/Icons";
+import { UserIcon, CompanyIcon, PencilIcon, CloseIcon } from "../../../common/Icons/Icons";
 import ModalForm from "../../ModalForm/ModalForm";
 import { useState } from "react";
 import { useFetchData } from "../../../hooks/useFetchData";
@@ -23,9 +23,14 @@ const SideBar: React.FC<Props> = ({ data, onViewChange }) => {
         "PUT",
         true
     )
+    const { isLoading: _isLoadingLogout, error: errorLogout, fetchData: fetchDataLogout } = useFetchData(
+        `${BACKEND_API_URL}/${data.type === "user" ? "users" : "companies"}/logout`,
+        "POST",
+        true
+    )
 
-    if (error) {
-        console.error(error)
+    if (error || errorLogout) {
+        console.error(error || errorLogout)
         notifyError("Error del servidor: Inténtalo de nuevo más tarde")
     }
 
@@ -38,6 +43,14 @@ const SideBar: React.FC<Props> = ({ data, onViewChange }) => {
             notifySuccess("Datos actualizados")
         }
         if (response?.error) notifyError("Error al actualizar los datos")
+    }
+
+    const handleLogout = async () => {
+        const response = await fetchDataLogout({})
+        if (response?.data) {
+            window.location.href = "/"
+        }
+        if (response?.error) notifyError("Error al cerrar sesión")
     }
 
     return (
@@ -108,40 +121,47 @@ const SideBar: React.FC<Props> = ({ data, onViewChange }) => {
                 </div>
             }
             <div className="divConfigurations">
-                <p
-                    className="parrafConfig"
+                <div
+                    className="divIconParrafContainer"
                     onClick={() => setIsModalOpen(true)}
                 >
-                    Editar datos
-                </p>
-                <p
-                    className="parrafConfig"
-                    onClick={() => {
-                        // ELIMINAR LA COOKIE DE SESIÓN
-                        window.location.href = "/"
-                    }}
+                    <PencilIcon
+                        width="16"
+                        height="16"
+                        fill="black"
+                    />
+                    <p className="parrafConfig">Editar datos</p>
+                </div>
+                <div
+                    className="divIconParrafContainer"
+                    onClick={handleLogout}
                 >
-                    Cerrar sesión
-                </p>
+                    <CloseIcon
+                        width="16"
+                        height="16"
+                        fill="black"
+                    />
+                    <p className="parrafConfig">Cerrar sesión</p>
+                </div>
             </div>
             <ModalForm
                 title={`Editar datos de ${dataSideBar.type === "user" ? "usuario" : "empresa"}`}
                 inputs={
                     dataSideBar.type === "user" ?
                         [
-                            { type: "text", name: "name", placeholder: "Nombre" },
-                            { type: "text", name: "lastName", placeholder: "Apellido" },
-                            { type: "text", name: "phone", placeholder: "Teléfono" },
-                            { type: "email", name: "email", placeholder: "Email" }
+                            { type: "text", name: "name", placeholder: "Nombre", label: "Nombre" },
+                            { type: "text", name: "lastName", placeholder: "Apellido", label: "Apellido" },
+                            { type: "text", name: "phone", placeholder: "Teléfono", label: "Teléfono" },
+                            { type: "email", name: "email", placeholder: "Email", label: "Email" }
                         ]
                         :
                         [
-                            { type: "text", name: "name", placeholder: "Nombre" },
-                            { type: "text", name: "phone", placeholder: "Teléfono" },
-                            { type: "email", name: "email", placeholder: "Email" },
-                            { type: "text", name: "city", placeholder: "Ciudad" },
-                            { type: "text", name: "street", placeholder: "Calle" },
-                            { type: "number", name: "number", placeholder: "Número" }
+                            { type: "text", name: "name", placeholder: "Nombre", label: "Nombre" },
+                            { type: "text", name: "phone", placeholder: "Teléfono", label: "Teléfono" },
+                            { type: "email", name: "email", placeholder: "Email", label: "Email" },
+                            { type: "text", name: "city", placeholder: "Ciudad", label: "Ciudadd" },
+                            { type: "text", name: "street", placeholder: "Calle", label: "Calle" },
+                            { type: "number", name: "number", placeholder: "Número", label: "Número" }
                         ]
                 }
                 initialData={

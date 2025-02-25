@@ -1,35 +1,23 @@
-import { useState, useEffect } from "react";
-import { useFetchData } from "../../../hooks/useFetchData";
-import { type Company } from "../../../types";
+import { useContext } from "react";
 import "./CompanyPanel.css"
 import CompanyInterface from "./CompanyInterface/CompanyInterface";
-import { BACKEND_API_URL } from "../../../config";
+import { CompanyContext } from "../../../contexts/CompanyContext";
 
 const CompanyPanel = () => {
 
-    const { isLoading, error, fetchData } = useFetchData(`${BACKEND_API_URL}/companies/get-company`, "GET", true)
-    const [company, setCompany] = useState<Company | null>(null)
+    const { state, isLoading, error } = useContext(CompanyContext)
 
     if (error) console.error(error)
-
-    useEffect(() => {
-        const getCompany = async () => {
-            const resopnse = await fetchData(null)
-            if (resopnse.data) setCompany(resopnse.data)
-        }
-        getCompany()
-    }, [])
-
     if (isLoading) return <h2>Cargando...</h2>
 
     return (
         <>
             {
-                !company ?
+                !state._id ?
                     <h2>Empresa no encontrada</h2>
                     :
                     <CompanyInterface
-                        company={company}
+                        company={state}
                     />
             }
         </>

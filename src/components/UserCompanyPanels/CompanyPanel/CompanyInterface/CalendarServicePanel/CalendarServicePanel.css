@@ -1,0 +1,17 @@
+.calendarContainer {
+    margin: 2rem 0;
+}
+
+.fc .fc-button-primary {
+    background-color: var(--azul-oscuro);
+}
+
+.event {
+    padding: .8rem .5rem;
+    cursor: pointer;
+}
+
+.fc-sticky,
+.fc-event-time {
+    user-select: none;
+}

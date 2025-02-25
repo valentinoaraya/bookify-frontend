@@ -6,6 +6,7 @@ import { notifyError, notifySuccess } from "../../../utils/notifications"
 import { confirmDelete } from "../../../utils/alerts"
 import ModalForm from "../../ModalForm/ModalForm"
 import { useState } from "react"
+import { View } from "../../../types"
 
 interface Props {
     id: string
@@ -15,9 +16,10 @@ interface Props {
     description: string
     onDeleteService: (id: string, scheduledAppointmentsToDelete: string[]) => void
     onUpdateService: (data: { [key: string]: any }) => void
+    onRedirectToCalendar: (id: string, view: View) => void
 }
 
-const ServiceCard: React.FC<Props> = ({ id, duration, price, title, description, onDeleteService, onUpdateService }) => {
+const ServiceCard: React.FC<Props> = ({ id, duration, price, title, description, onDeleteService, onUpdateService, onRedirectToCalendar }) => {
 
     const { isLoading, error, fetchData } = useFetchData(
         `${BACKEND_API_URL}/services/delete-service/${id}`,
@@ -70,7 +72,7 @@ const ServiceCard: React.FC<Props> = ({ id, duration, price, title, description,
         <div className="serviceCard">
             <div className="dataService">
                 <h2 className="titleService">{title}</h2>
-                <p className="parrafService"><span>Duración:</span> {duration} hs</p>
+                <p className="parrafService"><span>Duración:</span> {duration} mins</p>
                 <p className="parrafService"><span>Precio:</span> ${price}</p>
                 <p className="parrafService">{description}</p>
             </div>
@@ -79,6 +81,7 @@ const ServiceCard: React.FC<Props> = ({ id, duration, price, title, description,
                     fontSize="1.2rem"
                     padding=".8rem"
                     disabled={isLoading || isLoadingUpdate}
+                    onSubmit={() => onRedirectToCalendar(id, "calendar")}
                 >
                     Habilitar turnos
                 </Button>
@@ -103,10 +106,10 @@ const ServiceCard: React.FC<Props> = ({ id, duration, price, title, description,
                 title="Editar servicio"
                 isOpen={isModalOpen}
                 inputs={[
-                    { type: "text", name: "title", placeholder: "Título" },
-                    { type: "text", name: "description", placeholder: "Descripción" },
-                    { type: "number", name: "price", placeholder: "Precio" },
-                    { type: "number", name: "duration", placeholder: "Duración" }
+                    { type: "text", name: "title", placeholder: "Título", label: "Título" },
+                    { type: "text", name: "description", placeholder: "Descripción", label: "Descripción" },
+                    { type: "number", name: "price", placeholder: "Precio", label: "Precio" },
+                    { type: "number", name: "duration", placeholder: "Duración", label: "Duración (en minutos)" }
                 ]}
                 initialData={{ title, description, price, duration }}
                 onClose={() => setIsModalOpen(false)}
