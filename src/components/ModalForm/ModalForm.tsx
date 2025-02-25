@@ -8,6 +8,7 @@ import { Input } from "../../types";
 import { DayPicker } from "react-day-picker";
 import { es } from "react-day-picker/locale";
 import { useState } from "react";
+import { notifyError } from "../../utils/notifications";
 
 interface Props {
     title: string;
@@ -44,12 +45,17 @@ const ModalForm: React.FC<Props> = ({ title, inputs, isOpen, onClose, onSubmitFo
                     onSubmit={(e) => {
                         e.preventDefault()
                         if (Object.keys(dataForm).includes("days")) {
-                            const newDataForm = { ...dataForm, days: selectedDays }
-                            onSubmitForm(newDataForm)
+                            if (!selectedDays) {
+                                notifyError("Selecciona los días en el calendario.")
+                            } else {
+                                const newDataForm = { ...dataForm, days: selectedDays }
+                                onSubmitForm(newDataForm)
+                                deleteData()
+                            }
                         } else {
                             onSubmitForm(dataForm)
+                            deleteData()
                         }
-                        deleteData()
                     }}
                 >
                     <div className={horizontalForm ? "divInputsFormModal" : ""}>

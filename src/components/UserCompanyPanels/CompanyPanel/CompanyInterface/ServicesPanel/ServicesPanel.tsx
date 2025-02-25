@@ -3,22 +3,23 @@ import Title from "../../../../../common/Title/Title";
 import { type Service, type View } from "../../../../../types";
 import ServiceCard from "../../../../Cards/ServiceCard/ServiceCard";
 import AddSomethingCard from "../../../../Cards/AddSomethingCard/AddSomethingCard";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useFetchData } from "../../../../../hooks/useFetchData";
 import { BACKEND_API_URL } from "../../../../../config";
 import { notifyError } from "../../../../../utils/notifications";
 import { ToastContainer } from "react-toastify";
 import ModalForm from "../../../../ModalForm/ModalForm";
+import { CompanyContext } from "../../../../../contexts/CompanyContext";
 
 interface Props {
     companyServices: Service[]
-    setCompanyServices: React.Dispatch<React.SetStateAction<Service[]>>
     onDeleteService: (id: string, scheduledAppointmentsToDelete: string[]) => void
     handleChangeToCalendar: (id: string, view: View) => void
 }
 
-const ServicesPanel: React.FC<Props> = ({ companyServices, setCompanyServices, onDeleteService, handleChangeToCalendar }) => {
+const ServicesPanel: React.FC<Props> = ({ companyServices, onDeleteService, handleChangeToCalendar }) => {
 
+    const { updateServices } = useContext(CompanyContext)
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
     const { isLoading, error, fetchData } = useFetchData(
         `${BACKEND_API_URL}/services/create-service`,
@@ -34,12 +35,12 @@ const ServicesPanel: React.FC<Props> = ({ companyServices, setCompanyServices, o
     const handleAddService = async (data: { [key: string]: any }) => {
         const response = await fetchData(data)
         setIsModalOpen(false)
-        if (response?.data) setCompanyServices((prevCompnayServices: Service[]) => [...prevCompnayServices, response.data])
+        if (response?.data) updateServices([...companyServices, response.data])
         if (response?.error) notifyError("Error al crear el servicio")
     }
 
     const onUpdateService = (data: { [key: string]: any }) => {
-        setCompanyServices(companyServices.map(service => service._id === data._id ? { ...service, ...data } : service))
+        updateServices(companyServices.map(service => service._id === data._id ? { ...service, ...data } : service))
     }
 
     return (
@@ -81,7 +82,7 @@ const ServicesPanel: React.FC<Props> = ({ companyServices, setCompanyServices, o
                     { type: "text", name: "title", placeholder: "Título", label: "Título" },
                     { type: "text", name: "description", placeholder: "Descripción", label: "Descripción" },
                     { type: "number", name: "price", placeholder: "Precio", label: "Precio" },
-                    { type: "number", name: "duration", placeholder: "Duración", label: "Duración" }
+                    { type: "number", name: "duration", placeholder: "Duración", label: "Duración (en minutos)" }
                 ]}
                 initialData={{ title: "", description: "", price: 0, duration: 0 }}
                 onClose={() => setIsModalOpen(false)}

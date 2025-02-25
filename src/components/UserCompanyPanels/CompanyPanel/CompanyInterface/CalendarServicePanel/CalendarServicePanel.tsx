@@ -4,27 +4,34 @@ import { Appointment, type Service } from "../../../../../types";
 import Button from "../../../../../common/Button/Button";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid"
-import { useState } from "react";
+import { useContext, useState } from "react";
 import ModalForm from "../../../../ModalForm/ModalForm";
 import { useFetchData } from "../../../../../hooks/useFetchData";
 import { BACKEND_API_URL } from "../../../../../config";
 import { notifyError, notifySuccess } from "../../../../../utils/notifications";
 import { ToastContainer } from "react-toastify";
 import { parseDateToString } from "../../../../../utils/parseDateToString";
+import { CompanyContext } from "../../../../../contexts/CompanyContext";
 
 interface Props {
-    service: Service | null
+    service: Service
     scheduledAppointments: Appointment[]
 }
 
 const CalendarServicePanel: React.FC<Props> = ({ service, scheduledAppointments }) => {
 
-    const scheduledAppointmentsOfService = scheduledAppointments.filter(appointment => appointment.serviceId._id === service?._id)
+    const { state, updateServices } = useContext(CompanyContext)
+    const [availableAppointments, setAvailableAppointments] = useState<string[]>(service.availableAppointments)
+    const scheduledAppointmentsOfService = scheduledAppointments.filter(appointment => appointment.serviceId._id === service._id)
     const [isModalOpen, setIsModalOpen] = useState(false)
-    const [availableAppointments, setAvailableAppointments] = useState<string[] | undefined>(service?.availableAppointments.filter(availableAppointment => !scheduledAppointmentsOfService.some(scheduledAppointment => scheduledAppointment.date === availableAppointment)))
     const { isLoading, error, fetchData } = useFetchData(
-        `${BACKEND_API_URL}/services/enable-appointments/${service?._id}`,
+        `${BACKEND_API_URL}/services/enable-appointments/${service._id}`,
         "POST",
+        true
+    )
+    const { isLoading: isLoadingDelete, error: errorDelete, fetchData: fetchDataDelete } = useFetchData(
+        `${BACKEND_API_URL}/services/delete-appointment/${service._id}`,
+        "DELETE",
         true
     )
 
@@ -48,32 +55,35 @@ const CalendarServicePanel: React.FC<Props> = ({ service, scheduledAppointments 
     const onSubmitForm = async (data: { [key: string]: any }) => {
         const response = await fetchData(data)
         setIsModalOpen(false)
-        console.log(response)
         if (response.data) {
+            const serviceUpdated = { ...service, availableAppointments: response.data }
             setAvailableAppointments(response.data)
+            updateServices(state.services.map(service => service._id === serviceUpdated._id ? serviceUpdated : service))
             notifySuccess("Turnos habilitados correctamente.")
         }
         if (response.error) notifyError("Error al habilitar los turnos.")
 
     }
 
-    const deleteAppointment = (date: Date) => {
-
-        // TERMINAR DE IMPLEMENAR EL ELIMINADO DE TURNOS
-        // LLAMAR AL ENDPOINT DE ELIMINAR TURNO
-
+    const deleteAppointment = async (date: Date) => {
         const { stringDate, time } = parseDateToString(date)
-        const newAvailableAppointments = availableAppointments?.filter(availableAppointment => availableAppointment !== `${stringDate} ${time}`)
-        setAvailableAppointments(newAvailableAppointments)
+        const response = await fetchDataDelete({ date: `${stringDate} ${time}` })
+        if (response.data) {
+            const newAvailableAppointments = availableAppointments.filter(availableAppointment => availableAppointment !== `${stringDate} ${time}`)
+            setAvailableAppointments(newAvailableAppointments)
+            const serviceUpdated = { ...service, availableAppointments: newAvailableAppointments }
+            updateServices(state.services.map(service => service._id === serviceUpdated._id ? serviceUpdated : service))
+        }
+        if (response.error) notifyError("Error al eliminar turno")
     }
 
-    if (error) notifyError("Error al habilitar los turnos.")
+    if (error || errorDelete) notifyError("Error al habilitar los turnos")
 
     return (
         <>
             <ToastContainer />
             <Title>
-                Calendario para {service?.title}
+                Calendario para {service.title}
             </Title>
             <div className="calendarContainer">
                 <FullCalendar
@@ -118,7 +128,7 @@ const CalendarServicePanel: React.FC<Props> = ({ service, scheduledAppointments 
             </div>
             <Button onSubmit={() => setIsModalOpen(true)}>Habilitar turnos</Button>
             <ModalForm
-                title="Habilitar turnos"
+                title="Selecciona los días para habilitar turnos"
                 isOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
                 onSubmitForm={(data) => onSubmitForm(data)}
@@ -134,7 +144,7 @@ const CalendarServicePanel: React.FC<Props> = ({ service, scheduledAppointments 
                         {
                             type: "selectHour",
                             name: "hourFinish",
-                            label: "Selecciona hora del final :",
+                            label: "Selecciona hora del final:",
                         },
                         {
                             type: "text",
@@ -144,12 +154,12 @@ const CalendarServicePanel: React.FC<Props> = ({ service, scheduledAppointments 
                         }
                     ]
                 }
-                disabledButtons={isLoading}
+                disabledButtons={isLoading || isLoadingDelete}
                 initialData={{
                     hourStart: "",
                     hourFinish: "",
                     turnEach: "",
-                    days: []
+                    days: null
                 }}
             />
         </>

@@ -1,10 +1,11 @@
 import "./CompanyInterface.css"
 import SideBar from "../../SideBar/SideBar";
-import { type Company, type View, type Service, type Appointment } from "../../../../types";
-import { useState } from "react";
+import { type Company, type View, type Service } from "../../../../types";
+import { useContext, useState } from "react";
 import ServicesPanel from "./ServicesPanel/ServicesPanel";
 import ScheduledAppointmentsPanel from "./ScheduledAppointmentsPanel/ScheduledAppointmentsPanel";
 import CalendarServicePanel from "./CalendarServicePanel/CalendarServicePanel";
+import { CompanyContext } from "../../../../contexts/CompanyContext";
 
 interface Props {
     company: Company
@@ -12,19 +13,18 @@ interface Props {
 
 const CompanyInterface: React.FC<Props> = ({ company }) => {
 
+    const { deleteService, updateAppointments } = useContext(CompanyContext)
     const [activeView, setActiveView] = useState<View>("appointments")
-    const [scheduledAppointments, setScheduledAppointments] = useState<Appointment[]>(company.scheduledAppointments)
-    const [companyServices, setCompanyServices] = useState<Service[]>(company.services)
     const [serviceOnCalendar, setServiceOnCalendar] = useState<Service | null>(null)
 
     const onDeleteService = (id: string, scheduledAppointmentsToDelete: string[]) => {
-        setCompanyServices(companyServices.filter(service => service._id !== id))
-        setScheduledAppointments(scheduledAppointments.filter(appointment => !scheduledAppointmentsToDelete.includes(appointment._id)))
+        deleteService(company.services.filter(service => service._id !== id))
+        updateAppointments(company.scheduledAppointments.filter(appointment => !scheduledAppointmentsToDelete.includes(appointment._id)))
     }
 
     const handleChangeToCalendar = (id: string, view: View) => {
         setActiveView(view)
-        setServiceOnCalendar(companyServices.find(service => service._id === id) || null)
+        setServiceOnCalendar(company.services.find(service => service._id === id) || null)
     }
 
     return (
@@ -37,20 +37,19 @@ const CompanyInterface: React.FC<Props> = ({ company }) => {
                 {
                     activeView === "calendar" ?
                         <CalendarServicePanel
-                            service={serviceOnCalendar}
-                            scheduledAppointments={scheduledAppointments}
+                            service={serviceOnCalendar as Service}
+                            scheduledAppointments={company.scheduledAppointments}
                         />
                         :
                         <>
                             {
                                 activeView === "appointments" ?
                                     <ScheduledAppointmentsPanel
-                                        scheduledAppointments={scheduledAppointments}
+                                        scheduledAppointments={company.scheduledAppointments}
                                     />
                                     :
                                     <ServicesPanel
-                                        companyServices={companyServices}
-                                        setCompanyServices={setCompanyServices}
+                                        companyServices={company.services}
                                         onDeleteService={onDeleteService}
                                         handleChangeToCalendar={handleChangeToCalendar}
                                     />

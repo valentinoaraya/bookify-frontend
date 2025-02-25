@@ -2,7 +2,7 @@ import { type Company, type User, type View } from "../../../types";
 import "./SideBar.css"
 import Title from "../../../common/Title/Title";
 import Button from "../../../common/Button/Button";
-import { UserIcon, CompanyIcon } from "../../../common/Icons/Icons";
+import { UserIcon, CompanyIcon, PencilIcon, CloseIcon } from "../../../common/Icons/Icons";
 import ModalForm from "../../ModalForm/ModalForm";
 import { useState } from "react";
 import { useFetchData } from "../../../hooks/useFetchData";
@@ -121,18 +121,28 @@ const SideBar: React.FC<Props> = ({ data, onViewChange }) => {
                 </div>
             }
             <div className="divConfigurations">
-                <p
-                    className="parrafConfig"
+                <div
+                    className="divIconParrafContainer"
                     onClick={() => setIsModalOpen(true)}
                 >
-                    Editar datos
-                </p>
-                <p
-                    className="parrafConfig"
+                    <PencilIcon
+                        width="16"
+                        height="16"
+                        fill="black"
+                    />
+                    <p className="parrafConfig">Editar datos</p>
+                </div>
+                <div
+                    className="divIconParrafContainer"
                     onClick={handleLogout}
                 >
-                    Cerrar sesión
-                </p>
+                    <CloseIcon
+                        width="16"
+                        height="16"
+                        fill="black"
+                    />
+                    <p className="parrafConfig">Cerrar sesión</p>
+                </div>
             </div>
             <ModalForm
                 title={`Editar datos de ${dataSideBar.type === "user" ? "usuario" : "empresa"}`}
