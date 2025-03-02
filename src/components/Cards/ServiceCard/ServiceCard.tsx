@@ -46,6 +46,7 @@ const ServiceCard: React.FC<Props> = ({ id, duration, price, title, description,
             mesasge: "Al eliminar el servicio se eliminarán todos los turnos pendientes de clientes relacionados a este servicio.",
             icon: "warning",
             confirmButtonText: "Eliminar servicio",
+            cancelButton: true,
             cancelButtonText: "Cancelar"
         })
         if (deleteConfirmed) {

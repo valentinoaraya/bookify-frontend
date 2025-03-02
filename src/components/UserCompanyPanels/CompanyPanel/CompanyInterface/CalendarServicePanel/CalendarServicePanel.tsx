@@ -1,6 +1,6 @@
 import "./CalendarServicePanel.css"
 import Title from "../../../../../common/Title/Title";
-import { Appointment, type Service } from "../../../../../types";
+import { type Service } from "../../../../../types";
 import Button from "../../../../../common/Button/Button";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid"
@@ -15,14 +15,12 @@ import { CompanyContext } from "../../../../../contexts/CompanyContext";
 
 interface Props {
     service: Service
-    scheduledAppointments: Appointment[]
 }
 
-const CalendarServicePanel: React.FC<Props> = ({ service, scheduledAppointments }) => {
+const CalendarServicePanel: React.FC<Props> = ({ service }) => {
 
     const { state, updateServices } = useContext(CompanyContext)
     const [availableAppointments, setAvailableAppointments] = useState<string[]>(service.availableAppointments)
-    const scheduledAppointmentsOfService = scheduledAppointments.filter(appointment => appointment.serviceId._id === service._id)
     const [isModalOpen, setIsModalOpen] = useState(false)
     const { isLoading, error, fetchData } = useFetchData(
         `${BACKEND_API_URL}/services/enable-appointments/${service._id}`,
@@ -43,10 +41,10 @@ const CalendarServicePanel: React.FC<Props> = ({ service, scheduledAppointments 
             borderColor: "green"
         }
     })
-    const arrayEventsScheduled = scheduledAppointmentsOfService.map(scheduledAppointment => {
+    const arrayEventsScheduled = service.scheduledAppointments.map(scheduledAppointment => {
         return {
             title: "Ocupado",
-            start: scheduledAppointment.date,
+            start: scheduledAppointment,
             backgroundColor: "red",
             borderColor: "red"
         }

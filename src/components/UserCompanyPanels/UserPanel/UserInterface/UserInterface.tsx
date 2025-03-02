@@ -1,10 +1,12 @@
 import "./UserInterface.css"
 import SideBar from "../../SideBar/SideBar";
-import { type User } from "../../../../types";
-import Title from "../../../../common/Title/Title";
-import AppointmentCard from "../../../Cards/AppointmentCard/AppointmentCard";
+import { type ServiceToSchedule, type Service, type User } from "../../../../types";
 import SearchBar from "../../../SearchBar/SearchBar";
 import { ToastContainer } from "react-toastify";
+import { useState } from "react";
+import AppointmentsUsedServicesPanel from "./AppointmentsUsedServicesPanel/AppointmentsUsedServicesPanel";
+import ResultsPanel from "./ResultsPanel/ResultsPanel";
+import ServiceToSchedulePanel from "./ServiceToSchedulePanel/ServiceToSchedulePanel";
 
 interface Props {
     user: User
@@ -12,50 +14,40 @@ interface Props {
 
 const UserInterface: React.FC<Props> = ({ user }) => {
 
+    const [results, setResults] = useState<Service[] | null>(null)
+    const [serviceToSchedule, setServiceToSchedule] = useState<ServiceToSchedule | null>(null)
+
     return (
         <div className="divInterfaceUserContainer">
             <ToastContainer />
             <SideBar data={{ ...user, type: "user" }} />
             <div className="divUserPanel">
-                <SearchBar />
-                <div className="divAppointments">
-                    <Title>Turnos pendientes</Title>
-                    {
-                        user.appointments.length === 0 ?
-                            <div className="noServicesAppointmentsUser">
-                                <h3>No tienes turnos agendados</h3>
-                            </div>
-                            :
-                            <div className="divListContainer">
-                                {
-                                    user.appointments.map((appointment) => {
-                                        return <AppointmentCard
-                                            key={appointment._id}
-                                            title={appointment.serviceId.title}
-                                            company={appointment.companyId?.name}
-                                            companyLocation={`${appointment.companyId?.city} - ${appointment.companyId?.street} ${appointment.companyId?.number}`}
-                                            serviceDuration={appointment.serviceId.duration}
-                                            servicePrice={appointment.serviceId.price}
-                                            date={appointment.date}
-                                        />
-                                    })
-                                }
-                            </div>
-                    }
-                </div>
-                <div className="divUsedServices">
-                    <Title>Últimos servicios utilizados</Title>
-                    {
-                        user.servicesUsed ?
-                            <div>
-                                <h3>Acá van los servicios utilizados por el usuraio</h3>
-                            </div>
-                            :
-                            <div className="noServicesAppointmentsUser">
-                                <h3>No has utilizado servicios aún</h3>
-                            </div>
-                    }
-                </div>
+                <SearchBar
+                    setResults={setResults}
+                />
+                {
+                    serviceToSchedule ?
+                        <ServiceToSchedulePanel
+                            serviceToSchedule={serviceToSchedule}
+                            setServiceToSchedule={setServiceToSchedule}
+                            setResults={setResults}
+                        />
+                        :
+                        <>
+                            {
+                                !results ?
+                                    <AppointmentsUsedServicesPanel
+                                        appointments={user.appointments}
+                                        servicesUsed={user.servicesUsed}
+                                    />
+                                    :
+                                    <ResultsPanel
+                                        setServiceToSchedule={setServiceToSchedule}
+                                        results={results}
+                                    />
+                            }
+                        </>
+                }
             </div>
         </div>
     );
