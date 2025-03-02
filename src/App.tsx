@@ -6,6 +6,7 @@ import FormRegister from './components/LoginRegisterForms/FormRegister/FormRegis
 import UserPanel from './components/UserCompanyPanels/UserPanel/UserPanel.tsx'
 import CompanyPanel from './components/UserCompanyPanels/CompanyPanel/CompanyPanel.tsx'
 import { CompanyProvider } from './contexts/CompanyContext.tsx'
+import { UserProvider } from './contexts/UserContext.tsx'
 
 function App() {
 
@@ -17,7 +18,11 @@ function App() {
             <Route path='/' element={<Home />} />
             <Route path='/login/:loginTo' element={<FormLogin />} />
             <Route path='/register/:registerTo' element={<FormRegister />} />
-            <Route path='/user-panel' element={<UserPanel />} />
+            <Route path='/user-panel' element={
+              <UserProvider>
+                <UserPanel />
+              </UserProvider>
+            } />
             <Route path='/company-panel' element={
               <CompanyProvider>
                 <CompanyPanel />

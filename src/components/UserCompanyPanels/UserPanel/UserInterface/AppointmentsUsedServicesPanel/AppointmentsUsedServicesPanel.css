@@ -1,0 +1,20 @@
+.divAppointments {
+    margin: 1rem 0;
+}
+
+.divListContainer {
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+}
+
+.noServicesAppointmentsUser {
+    height: 40vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.noServicesAppointmentsUser h3 {
+    font-size: 1.5rem;
+}

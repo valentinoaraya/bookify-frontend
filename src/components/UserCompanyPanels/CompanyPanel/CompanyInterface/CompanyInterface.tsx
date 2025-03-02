@@ -6,6 +6,7 @@ import ServicesPanel from "./ServicesPanel/ServicesPanel";
 import ScheduledAppointmentsPanel from "./ScheduledAppointmentsPanel/ScheduledAppointmentsPanel";
 import CalendarServicePanel from "./CalendarServicePanel/CalendarServicePanel";
 import { CompanyContext } from "../../../../contexts/CompanyContext";
+import { ToastContainer } from "react-toastify";
 
 interface Props {
     company: Company
@@ -29,6 +30,7 @@ const CompanyInterface: React.FC<Props> = ({ company }) => {
 
     return (
         <div className="divInterfaceCompanyContainer">
+            <ToastContainer />
             <SideBar
                 data={{ ...company, type: "company" }}
                 onViewChange={(view: View) => setActiveView(view)}
@@ -38,7 +40,6 @@ const CompanyInterface: React.FC<Props> = ({ company }) => {
                     activeView === "calendar" ?
                         <CalendarServicePanel
                             service={serviceOnCalendar as Service}
-                            scheduledAppointments={company.scheduledAppointments}
                         />
                         :
                         <>

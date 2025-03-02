@@ -1,9 +1,17 @@
 import "./AppointmentCard.css"
 import Button from "../../../common/Button/Button";
+import { parseDateToString } from "../../../utils/parseDateToString";
+import { confirmDelete } from "../../../utils/alerts";
+import { useFetchData } from "../../../hooks/useFetchData";
+import { BACKEND_API_URL } from "../../../config";
+import { notifyError, notifySuccess } from "../../../utils/notifications";
+import { type User, type Appointment, type Company } from "../../../types";
 
 interface Props {
+    _id: string;
     title: string;
     date: string;
+    serviceId: string;
     company?: string;
     companyLocation?: string;
     servicePrice?: number;
@@ -11,9 +19,13 @@ interface Props {
     client?: string;
     clientEmail?: string;
     clientPhone?: string;
+    state: User | Company;
+    onCancelAppointment: (appointments: Appointment[], appointmentToDelete: string, serviceId: string) => void
 }
 
 const AppointmentCard: React.FC<Props> = ({
+    _id,
+    serviceId,
     title,
     date,
     company,
@@ -22,12 +34,42 @@ const AppointmentCard: React.FC<Props> = ({
     servicePrice,
     client,
     clientEmail,
-    clientPhone
+    clientPhone,
+    state,
+    onCancelAppointment
 }) => {
 
-    const newDate = new Date(date)
-    const stringDate = `${String(newDate.getDate()).padStart(2, "0")} - ${String(newDate.getMonth() + 1).padStart(2, "0")} - ${newDate.getFullYear()}`
-    const time = `${String(newDate.getHours()).padStart(2, "0")}:${String(newDate.getMinutes()).padStart(2, "0")}`
+    const { error, fetchData } = useFetchData(
+        `${BACKEND_API_URL}/appointments/cancel-appointment/${_id}`,
+        "DELETE",
+        true
+    )
+
+    if (error) notifyError("Error al cancelar turno. Inténtalo de nuevo más tarde.")
+
+    const { stringDate, time } = parseDateToString(date)
+    const handleCancelAppointment = async () => {
+        const confirm = await confirmDelete({
+            question: "¿Seguro que desea cancelar el turno?",
+            icon: "warning",
+            cancelButton: true,
+            cancelButtonText: "Cancelar",
+            confirmButtonText: "Aceptar"
+        })
+        if (confirm) {
+            const response = await fetchData({})
+            if (response.data) {
+                onCancelAppointment(
+                    state.type === "user" ?
+                        state.appointments.filter(appointment => appointment._id !== response.data._id)
+                        :
+                        state.scheduledAppointments.filter(appointment => appointment._id !== response.data._id)
+                    , `${stringDate} ${time}`, serviceId
+                )
+                notifySuccess("Turno cancelado con éxito.")
+            }
+        }
+    }
 
     return (
         <div className="appointmentCard">
@@ -54,6 +96,7 @@ const AppointmentCard: React.FC<Props> = ({
                 <p className="parrafAppointment"><span>Horario:</span> {time} hs</p>
             </div>
             <Button
+                onSubmit={handleCancelAppointment}
                 fontSize="1.2rem"
                 padding=".8rem"
             >

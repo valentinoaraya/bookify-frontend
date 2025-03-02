@@ -36,7 +36,6 @@ const SideBar: React.FC<Props> = ({ data, onViewChange }) => {
 
     const updateData = async (data: { [key: string]: any }) => {
         const response = await fetchData(data)
-        console.log(response)
         setIsModalOpen(false)
         if (response?.data) {
             setDataSideBar(response.data)
@@ -55,7 +54,7 @@ const SideBar: React.FC<Props> = ({ data, onViewChange }) => {
 
     return (
         <div className="sideBar">
-            <Title fontSize="3.5rem">Bookify</Title>
+            <Title fontSize="3.2rem">Bookify</Title>
             <div className="dataUserCompany">
                 <div className="titleContainer">
                     {
