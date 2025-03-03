@@ -40,7 +40,7 @@ const AppointmentCard: React.FC<Props> = ({
 }) => {
 
     const { error, fetchData } = useFetchData(
-        `${BACKEND_API_URL}/appointments/cancel-appointment/${_id}`,
+        `${BACKEND_API_URL}/appointments/${state.type === "user" ? "cancel" : "delete"}-appointment/${_id}`,
         "DELETE",
         true
     )
