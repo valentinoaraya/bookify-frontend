@@ -10,11 +10,12 @@ import { BACKEND_API_URL } from "../../../config";
 import { notifyError, notifySuccess } from "../../../utils/notifications";
 
 interface Props {
-    data: User | Company
-    onViewChange?: (view: View) => void
+    data: User | Company;
+    onViewChange?: (view: View) => void;
+    onBack?: () => void
 }
 
-const SideBar: React.FC<Props> = ({ data, onViewChange }) => {
+const SideBar: React.FC<Props> = ({ data, onViewChange, onBack }) => {
 
     const [dataSideBar, setDataSideBar] = useState<User | Company>(data)
     const [isModalOpen, setIsModalOpen] = useState(false)
@@ -54,7 +55,13 @@ const SideBar: React.FC<Props> = ({ data, onViewChange }) => {
 
     return (
         <div className="sideBar">
-            <Title fontSize="3.2rem">Bookify</Title>
+            <div
+                onClick={() => {
+                    data.type === "company" ? onViewChange?.("appointments") : onBack?.()
+                }}
+            >
+                <Title cursorPointer fontSize="3.2rem">Bookify</Title>
+            </div>
             <div className="dataUserCompany">
                 <div className="titleContainer">
                     {

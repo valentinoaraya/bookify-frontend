@@ -1,5 +1,5 @@
 import { createContext, ReactNode, useEffect, useReducer } from "react";
-import { type Appointment, type ServiceUsed, type User } from "../types";
+import { type Appointment, type User } from "../types";
 import { useFetchData } from "../hooks/useFetchData";
 import { BACKEND_API_URL } from "../config";
 
@@ -9,13 +9,11 @@ interface ContextProps {
     error: string | null;
     fetchUserData: () => Promise<void>;
     updateAppointments: (appointments: Appointment[]) => void;
-    updateServicesUsed: (services: ServiceUsed[]) => void;
 }
 
 type Action =
     | { type: "SET_USER_DATA"; payload: User }
     | { type: "UPDATE_APPOINTMENTS"; payload: Appointment[] }
-    | { type: "UPDATE_SERVICESUSED"; payload: ServiceUsed[] }
 
 const initialState: User = {
     _id: "",
@@ -24,8 +22,7 @@ const initialState: User = {
     lastName: "",
     email: "",
     phone: "",
-    appointments: [],
-    servicesUsed: []
+    appointments: []
 }
 
 const userReducer = (state: User, action: Action): User => {
@@ -34,8 +31,6 @@ const userReducer = (state: User, action: Action): User => {
             return action.payload
         case "UPDATE_APPOINTMENTS":
             return { ...state, appointments: action.payload }
-        case "UPDATE_SERVICESUSED":
-            return { ...state, servicesUsed: action.payload }
     }
 }
 
@@ -45,7 +40,6 @@ export const UserContext = createContext<ContextProps>({
     error: null,
     fetchUserData: async () => { },
     updateAppointments: () => { },
-    updateServicesUsed: () => { },
 })
 
 export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
@@ -70,16 +64,12 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         dispatch({ type: "UPDATE_APPOINTMENTS", payload: appointments })
     }
 
-    const updateServicesUsed = (serivces: ServiceUsed[]) => {
-        dispatch({ type: "UPDATE_SERVICESUSED", payload: serivces })
-    }
-
     useEffect(() => {
         fetchUserData()
     }, [])
 
     return (
-        <UserContext.Provider value={{ state, isLoading, error, fetchUserData, updateAppointments, updateServicesUsed }}>
+        <UserContext.Provider value={{ state, isLoading, error, fetchUserData, updateAppointments }}>
             {children}
         </UserContext.Provider>
     )
