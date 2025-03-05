@@ -3,6 +3,10 @@
     padding: 1rem;
     border: 2px solid var(--azul-clarito);
     border-radius: 10px;
+    width: 250px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 .parrafCompanyName {
@@ -14,7 +18,7 @@
 }
 
 .divDataContainer {
-    margin: 1.5rem 0;
+    margin: .8rem 0;
 }
 
 .parrafDataCompany {

@@ -4,9 +4,10 @@ import { type ServiceToSchedule, type Service, type User } from "../../../../typ
 import SearchBar from "../../../SearchBar/SearchBar";
 import { ToastContainer } from "react-toastify";
 import { useState } from "react";
-import AppointmentsUsedServicesPanel from "./AppointmentsUsedServicesPanel/AppointmentsUsedServicesPanel";
+import AppointmentsPanel from "./AppointmentsPanel/AppointmentsPanel";
 import ResultsPanel from "./ResultsPanel/ResultsPanel";
 import ServiceToSchedulePanel from "./ServiceToSchedulePanel/ServiceToSchedulePanel";
+import moment from "moment";
 
 interface Props {
     user: User
@@ -17,10 +18,18 @@ const UserInterface: React.FC<Props> = ({ user }) => {
     const [results, setResults] = useState<Service[] | null>(null)
     const [serviceToSchedule, setServiceToSchedule] = useState<ServiceToSchedule | null>(null)
 
+    const sortedAppointments = user.appointments.sort((a, b) => moment(a.date, "YYYY-MM-DD HH:mm").valueOf() - moment(b.date, "YYYY-MM-DD HH:mm").valueOf())
+
     return (
         <div className="divInterfaceUserContainer">
             <ToastContainer />
-            <SideBar data={{ ...user, type: "user" }} />
+            <SideBar
+                data={{ ...user, type: "user" }}
+                onBack={() => {
+                    setServiceToSchedule(null)
+                    setResults(null)
+                }}
+            />
             <div className="divUserPanel">
                 <SearchBar
                     setResults={setResults}
@@ -36,9 +45,8 @@ const UserInterface: React.FC<Props> = ({ user }) => {
                         <>
                             {
                                 !results ?
-                                    <AppointmentsUsedServicesPanel
-                                        appointments={user.appointments}
-                                        servicesUsed={user.servicesUsed}
+                                    <AppointmentsPanel
+                                        appointments={sortedAppointments}
                                     />
                                     :
                                     <ResultsPanel

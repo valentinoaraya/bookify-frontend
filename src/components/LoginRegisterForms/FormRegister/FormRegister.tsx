@@ -54,73 +54,79 @@ const FormRegister = () => {
             <ToastContainer />
             <Title fontSize="2.2rem" margin="0 0 .5rem 0">Registrarse como {registerTo === "user" ? "usuario" : "empresa"}</Title>
             <form className="formRegister" onSubmit={handleSubmit}>
-                <LabelInputComponent
-                    label="Nombre:"
-                    type="text"
-                    name="name"
-                    required={true}
-                    onChange={handleChange}
-                />
-                {
-                    registerTo === "user" &&
-                    <LabelInputComponent
-                        label="Apellido:"
-                        type="text"
-                        name="lastName"
-                        required={true}
-                        onChange={handleChange}
-                    />
-                }
-                {
-                    registerTo === "company" &&
-                    <>
-                        <LabelSelectComponent
+                <div className={registerTo === "company" ? "horizontalForm" : ""}>
+                    <div className="divHalf divFirstHalf">
+                        <LabelInputComponent
+                            label="Nombre:"
+                            type="text"
+                            name="name"
+                            required={true}
                             onChange={handleChange}
                         />
+                        {
+                            registerTo === "user" &&
+                            <LabelInputComponent
+                                label="Apellido:"
+                                type="text"
+                                name="lastName"
+                                required={true}
+                                onChange={handleChange}
+                            />
+                        }
+                        {
+                            registerTo === "company" &&
+                            <>
+                                <LabelSelectComponent
+                                    onChange={handleChange}
+                                />
+                                <LabelInputComponent
+                                    label="Calle:"
+                                    type="text"
+                                    name="street"
+                                    required={true}
+                                    onChange={handleChange}
+                                />
+                                <LabelInputComponent
+                                    label="Número de calle:"
+                                    type="text"
+                                    name="number"
+                                    required={true}
+                                    onChange={handleChange}
+                                />
+                            </>
+                        }
+                    </div>
+                    <div className="divHalf divSecondHalf">
                         <LabelInputComponent
-                            label="Calle:"
-                            type="text"
-                            name="street"
+                            label="Email:"
+                            type="email"
+                            name="email"
                             required={true}
                             onChange={handleChange}
                         />
                         <LabelInputComponent
-                            label="Número de calle:"
-                            type="text"
-                            name="number"
+                            label="Teléfono:"
+                            type="tel"
+                            name="phone"
                             required={true}
                             onChange={handleChange}
                         />
-                    </>
-                }
-                <LabelInputComponent
-                    label="Email:"
-                    type="email"
-                    name="email"
-                    required={true}
-                    onChange={handleChange}
-                />
-                <LabelInputComponent
-                    label="Teléfono:"
-                    type="tel"
-                    name="phone"
-                    required={true}
-                    onChange={handleChange}
-                />
-                <LabelInputComponent
-                    label="Contraseña:"
-                    type="password"
-                    name="password"
-                    required={true}
-                    onChange={handleChange}
-                />
-                <LabelInputComponent
-                    label="Confirmar contraseña:"
-                    type="password"
-                    name="confirmPassword"
-                    required={true}
-                    onChange={handleChange}
-                />
+                        <LabelInputComponent
+                            label="Contraseña:"
+                            type="password"
+                            name="password"
+                            required={true}
+                            onChange={handleChange}
+                        />
+                        <LabelInputComponent
+                            label="Confirmar contraseña:"
+                            type="password"
+                            name="confirmPassword"
+                            required={true}
+                            onChange={handleChange}
+                        />
+                    </div>
+                </div>
                 <Button
                     type="submit"
                     disabled={isLoading}

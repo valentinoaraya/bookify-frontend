@@ -4,6 +4,14 @@
     padding: 3.5rem 3.5rem;
     margin: 2rem;
     box-shadow: 0 0 10px #333333;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.formRegister {
+    width: 100%;
 }
 
 .divLinkForm {
@@ -19,4 +27,14 @@
 .linkForm {
     color: var(--azul-clarito);
     font-weight: bold;
+}
+
+.horizontalForm {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+
+    .divHalf {
+        width: 50%;
+    }
 }

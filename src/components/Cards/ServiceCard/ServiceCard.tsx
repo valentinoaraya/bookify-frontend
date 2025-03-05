@@ -71,8 +71,8 @@ const ServiceCard: React.FC<Props> = ({ id, duration, price, title, description,
 
     return (
         <div className="serviceCard">
+            <h2 className="titleService">{title}</h2>
             <div className="dataService">
-                <h2 className="titleService">{title}</h2>
                 <p className="parrafService"><span>Duración:</span> {duration} mins</p>
                 <p className="parrafService"><span>Precio:</span> ${price}</p>
                 <p className="parrafService">{description}</p>

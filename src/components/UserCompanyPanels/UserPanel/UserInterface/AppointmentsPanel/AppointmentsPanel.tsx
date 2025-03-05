@@ -1,24 +1,21 @@
-import "./AppointmentsUsedServicesPanel.css"
+import "./AppointmentsPanel.css"
 import Title from "../../../../../common/Title/Title";
 import AppointmentCard from "../../../../Cards/AppointmentCard/AppointmentCard";
-import { type ServiceUsed, type Appointment } from "../../../../../types";
+import { type Appointment } from "../../../../../types";
 import { useContext } from "react";
 import { UserContext } from "../../../../../contexts/UserContext";
-import { ToastContainer } from "react-toastify";
 
 interface Props {
     appointments: Appointment[];
-    servicesUsed: ServiceUsed[];
 }
 
-const AppointmentsUsedServicesPanel: React.FC<Props> = ({ appointments, servicesUsed }) => {
+const AppointmentsPanel: React.FC<Props> = ({ appointments }) => {
 
     const { state, updateAppointments } = useContext(UserContext)
 
     return (
         <>
             <div className="divAppointments">
-                <ToastContainer />
                 <Title>Turnos pendientes</Title>
                 {
                     appointments.length === 0 ?
@@ -47,21 +44,8 @@ const AppointmentsUsedServicesPanel: React.FC<Props> = ({ appointments, services
                         </div>
                 }
             </div>
-            <div className="divUsedServices">
-                <Title>Últimos servicios utilizados</Title>
-                {
-                    servicesUsed ?
-                        <div>
-                            <h3>Acá van los servicios utilizados por el usuraio</h3>
-                        </div>
-                        :
-                        <div className="noServicesAppointmentsUser">
-                            <h3>No has utilizado servicios aún</h3>
-                        </div>
-                }
-            </div>
         </>
     );
 }
 
-export default AppointmentsUsedServicesPanel;
+export default AppointmentsPanel;

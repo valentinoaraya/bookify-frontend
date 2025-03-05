@@ -3,15 +3,17 @@ import "./Title.css";
 interface Props {
     children: React.ReactNode;
     fontSize?: string;
-    margin?: string
+    margin?: string;
+    cursorPointer?: boolean;
 }
 
-const Title: React.FC<Props> = ({ children, fontSize, margin }) => {
+const Title: React.FC<Props> = ({ children, fontSize, margin, cursorPointer }) => {
     return (
         <h1 className="title"
             style={{
                 fontSize: fontSize,
-                margin: margin || 0
+                margin: margin || 0,
+                cursor: cursorPointer ? "pointer" : "default"
             }}
         >
             {children}
