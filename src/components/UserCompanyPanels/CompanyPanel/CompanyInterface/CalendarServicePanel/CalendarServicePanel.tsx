@@ -9,7 +9,6 @@ import ModalForm from "../../../../ModalForm/ModalForm";
 import { useFetchData } from "../../../../../hooks/useFetchData";
 import { BACKEND_API_URL } from "../../../../../config";
 import { notifyError, notifySuccess } from "../../../../../utils/notifications";
-import { ToastContainer } from "react-toastify";
 import { parseDateToString } from "../../../../../utils/parseDateToString";
 import { CompanyContext } from "../../../../../contexts/CompanyContext";
 
@@ -79,7 +78,6 @@ const CalendarServicePanel: React.FC<Props> = ({ service }) => {
 
     return (
         <>
-            <ToastContainer />
             <Title>
                 Calendario para {service.title}
             </Title>
@@ -120,7 +118,11 @@ const CalendarServicePanel: React.FC<Props> = ({ service }) => {
                         ...arrayEventsScheduled || []
                     ]}
                     eventClick={(info) => {
-                        deleteAppointment(info.event.start as Date)
+                        if (info.event.title === "Ocupado") {
+                            notifyError("No es posible eliminar un turno asignado desde este panel.")
+                        } else {
+                            deleteAppointment(info.event.start as Date)
+                        }
                     }}
                 />
             </div>

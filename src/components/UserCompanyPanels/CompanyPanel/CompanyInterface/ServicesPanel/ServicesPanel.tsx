@@ -7,7 +7,6 @@ import { useContext, useState } from "react";
 import { useFetchData } from "../../../../../hooks/useFetchData";
 import { BACKEND_API_URL } from "../../../../../config";
 import { notifyError } from "../../../../../utils/notifications";
-import { ToastContainer } from "react-toastify";
 import ModalForm from "../../../../ModalForm/ModalForm";
 import { CompanyContext } from "../../../../../contexts/CompanyContext";
 
@@ -45,7 +44,6 @@ const ServicesPanel: React.FC<Props> = ({ companyServices, onDeleteService, hand
 
     return (
         <>
-            <ToastContainer />
             <Title fontSize="2.2rem">
                 Mis servicios
             </Title>

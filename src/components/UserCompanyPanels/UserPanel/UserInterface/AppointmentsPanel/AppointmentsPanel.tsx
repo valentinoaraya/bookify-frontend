@@ -4,7 +4,6 @@ import AppointmentCard from "../../../../Cards/AppointmentCard/AppointmentCard";
 import { type Appointment } from "../../../../../types";
 import { useContext } from "react";
 import { UserContext } from "../../../../../contexts/UserContext";
-import { ToastContainer } from "react-toastify";
 
 interface Props {
     appointments: Appointment[];
@@ -17,7 +16,6 @@ const AppointmentsPanel: React.FC<Props> = ({ appointments }) => {
     return (
         <>
             <div className="divAppointments">
-                <ToastContainer />
                 <Title>Turnos pendientes</Title>
                 {
                     appointments.length === 0 ?

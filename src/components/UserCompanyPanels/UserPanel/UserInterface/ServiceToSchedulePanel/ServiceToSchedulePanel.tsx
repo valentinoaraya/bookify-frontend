@@ -7,7 +7,6 @@ import dayGridPlugin from "@fullcalendar/daygrid"
 import { useFetchData } from "../../../../../hooks/useFetchData";
 import { BACKEND_API_URL } from "../../../../../config";
 import { notifyError } from "../../../../../utils/notifications";
-import { ToastContainer } from "react-toastify";
 import { confirmDelete } from "../../../../../utils/alerts";
 import { parseDateToString } from "../../../../../utils/parseDateToString";
 import { useContext } from "react";
@@ -84,7 +83,6 @@ const ServiceToSchedulePanel: React.FC<Props> = ({ serviceToSchedule, setService
 
     return (
         <div className="serviceToScheduleContainer">
-            <ToastContainer />
             <Title>Turnos disponibles para {serviceToSchedule.title}</Title>
             <div className="calendarContainer">
                 <FullCalendar
