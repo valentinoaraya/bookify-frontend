@@ -79,7 +79,7 @@ const ServiceCard: React.FC<Props> = ({ id, duration, price, title, description,
             </div>
             <div className="divButtons">
                 <Button
-                    fontSize="1.2rem"
+                    fontSize={window.innerWidth <= 930 ? "1rem" : "1.2rem"}
                     padding=".8rem"
                     disabled={isLoading || isLoadingUpdate}
                     onSubmit={() => onRedirectToCalendar(id, "calendar")}
@@ -87,7 +87,7 @@ const ServiceCard: React.FC<Props> = ({ id, duration, price, title, description,
                     Habilitar turnos
                 </Button>
                 <Button
-                    fontSize="1.2rem"
+                    fontSize={window.innerWidth <= 930 ? "1rem" : "1.2rem"}
                     padding=".8rem"
                     disabled={isLoading || isLoadingUpdate}
                     onSubmit={() => setIsModalOpen(true)}
@@ -95,7 +95,7 @@ const ServiceCard: React.FC<Props> = ({ id, duration, price, title, description,
                     Editar servicio
                 </Button>
                 <Button
-                    fontSize="1.2rem"
+                    fontSize={window.innerWidth <= 930 ? "1rem" : "1.2rem"}
                     padding=".8rem"
                     onSubmit={deleteService}
                     disabled={isLoading || isLoadingUpdate}

@@ -1,5 +1,5 @@
 .calendarContainer {
-    margin: 2rem 0;
+    margin: 1rem 0;
 }
 
 .fc .fc-button-primary {
@@ -14,4 +14,43 @@
 .fc-sticky,
 .fc-event-time {
     user-select: none;
+}
+
+@media (max-width: 530px) {
+
+    .fc th {
+        font-size: .8rem;
+    }
+
+    .fc .fc-col-header-cell-cushion {
+        padding: 1px;
+    }
+
+    .fc-direction-ltr .fc-daygrid-event .fc-event-time {
+        margin: 0;
+    }
+
+    .fc-daygrid-block-event .fc-event-time {
+        font-size: .8rem;
+    }
+}
+
+@media (max-width: 460px) {
+    .event {
+        padding: .8rem .2rem;
+    }
+
+    .fc th {
+        font-size: .7rem;
+    }
+}
+
+@media (max-width: 360px) {
+    .event {
+        padding: .8rem 0;
+    }
+
+    .fc-daygrid-block-event .fc-event-time {
+        font-size: .7rem;
+    }
 }

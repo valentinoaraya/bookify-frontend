@@ -23,3 +23,19 @@
 .pDescription {
     color: var(--azul-clarito);
 }
+
+@media (max-width: 560px) {
+
+    .divHome {
+        padding: 0 1.5rem;
+    }
+
+    .divHome h2 {
+        font-size: 1.2rem;
+        text-align: center;
+    }
+
+    .pDescription {
+        font-size: .8rem;
+    }
+}

@@ -22,6 +22,8 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    max-height: 90vh;
+    overflow-y: auto;
 }
 
 .formModal {
@@ -41,11 +43,17 @@
 
 .dayPickerContainer {
     margin: 2rem 0;
+    width: 100%;
+}
+
+.divInputsContainer {
+    width: 100%;
 }
 
 .rdp-root {
     --rdp-accent-color: var(--azul-clarito);
     --rdp-today-color: blue;
+
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -60,4 +68,38 @@
 
 .rdp-nav {
     margin: 1rem 1rem 0 0;
+}
+
+@media (max-width: 930px) {
+    .modalContent {
+        margin: 0 1rem;
+        padding: 2.5rem 2rem;
+    }
+}
+
+@media (max-width: 630px) {
+    .divInputsFormModal {
+        flex-direction: column;
+    }
+
+    .dayPickerContainer {
+        margin: 1rem 0;
+    }
+
+    .rdp-months {
+        padding: .5rem;
+    }
+
+    .rdp-root {
+        --rdp-day-width: 38px;
+        --rdp-day-height: 38px;
+        --rdp-day_button-height: 38px;
+        --rdp-day_button-width: 38px
+    }
+}
+
+@media (max-width: 360px) {
+    .modalContent {
+        padding: 2.5rem 1.5rem;
+    }
 }

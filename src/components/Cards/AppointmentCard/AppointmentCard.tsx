@@ -97,7 +97,7 @@ const AppointmentCard: React.FC<Props> = ({
             </div>
             <Button
                 onSubmit={handleCancelAppointment}
-                fontSize="1.2rem"
+                fontSize={window.innerWidth <= 930 ? "1rem" : "1.2rem"}
                 padding=".8rem"
             >
                 Cancelar turno

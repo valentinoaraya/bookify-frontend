@@ -24,3 +24,10 @@
 .divIcon {
     margin-left: 1.2rem;
 }
+
+@media (max-width: 560px) {
+    .button {
+        padding: .8rem;
+        font-size: 1.2rem;
+    }
+}

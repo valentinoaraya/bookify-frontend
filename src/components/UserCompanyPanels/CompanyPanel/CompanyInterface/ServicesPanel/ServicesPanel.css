@@ -3,3 +3,16 @@
     gap: 2rem;
     flex-wrap: wrap;
 }
+
+@media (max-width: 930px) {
+    .divListContainer {
+        gap: 1rem;
+    }
+}
+
+@media (max-width: 530px) {
+    .divListContainer {
+        justify-content: center;
+        gap: .7rem;
+    }
+}

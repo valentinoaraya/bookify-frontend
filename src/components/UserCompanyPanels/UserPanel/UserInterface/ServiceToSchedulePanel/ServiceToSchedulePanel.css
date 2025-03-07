@@ -1,3 +1,86 @@
 .serviceToScheduleContainer {
     margin-top: 2rem;
 }
+
+.calendarContainerUser {
+    margin: 1rem 0;
+}
+
+.divAvailabilityIndicator {
+    margin-top: 1rem;
+}
+
+.pointContainer {
+    display: flex;
+    margin: .5rem 0;
+
+    p {
+        font-weight: 600;
+    }
+}
+
+.point {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    margin-right: .5rem;
+}
+
+.greenPoint {
+    background-color: green;
+}
+
+.redPoint {
+    background-color: red;
+}
+
+.greenParraf {
+    color: green;
+}
+
+.redParraf {
+    color: red;
+}
+
+@media (max-width: 530px) {
+
+    .serviceToScheduleContainer {
+        margin-top: 1rem;
+    }
+
+    .fc th {
+        font-size: .8rem;
+    }
+
+    .fc .fc-col-header-cell-cushion {
+        padding: 1px;
+    }
+
+    .fc-direction-ltr .fc-daygrid-event .fc-event-time {
+        margin: 0;
+    }
+
+    .fc-daygrid-block-event .fc-event-time {
+        font-size: .8rem;
+    }
+}
+
+@media (max-width: 460px) {
+    .event {
+        padding: .8rem .2rem;
+    }
+
+    .fc th {
+        font-size: .7rem;
+    }
+}
+
+@media (max-width: 360px) {
+    .event {
+        padding: .8rem 0;
+    }
+
+    .fc-daygrid-block-event .fc-event-time {
+        font-size: .7rem;
+    }
+}

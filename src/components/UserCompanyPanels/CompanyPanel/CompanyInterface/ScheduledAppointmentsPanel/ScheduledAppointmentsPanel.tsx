@@ -28,7 +28,10 @@ const ScheduledAppointmentsPanel: React.FC<Props> = ({ scheduledAppointments }) 
 
     return (
         <>
-            <Title>
+            <Title
+                fontSize={window.innerWidth <= 530 ? "1.8rem" : ""}
+                margin="0 0 1rem 0"
+            >
                 Próximos turnos
             </Title>
             {

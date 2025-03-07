@@ -8,3 +8,19 @@
     width: 100%;
     padding: 2rem;
 }
+
+@media (max-width: 930px) {
+    .divInterfaceUserContainer {
+        flex-direction: column;
+    }
+
+    .divUserPanel {
+        width: auto;
+    }
+}
+
+@media (max-width: 530px) {
+    .divUserPanel {
+        padding: 2rem 1rem;
+    }
+}

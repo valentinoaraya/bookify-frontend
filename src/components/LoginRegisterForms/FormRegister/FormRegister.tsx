@@ -52,7 +52,7 @@ const FormRegister = () => {
     return (
         <div className="divFormRegister">
             <ToastContainer />
-            <Title fontSize="2.2rem" margin="0 0 .5rem 0">Registrarse como {registerTo === "user" ? "usuario" : "empresa"}</Title>
+            <Title textAlign="center" fontSize={window.innerWidth <= 630 ? "2rem" : "2.2rem"} margin="0 0 .5rem 0">Registrarse como {registerTo === "user" ? "usuario" : "empresa"}</Title>
             <form className="formRegister" onSubmit={handleSubmit}>
                 <div className={registerTo === "company" ? "horizontalForm" : ""}>
                     <div className="divHalf divFirstHalf">

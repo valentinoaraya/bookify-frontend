@@ -16,7 +16,12 @@ const AppointmentsPanel: React.FC<Props> = ({ appointments }) => {
     return (
         <>
             <div className="divAppointments">
-                <Title>Turnos pendientes</Title>
+                <Title
+                    fontSize={window.innerWidth <= 530 ? "1.8rem" : ""}
+                    margin="0 0 1rem 0"
+                >
+                    Turnos pendientes
+                </Title>
                 {
                     appointments.length === 0 ?
                         <div className="noServicesAppointmentsUser">
