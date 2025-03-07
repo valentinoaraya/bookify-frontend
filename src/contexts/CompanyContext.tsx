@@ -66,8 +66,9 @@ export const CompanyContext = createContext<ContextProps>({
 
 // **Provider para envolver la app**
 export const CompanyProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+    const token = localStorage.getItem("access_token")
     const [state, dispatch] = useReducer(companyReducer, initialState);
-    const { isLoading, error, fetchData } = useFetchData(`${BACKEND_API_URL}/companies/get-company`, "GET", true)
+    const { isLoading, error, fetchData } = useFetchData(`${BACKEND_API_URL}/companies/get-company`, "GET", token)
 
     // Función para obtener datos de la empresa
     const fetchCompanyData = async () => {

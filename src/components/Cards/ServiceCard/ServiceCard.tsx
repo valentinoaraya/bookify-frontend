@@ -21,16 +21,17 @@ interface Props {
 
 const ServiceCard: React.FC<Props> = ({ id, duration, price, title, description, onDeleteService, onUpdateService, onRedirectToCalendar }) => {
 
+    const token = localStorage.getItem("access_token")
     const { isLoading, error, fetchData } = useFetchData(
         `${BACKEND_API_URL}/services/delete-service/${id}`,
         "DELETE",
-        true
+        token
     )
 
     const { isLoading: isLoadingUpdate, error: errorUpdate, fetchData: fetchDataUpdate } = useFetchData(
         `${BACKEND_API_URL}/services/edit-service/${id}`,
         "PUT",
-        true
+        token
     )
 
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false)

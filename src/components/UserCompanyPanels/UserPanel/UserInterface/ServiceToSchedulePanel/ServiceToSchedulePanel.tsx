@@ -20,11 +20,12 @@ interface Props {
 
 const ServiceToSchedulePanel: React.FC<Props> = ({ serviceToSchedule, setServiceToSchedule, setResults }) => {
 
+    const token = localStorage.getItem("access_token")
     const { state, updateAppointments } = useContext(UserContext)
     const { error, fetchData } = useFetchData(
         `${BACKEND_API_URL}/appointments/add-appointment`,
         "POST",
-        true
+        token
     )
 
     if (error) notifyError("Error al reservar turno.")

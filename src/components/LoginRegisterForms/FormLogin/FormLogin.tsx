@@ -17,8 +17,7 @@ const FormLogin = () => {
     const { dataForm, handleChange } = useDataForm({ email: "", password: "" });
     const { isLoading, error, fetchData } = useFetchData(
         `${BACKEND_API_URL}/${loginTo === "user" ? "users" : "companies"}/login`,
-        "POST",
-        true
+        "POST"
     );
 
     if (error) {
@@ -29,7 +28,10 @@ const FormLogin = () => {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         const response = await fetchData(dataForm);
-        if (response.data) navigate(loginTo === "user" ? "/user-panel" : "/company-panel");
+        if (response.data) {
+            localStorage.setItem("access_token", response.data.access_token)
+            navigate(loginTo === "user" ? "/user-panel" : "/company-panel");
+        }
         if (response.error) {
             console.error(response.error)
             notifyError(`Error: ${response.error}`)
