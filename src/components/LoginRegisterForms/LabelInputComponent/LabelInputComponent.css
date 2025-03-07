@@ -27,3 +27,15 @@
 .ant-picker {
     width: 100%;
 }
+
+@media (max-width: 930px) {
+    .divInput {
+        margin: 2rem 0;
+    }
+}
+
+@media (max-width: 630px) {
+    .divInput {
+        margin: 1rem 0;
+    }
+}

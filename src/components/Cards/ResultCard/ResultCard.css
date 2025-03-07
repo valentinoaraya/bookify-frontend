@@ -28,3 +28,67 @@
         font-weight: 700;
     }
 }
+
+@media (max-width: 930px) {
+
+    .divDataContainer {
+        margin: .2rem 0;
+    }
+
+    .divResultCard {
+        width: 200px;
+        padding: .8rem;
+    }
+
+    .titleResultCard {
+        font-size: 1.2rem;
+    }
+
+    .parrafCompanyName,
+    .parrafDataCompany {
+        font-size: .9rem;
+    }
+
+    .parrafDescription {
+        margin: 0 0 .5rem 0;
+    }
+}
+
+@media (max-width: 530px) {
+    .divResultCard {
+        width: 180px;
+        padding: .7rem;
+    }
+
+    .titleResultCard {
+        font-size: 1rem;
+    }
+
+    .parrafCompanyName,
+    .parrafDataCompany {
+        font-size: .8rem;
+    }
+
+    .parrafDescription {
+        font-size: .8rem;
+    }
+}
+
+@media (max-width: 447px) {
+    .divResultCard {
+        width: 150px;
+    }
+}
+
+@media (max-width: 387px) {
+    .divResultCard {
+        width: 140px;
+    }
+}
+
+@media (max-width: 367px) {
+    .divResultCard {
+        width: 100%;
+        padding: .7rem;
+    }
+}

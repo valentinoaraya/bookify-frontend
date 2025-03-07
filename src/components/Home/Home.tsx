@@ -7,15 +7,15 @@ import { UserIcon, CompanyIcon } from "../../common/Icons/Icons.tsx";
 const Home = () => {
     return (
         <div className="divHome">
-            <Title fontSize="6rem" margin="0 0 .5rem 0">Bookify</Title>
+            <Title fontSize={window.innerWidth <= 560 ? "4.5rem" : "6rem"} margin="0 0 .5rem 0">Bookify</Title>
             <h2>Gestioná tus turnos de manera eficiente</h2>
             <div className="divButtonsHome">
                 <Link className="linkButton" to={"/login/user"}>
                     <Button
                         iconSVG={
                             <UserIcon
-                                width="32"
-                                height="32"
+                                width={window.innerWidth <= 560 ? "24" : "36"}
+                                height={window.innerWidth <= 560 ? "24" : "36"}
                                 fill="#FFFF"
                             />
                         }
@@ -28,8 +28,8 @@ const Home = () => {
                     <Button
                         iconSVG={
                             <CompanyIcon
-                                width="32"
-                                height="32"
+                                width={window.innerWidth <= 560 ? "24" : "36"}
+                                height={window.innerWidth <= 560 ? "24" : "36"}
                                 fill="#FFFF"
                             />
                         }

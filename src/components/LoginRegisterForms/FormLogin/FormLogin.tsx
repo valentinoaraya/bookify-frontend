@@ -39,7 +39,7 @@ const FormLogin = () => {
     return (
         <div className="divFormLogin">
             <ToastContainer />
-            <Title fontSize="2.2rem" margin="0 0 .5rem 0">Iniciar sesión como {loginTo === "user" ? "usuario" : "empresa"}</Title>
+            <Title textAlign="center" fontSize={window.innerWidth <= 630 ? "2rem" : "2.2rem"} margin="0 0 .5rem 0">Iniciar sesión como {loginTo === "user" ? "usuario" : "empresa"}</Title>
             <form className="formLogin" onSubmit={handleSubmit}>
                 <LabelInputComponent
                     label="Email:"

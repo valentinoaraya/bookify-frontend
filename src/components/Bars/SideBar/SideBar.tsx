@@ -12,10 +12,13 @@ import { notifyError, notifySuccess } from "../../../utils/notifications";
 interface Props {
     data: User | Company;
     onViewChange?: (view: View) => void;
-    onBack?: () => void
+    onBack?: () => void;
+    mobile?: boolean,
+    setIsOpen?: React.Dispatch<React.SetStateAction<boolean>>
+    isOpen?: boolean;
 }
 
-const SideBar: React.FC<Props> = ({ data, onViewChange, onBack }) => {
+const SideBar: React.FC<Props> = ({ data, onViewChange, onBack, mobile, setIsOpen, isOpen }) => {
 
     const [dataSideBar, setDataSideBar] = useState<User | Company>(data)
     const [isModalOpen, setIsModalOpen] = useState(false)
@@ -54,14 +57,27 @@ const SideBar: React.FC<Props> = ({ data, onViewChange, onBack }) => {
     }
 
     return (
-        <div className="sideBar">
-            <div
-                onClick={() => {
-                    data.type === "company" ? onViewChange?.("appointments") : onBack?.()
-                }}
-            >
-                <Title cursorPointer fontSize="3.2rem">Bookify</Title>
-            </div>
+        <div className={`sideBar ${isOpen ? "open" : ""}`}>
+            {
+                mobile ?
+                    <div className="closeButton"
+                        onClick={() => setIsOpen?.(false)}
+                    >
+                        <CloseIcon
+                            width="32"
+                            height="32"
+                            fill="#457B9D"
+                        />
+                    </div>
+                    :
+                    <div
+                        onClick={() => {
+                            data.type === "company" ? onViewChange?.("appointments") : onBack?.()
+                        }}
+                    >
+                        <Title cursorPointer fontSize="3.2rem">Bookify</Title>
+                    </div>
+            }
             <div className="dataUserCompany">
                 <div className="titleContainer">
                     {
@@ -114,13 +130,15 @@ const SideBar: React.FC<Props> = ({ data, onViewChange, onBack }) => {
                 <div className="divButtonsCompany">
                     <Button
                         onSubmit={() => { onViewChange?.("appointments") }}
-                        fontWeight="700"
+                        fontWeight={window.innerWidth <= 930 ? "500" : "700"}
+                        padding={window.innerWidth <= 930 ? ".8rem" : ""}
                     >
                         Próximos turnos
                     </Button>
                     <Button
                         onSubmit={() => { onViewChange?.("services") }}
-                        fontWeight="700"
+                        fontWeight={window.innerWidth <= 930 ? "500" : "700"}
+                        padding={window.innerWidth <= 930 ? ".8rem" : ""}
                     >
                         Mis servicios
                     </Button>

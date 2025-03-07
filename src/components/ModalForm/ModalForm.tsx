@@ -39,7 +39,12 @@ const ModalForm: React.FC<Props> = ({ title, inputs, isOpen, onClose, onSubmitFo
     return (
         <div className="modalOverlay">
             <div className="modalContent">
-                <Title fontSize="2.2rem">{title}</Title>
+                <Title
+                    fontSize={window.innerWidth <= 930 ? "1.8rem" : "2.2rem"}
+                    textAlign="center"
+                >
+                    {title}
+                </Title>
                 <form
                     className="formModal"
                     onSubmit={(e) => {
@@ -70,7 +75,7 @@ const ModalForm: React.FC<Props> = ({ title, inputs, isOpen, onClose, onSubmitFo
                                 />
                             </div>
                         }
-                        <div>
+                        <div className="divInputsContainer">
                             {
                                 inputs.map(input => {
                                     return <LabelInputComponent

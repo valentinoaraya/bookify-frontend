@@ -1,10 +1,10 @@
 import "./SearchBar.css"
-import { SearchIcon } from "../../common/Icons/Icons";
+import { SearchIcon } from "../../../common/Icons/Icons";
 import { useState, useEffect } from "react";
-import { useFetchData } from "../../hooks/useFetchData";
-import { BACKEND_API_URL } from "../../config";
-import { notifyError } from "../../utils/notifications";
-import { type Service } from "../../types";
+import { useFetchData } from "../../../hooks/useFetchData";
+import { BACKEND_API_URL } from "../../../config";
+import { notifyError } from "../../../utils/notifications";
+import { type Service } from "../../../types";
 
 interface Props {
     setResults: React.Dispatch<React.SetStateAction<Service[] | null>>

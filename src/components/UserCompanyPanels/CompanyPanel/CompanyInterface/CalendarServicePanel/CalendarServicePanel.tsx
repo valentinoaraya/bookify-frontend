@@ -34,7 +34,7 @@ const CalendarServicePanel: React.FC<Props> = ({ service }) => {
 
     const arrayEvents = availableAppointments?.map(availableAppointment => {
         return {
-            title: "Disponible",
+            title: window.innerWidth <= 1150 ? "" : "Disponible",
             start: availableAppointment,
             backgroundColor: "green",
             borderColor: "green"
@@ -42,7 +42,7 @@ const CalendarServicePanel: React.FC<Props> = ({ service }) => {
     })
     const arrayEventsScheduled = service.scheduledAppointments.map(scheduledAppointment => {
         return {
-            title: "Ocupado",
+            title: window.innerWidth <= 1150 ? "" : "Ocupado",
             start: scheduledAppointment,
             backgroundColor: "red",
             borderColor: "red"
@@ -78,9 +78,24 @@ const CalendarServicePanel: React.FC<Props> = ({ service }) => {
 
     return (
         <>
-            <Title>
+            <Title
+                fontSize={window.innerWidth <= 930 ? "1.5rem" : ""}
+            >
                 Calendario para {service.title}
             </Title>
+            {
+                window.innerWidth <= 1150 &&
+                <div className="divAvailabilityIndicator">
+                    <div className="pointContainer">
+                        <div className="greenPoint point"></div>
+                        <p className="greenParraf">Disponible</p>
+                    </div>
+                    <div className="pointContainer">
+                        <div className="redPoint point"></div>
+                        <p className="redParraf">Ocupado</p>
+                    </div>
+                </div>
+            }
             <div className="calendarContainer">
                 <FullCalendar
                     plugins={[dayGridPlugin]}
@@ -118,7 +133,7 @@ const CalendarServicePanel: React.FC<Props> = ({ service }) => {
                         ...arrayEventsScheduled || []
                     ]}
                     eventClick={(info) => {
-                        if (info.event.title === "Ocupado") {
+                        if (info.event.backgroundColor === "red") {
                             notifyError("No es posible eliminar un turno asignado desde este panel.")
                         } else {
                             deleteAppointment(info.event.start as Date)

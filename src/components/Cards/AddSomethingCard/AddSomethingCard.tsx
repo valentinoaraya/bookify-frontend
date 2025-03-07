@@ -13,7 +13,6 @@ const AddSomethingCard: React.FC<Props> = ({ label, onClick }) => {
         <div
             className="divAddSomethingCard"
             onClick={onClick}
-
         >
             <PlusIcon
                 width="50"

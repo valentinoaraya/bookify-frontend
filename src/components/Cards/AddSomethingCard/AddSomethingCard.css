@@ -9,8 +9,8 @@
     min-height: 250px;
     border: 2px solid var(--azul-clarito);
     border-radius: 10px;
-    margin: 1rem 0;
     cursor: pointer;
+    text-align: center;
 }
 
 .divAddSomethingCard p {
@@ -21,4 +21,32 @@
 
 .linkAddSomething {
     text-decoration: none;
+}
+
+@media (max-width: 930px) {
+    .divAddSomethingCard {
+        width: 200px;
+    }
+}
+
+@media (max-width: 530px) {
+    .divAddSomethingCard {
+        width: 180px;
+    }
+
+    .divAddSomethingCard p {
+        font-size: 1.2rem;
+    }
+}
+
+@media (max-width: 387px) {
+    .divAddSomethingCard {
+        width: 140px;
+    }
+}
+
+@media (max-width: 367px) {
+    .divAddSomethingCard {
+        width: 100%;
+    }
 }

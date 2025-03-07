@@ -44,7 +44,10 @@ const ServicesPanel: React.FC<Props> = ({ companyServices, onDeleteService, hand
 
     return (
         <>
-            <Title fontSize="2.2rem">
+            <Title
+                margin="0 0 1rem 0"
+                fontSize={window.innerWidth <= 530 ? "1.8rem" : ""}
+            >
                 Mis servicios
             </Title>
             <div className="divListContainer">

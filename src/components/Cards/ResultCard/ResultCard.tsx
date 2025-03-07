@@ -20,7 +20,7 @@ const ResultCard: React.FC<Props> = ({
 
     return (
         <div className="divResultCard">
-            <h2>{title}</h2>
+            <h2 className="titleResultCard">{title}</h2>
             <p className="parrafCompanyName"><span>En {company.name}</span></p>
             <p className="parrafDescription">{description}</p>
             <div className="divDataContainer">
@@ -31,8 +31,8 @@ const ResultCard: React.FC<Props> = ({
             </div>
             <Button
                 onSubmit={() => setServiceToSchedule({ _id, availableAppointments, title, companyId: company._id, scheduledAppointments })}
-                fontSize="1.2rem"
-                fontWeight="700"
+                fontSize={window.innerWidth <= 930 ? "1rem" : "1.2rem"}
+                padding=".8rem"
             >
                 Ver turnos disponibles
             </Button>

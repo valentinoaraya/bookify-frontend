@@ -8,3 +8,19 @@
     width: 100%;
     padding: 2rem;
 }
+
+@media (max-width: 930px) {
+    .divInterfaceCompanyContainer {
+        flex-direction: column;
+    }
+
+    .divCompanyPanel {
+        width: auto;
+    }
+}
+
+@media (max-width: 530px) {
+    .divCompanyPanel {
+        padding: 2rem 1rem;
+    }
+}

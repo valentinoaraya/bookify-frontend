@@ -66,7 +66,7 @@ const ServiceToSchedulePanel: React.FC<Props> = ({ serviceToSchedule, setService
 
     const arrayEvents = serviceToSchedule.availableAppointments.map(date => {
         return {
-            title: "Disponible",
+            title: window.innerWidth <= 1150 ? "" : "Disponible",
             start: date,
             backgroundColor: "green",
             borderColor: "green"
@@ -74,7 +74,7 @@ const ServiceToSchedulePanel: React.FC<Props> = ({ serviceToSchedule, setService
     })
     const arrayEventsScheduled = serviceToSchedule.scheduledAppointments.map(date => {
         return {
-            title: "Ocupado",
+            title: window.innerWidth <= 1150 ? "" : "Ocupado",
             start: date,
             backgroundColor: "red",
             borderColor: "red"
@@ -83,8 +83,25 @@ const ServiceToSchedulePanel: React.FC<Props> = ({ serviceToSchedule, setService
 
     return (
         <div className="serviceToScheduleContainer">
-            <Title>Turnos disponibles para {serviceToSchedule.title}</Title>
-            <div className="calendarContainer">
+            <Title
+                fontSize={window.innerWidth <= 930 ? "1.5rem" : ""}
+            >
+                Turnos disponibles para {serviceToSchedule.title}
+            </Title>
+            {
+                window.innerWidth <= 1150 &&
+                <div className="divAvailabilityIndicator">
+                    <div className="pointContainer">
+                        <div className="greenPoint point"></div>
+                        <p className="greenParraf">Disponible</p>
+                    </div>
+                    <div className="pointContainer">
+                        <div className="redPoint point"></div>
+                        <p className="redParraf">Ocupado</p>
+                    </div>
+                </div>
+            }
+            <div className="calendarContainerUser">
                 <FullCalendar
                     plugins={[dayGridPlugin]}
                     initialView="dayGridWeek"
@@ -121,7 +138,7 @@ const ServiceToSchedulePanel: React.FC<Props> = ({ serviceToSchedule, setService
                         ...arrayEventsScheduled || []
                     ]}
                     eventClick={(info) => {
-                        if (info.event.title === "Ocupado") {
+                        if (info.event.backgroundColor === "red") {
                             notifyError("El turno seleccionado ya está ocupado.")
                         } else {
                             confirmAppointment(info.event.start as Date)
