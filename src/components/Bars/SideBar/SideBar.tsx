@@ -19,22 +19,17 @@ interface Props {
 }
 
 const SideBar: React.FC<Props> = ({ data, onViewChange, onBack, mobile, setIsOpen, isOpen }) => {
-
+    const token = localStorage.getItem("access_token")
     const [dataSideBar, setDataSideBar] = useState<User | Company>(data)
     const [isModalOpen, setIsModalOpen] = useState(false)
     const { isLoading, error, fetchData } = useFetchData(
         `${BACKEND_API_URL}/${data.type === "user" ? "users" : "companies"}/update-${data.type}`,
         "PUT",
-        true
-    )
-    const { isLoading: _isLoadingLogout, error: errorLogout, fetchData: fetchDataLogout } = useFetchData(
-        `${BACKEND_API_URL}/${data.type === "user" ? "users" : "companies"}/logout`,
-        "POST",
-        true
+        token
     )
 
-    if (error || errorLogout) {
-        console.error(error || errorLogout)
+    if (error) {
+        console.error(error)
         notifyError("Error del servidor: Inténtalo de nuevo más tarde")
     }
 
@@ -49,11 +44,8 @@ const SideBar: React.FC<Props> = ({ data, onViewChange, onBack, mobile, setIsOpe
     }
 
     const handleLogout = async () => {
-        const response = await fetchDataLogout({})
-        if (response?.data) {
-            window.location.href = "/"
-        }
-        if (response?.error) notifyError("Error al cerrar sesión")
+        localStorage.removeItem("access_token")
+        window.location.href = "/"
     }
 
     return (

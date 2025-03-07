@@ -11,7 +11,7 @@ const LabelSelectComponent: React.FC<LabelSelectComponentProps> = ({ onChange })
 
     const [provinces, setProvinces] = useState([])
     const [cities, setCities] = useState([])
-    const { fetchData, error } = useFetchData(`${PROVINCES_API_URL}/provincias?campos=id,nombre`, "GET", false)
+    const { fetchData, error } = useFetchData(`${PROVINCES_API_URL}/provincias?campos=id,nombre`, "GET")
 
     useEffect(() => {
         const getProvinces = async () => {

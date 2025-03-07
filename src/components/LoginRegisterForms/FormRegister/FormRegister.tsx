@@ -29,8 +29,7 @@ const FormRegister = () => {
     })
     const { isLoading, error, fetchData } = useFetchData(
         `${BACKEND_API_URL}/${registerTo === "user" ? "users" : "companies"}/register`,
-        "POST",
-        true
+        "POST"
     )
 
     if (error) {
@@ -42,7 +41,10 @@ const FormRegister = () => {
         e.preventDefault();
         if (dataForm.password !== dataForm.confirmPassword) return notifyError("Las contraseñas no coinciden")
         const response = await fetchData(dataForm);
-        if (response.data) navigate(registerTo === "user" ? "/user-panel" : "/company-panel")
+        if (response.data) {
+            localStorage.setItem("access_token", response.data.access_token)
+            navigate(registerTo === "user" ? "/user-panel" : "/company-panel")
+        }
         if (response.error) {
             console.error(error)
             notifyError("Error: Inténtalo de nuevo más tarde")

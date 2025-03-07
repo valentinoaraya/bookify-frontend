@@ -11,12 +11,12 @@ interface Props {
 }
 
 const SearchBar: React.FC<Props> = ({ setResults }) => {
-
+    const token = localStorage.getItem("access_token")
     const [searchTerm, setSearchTerm] = useState("")
     const { error, fetchData } = useFetchData(
         `${BACKEND_API_URL}/services/search?query=${searchTerm}`,
         "GET",
-        true
+        token
     )
 
     if (error) console.error("Error al obtener servicios")

@@ -43,8 +43,9 @@ export const UserContext = createContext<ContextProps>({
 })
 
 export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+    const token = localStorage.getItem("access_token")
     const [state, dispatch] = useReducer(userReducer, initialState)
-    const { isLoading, error, fetchData } = useFetchData(`${BACKEND_API_URL}/users/get-user`, "GET", true)
+    const { isLoading, error, fetchData } = useFetchData(`${BACKEND_API_URL}/users/get-user`, "GET", token)
 
     const fetchUserData = async () => {
         try {

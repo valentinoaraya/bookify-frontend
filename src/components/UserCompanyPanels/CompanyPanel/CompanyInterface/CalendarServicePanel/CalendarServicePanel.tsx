@@ -18,18 +18,19 @@ interface Props {
 
 const CalendarServicePanel: React.FC<Props> = ({ service }) => {
 
+    const token = localStorage.getItem("access_token")
     const { state, updateServices } = useContext(CompanyContext)
     const [availableAppointments, setAvailableAppointments] = useState<string[]>(service.availableAppointments)
     const [isModalOpen, setIsModalOpen] = useState(false)
     const { isLoading, error, fetchData } = useFetchData(
         `${BACKEND_API_URL}/services/enable-appointments/${service._id}`,
         "POST",
-        true
+        token
     )
     const { isLoading: isLoadingDelete, error: errorDelete, fetchData: fetchDataDelete } = useFetchData(
         `${BACKEND_API_URL}/services/delete-appointment/${service._id}`,
         "DELETE",
-        true
+        token
     )
 
     const arrayEvents = availableAppointments?.map(availableAppointment => {

@@ -38,11 +38,11 @@ const AppointmentCard: React.FC<Props> = ({
     state,
     onCancelAppointment
 }) => {
-
+    const token = localStorage.getItem("access_token")
     const { error, fetchData } = useFetchData(
         `${BACKEND_API_URL}/appointments/${state.type === "user" ? "cancel" : "delete"}-appointment/${_id}`,
         "DELETE",
-        true
+        token
     )
 
     if (error) notifyError("Error al cancelar turno. Inténtalo de nuevo más tarde.")
