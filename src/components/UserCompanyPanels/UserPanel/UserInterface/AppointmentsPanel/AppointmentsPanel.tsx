@@ -28,7 +28,7 @@ const AppointmentsPanel: React.FC<Props> = ({ appointments }) => {
                             <h3>No tienes turnos agendados</h3>
                         </div>
                         :
-                        <div className="divListContainer">
+                        <div className={appointments.length === 1 ? "oneCard" : "divListContainer"}>
                             {
                                 appointments.map((appointment) => {
                                     return <AppointmentCard

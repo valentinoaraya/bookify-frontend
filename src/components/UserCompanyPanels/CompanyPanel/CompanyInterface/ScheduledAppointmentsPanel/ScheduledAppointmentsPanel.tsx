@@ -40,7 +40,7 @@ const ScheduledAppointmentsPanel: React.FC<Props> = ({ scheduledAppointments }) 
                         <h3>No tienes turnos agendados</h3>
                     </div>
                     :
-                    <div className="divListContainer">
+                    <div className={scheduledAppointments.length === 1 ? "oneCard" : "divListContainer"}>
                         {
                             scheduledAppointments.map((appointment) => {
                                 return <AppointmentCard

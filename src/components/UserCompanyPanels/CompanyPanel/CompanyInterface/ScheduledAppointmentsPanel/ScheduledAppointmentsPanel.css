@@ -3,27 +3,57 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    text-align: center;
 }
 
 .noServicesAppointments h3 {
-    font-size: 2rem;
+    font-size: 1.5rem;
 }
 
 .divListContainer {
-    display: flex;
-    gap: 2rem;
-    flex-wrap: wrap;
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(4, 1fr);
+}
+
+.oneCard {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(4, 1fr);
+}
+
+@media (max-width: 1200px) {
+
+    .oneCard {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .divListContainer {
+        grid-template-columns: repeat(3, 1fr);
+    }
 }
 
 @media (max-width: 930px) {
+
+    .oneCard {
+        grid-template-columns: repeat(1, 1fr);
+    }
+
     .divListContainer {
-        gap: 1rem;
+        grid-template-columns: repeat(2, 1fr);
     }
 }
 
 @media (max-width: 530px) {
-    .divListContainer {
-        justify-content: center;
+
+    .divListContainer,
+    .oneCard {
         gap: .7rem;
+    }
+}
+
+@media (max-width: 370px) {
+    .divListContainer {
+        grid-template-columns: repeat(1, 1fr);
     }
 }
