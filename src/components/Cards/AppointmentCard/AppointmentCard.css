@@ -1,5 +1,4 @@
 .appointmentCard {
-    width: 250px;
     padding: 1rem;
     border: 2px solid var(--azul-clarito);
     border-radius: 10px;
@@ -22,7 +21,6 @@
 
 @media (max-width: 930px) {
     .appointmentCard {
-        width: 200px;
         padding: .8rem;
     }
 
@@ -41,7 +39,6 @@
 
 @media (max-width: 530px) {
     .appointmentCard {
-        width: 180px;
         padding: .7rem;
     }
 
@@ -51,24 +48,5 @@
 
     .parrafAppointment {
         font-size: .8rem;
-    }
-}
-
-@media (max-width: 447px) {
-    .appointmentCard {
-        width: 150px;
-    }
-}
-
-@media (max-width: 387px) {
-    .appointmentCard {
-        width: 140px;
-    }
-}
-
-@media (max-width: 367px) {
-    .appointmentCard {
-        width: 100%;
-        padding: .7rem;
     }
 }

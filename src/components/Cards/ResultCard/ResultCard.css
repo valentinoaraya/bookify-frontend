@@ -3,7 +3,6 @@
     padding: 1rem;
     border: 2px solid var(--azul-clarito);
     border-radius: 10px;
-    width: 250px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -36,7 +35,6 @@
     }
 
     .divResultCard {
-        width: 200px;
         padding: .8rem;
     }
 
@@ -56,7 +54,6 @@
 
 @media (max-width: 530px) {
     .divResultCard {
-        width: 180px;
         padding: .7rem;
     }
 
@@ -71,24 +68,5 @@
 
     .parrafDescription {
         font-size: .8rem;
-    }
-}
-
-@media (max-width: 447px) {
-    .divResultCard {
-        width: 150px;
-    }
-}
-
-@media (max-width: 387px) {
-    .divResultCard {
-        width: 140px;
-    }
-}
-
-@media (max-width: 367px) {
-    .divResultCard {
-        width: 100%;
-        padding: .7rem;
     }
 }

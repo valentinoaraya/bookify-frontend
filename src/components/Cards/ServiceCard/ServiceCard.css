@@ -1,5 +1,4 @@
 .serviceCard {
-    width: 250px;
     padding: 1rem;
     border: 2px solid var(--azul-clarito);
     border-radius: 10px;
@@ -18,7 +17,6 @@
 
 @media (max-width: 930px) {
     .serviceCard {
-        width: 200px;
         padding: .8rem;
     }
 
@@ -37,7 +35,6 @@
 
 @media (max-width: 530px) {
     .serviceCard {
-        width: 180px;
         padding: .7rem;
     }
 
@@ -47,24 +44,5 @@
 
     .parrafService {
         font-size: .8rem;
-    }
-}
-
-@media (max-width: 447px) {
-    .serviceCard {
-        width: 150px;
-    }
-}
-
-@media (max-width: 387px) {
-    .serviceCard {
-        width: 140px;
-    }
-}
-
-@media (max-width: 367px) {
-    .serviceCard {
-        width: 100%;
-        padding: .7rem;
     }
 }

@@ -7,7 +7,7 @@ import { useDataForm } from "../../hooks/useDataForm";
 import { Input } from "../../types";
 import { DayPicker } from "react-day-picker";
 import { es } from "react-day-picker/locale";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { notifyError } from "../../utils/notifications";
 
 interface Props {
@@ -26,15 +26,25 @@ interface Props {
 
 const ModalForm: React.FC<Props> = ({ title, inputs, isOpen, onClose, onSubmitForm, disabledButtons, initialData, dayPicker, horizontalForm }) => {
 
-    if (!isOpen) return null
-
     const { dataForm, handleChange, deleteData } = useDataForm(initialData)
     const [selectedDays, setSelectedDays] = useState<Date[] | undefined>()
+
+    useEffect(() => {
+        if (isOpen) {
+            document.body.classList.add("modal-open")
+        } else {
+            document.body.classList.remove("modal-open")
+        }
+
+        return () => document.body.classList.remove("modal-open")
+    }, [isOpen])
 
     const handleCloseForm = () => {
         deleteData()
         onClose()
     }
+
+    if (!isOpen) return null
 
     return (
         <div className="modalOverlay">
