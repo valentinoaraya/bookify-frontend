@@ -23,6 +23,7 @@ const LabelInputComponent: React.FC<LabelInputComponentProps> = ({ label, type, 
                     colorTextPlaceholder: "grey",
                     colorIcon: "grey",
                     borderRadius: 10,
+                    fontSize: 16,
                 },
             }}
 

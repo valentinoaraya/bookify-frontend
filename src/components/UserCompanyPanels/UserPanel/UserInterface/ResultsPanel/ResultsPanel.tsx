@@ -17,7 +17,7 @@ const ResultsPanel: React.FC<Props> = ({ results, setServiceToSchedule }) => {
                         <h3>No se encontraron resultados</h3>
                     </div>
                     :
-                    <div className="resultCardsContainer divListContainer">
+                    <div className={`resultCardsContainer ${results?.length === 1 ? "oneCard" : "divListContainer"}`}>
                         {
                             results?.map(service => {
                                 return <ResultCard
