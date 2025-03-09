@@ -42,6 +42,10 @@
     color: red;
 }
 
+.fc .fc-col-header-cell-cushion {
+    color: black;
+}
+
 @media (max-width: 530px) {
 
     .serviceToScheduleContainer {
