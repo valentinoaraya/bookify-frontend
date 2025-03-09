@@ -32,6 +32,7 @@ const initialState: Company = {
     phone: "",
     services: [],
     scheduledAppointments: [],
+    connectedWithMP: false
 };
 
 // Reducer para manejar las actualizaciones de estado
