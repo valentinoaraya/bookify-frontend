@@ -25,7 +25,6 @@ const LabelSelectComponent: React.FC<LabelSelectComponentProps> = ({ onChange })
 
     const handleChangePronvince = async (e: React.ChangeEvent<HTMLSelectElement>) => {
         try {
-            console.log(e.target.value)
             if (!e.target.value) return
             const data = await fetch(`${PROVINCES_API_URL}/departamentos?provincia=${e.target.value}&max=100&campos=id,nombre`)
             const resopnse = await data.json()

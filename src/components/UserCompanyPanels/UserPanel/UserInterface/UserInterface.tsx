@@ -52,7 +52,6 @@ const UserInterface: React.FC<Props> = ({ user }) => {
                         <ServiceToSchedulePanel
                             serviceToSchedule={serviceToSchedule}
                             setServiceToSchedule={setServiceToSchedule}
-                            setResults={setResults}
                         />
                         :
                         <>

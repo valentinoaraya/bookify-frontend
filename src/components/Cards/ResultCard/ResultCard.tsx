@@ -30,7 +30,7 @@ const ResultCard: React.FC<Props> = ({
                 <p className="parrafDataCompany"><span>Precio: </span> ${price}</p>
             </div>
             <Button
-                onSubmit={() => setServiceToSchedule({ _id, availableAppointments, title, companyId: company._id, scheduledAppointments })}
+                onSubmit={() => setServiceToSchedule({ _id, availableAppointments, title, companyId: company._id, scheduledAppointments, price })}
                 fontSize={window.innerWidth <= 930 ? "1rem" : "1.2rem"}
                 padding=".8rem"
             >
