@@ -59,7 +59,10 @@ const CalendarServicePanel: React.FC<Props> = ({ service }) => {
             updateServices(state.services.map(service => service._id === serviceUpdated._id ? serviceUpdated : service))
             notifySuccess("Turnos habilitados correctamente.")
         }
-        if (response.error) notifyError("Error al habilitar los turnos.")
+        if (response.error) {
+            console.error(response.error)
+            notifyError("Error al habilitar los turnos.")
+        }
 
     }
 

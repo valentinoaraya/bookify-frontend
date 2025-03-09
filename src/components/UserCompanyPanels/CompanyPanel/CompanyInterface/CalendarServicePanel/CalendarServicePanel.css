@@ -16,6 +16,10 @@
     user-select: none;
 }
 
+.fc .fc-col-header-cell-cushion {
+    color: black;
+}
+
 @media (max-width: 530px) {
 
     .fc th {
