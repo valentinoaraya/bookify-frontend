@@ -12,7 +12,7 @@ export interface Service extends ServiceBasicInfo {
     scheduledAppointments: string[]
 }
 
-export type ServiceToSchedule = Omit<Service, "description" | "duration" | "price">
+export type ServiceToSchedule = Omit<Service, "description" | "duration">
 
 export interface CompanyBasicInfo {
     _id: string
@@ -28,6 +28,7 @@ export interface Company extends CompanyBasicInfo {
     phone: string
     services: Service[]
     scheduledAppointments: Appointment[]
+    connectedWithMP: boolean
 }
 
 export interface Appointment {

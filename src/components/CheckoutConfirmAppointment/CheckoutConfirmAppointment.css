@@ -1,0 +1,44 @@
+.checkoutContainer {
+    margin: 1rem;
+    max-width: 600px;
+}
+
+.divDataCheckout {
+    margin-bottom: 1rem;
+
+    ul {
+        margin-left: 1rem;
+    }
+}
+
+.divExplicationCheckout {
+    margin: 2rem 0;
+}
+
+.explicationCheckout {
+    margin-top: 1rem;
+    font-size: 1.2rem;
+}
+
+.parrafDataCheckout {
+    margin-top: .5rem;
+    font-size: 1.2rem;
+
+    span {
+        font-weight: 800;
+    }
+}
+
+.divWait {
+    margin-top: 2rem;
+}
+
+@media (max-width: 530px) {
+    .explicationCheckout {
+        font-size: 1rem;
+    }
+
+    .parrafDataCheckout {
+        font-size: 1rem;
+    }
+}

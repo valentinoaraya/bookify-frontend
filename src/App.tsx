@@ -5,8 +5,10 @@ import FormLogin from './components/LoginRegisterForms/FormLogin/FormLogin.tsx'
 import FormRegister from './components/LoginRegisterForms/FormRegister/FormRegister.tsx'
 import UserPanel from './components/UserCompanyPanels/UserPanel/UserPanel.tsx'
 import CompanyPanel from './components/UserCompanyPanels/CompanyPanel/CompanyPanel.tsx'
+import CheckoutConfirmAppointment from './components/CheckoutConfirmAppointment/CheckoutConfirmAppointment.tsx'
 import { CompanyProvider } from './contexts/CompanyContext.tsx'
 import { UserProvider } from './contexts/UserContext.tsx'
+
 
 function App() {
 
@@ -27,6 +29,9 @@ function App() {
               <CompanyProvider>
                 <CompanyPanel />
               </CompanyProvider>
+            } />
+            <Route path='/checkout' element={
+              <CheckoutConfirmAppointment />
             } />
           </Routes>
         </main>
