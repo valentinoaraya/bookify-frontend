@@ -4,7 +4,7 @@
 }
 
 .divDataCheckout {
-    margin-bottom: 1rem;
+    margin: 1rem 0 2rem 0;
 
     ul {
         margin-left: 1rem;
@@ -27,10 +27,6 @@
     span {
         font-weight: 800;
     }
-}
-
-.divWait {
-    margin-top: 2rem;
 }
 
 @media (max-width: 530px) {
