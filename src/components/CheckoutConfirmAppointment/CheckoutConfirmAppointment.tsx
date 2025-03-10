@@ -1,25 +1,18 @@
 import "./CheckoutConfirmAppointment.css"
 import { useLocation } from "react-router-dom";
 import Title from "../../common/Title/Title";
-import { useEffect, useState } from "react";
-import { initMercadoPago, Wallet } from "@mercadopago/sdk-react";
-import { BACKEND_API_URL, PUBLIC_KEY_MP } from "../../config";
+import { BACKEND_API_URL } from "../../config";
 import { useFetchData } from "../../hooks/useFetchData";
 import { notifyError } from "../../utils/notifications";
 import { ToastContainer } from "react-toastify";
+import Button from "../../common/Button/Button";
 
 const CheckoutConfirmAppointment = () => {
-
-    initMercadoPago(PUBLIC_KEY_MP, {
-        locale: 'es-AR'
-    })
 
     const token = localStorage.getItem("access_token")
     const location = useLocation()
     const { date, service } = location.state
-    const [preferenceId, setPreferenceId] = useState<string | null>(null)
-    const [isWalletLoading, setIsWalletLoading] = useState(true)
-    const { isLoading, error, fetchData } = useFetchData(`${BACKEND_API_URL}/mercadopago/create-preference`,
+    const { isLoading, error, fetchData } = useFetchData(`${BACKEND_API_URL}/mercadopago/create-preference/${service.companyId}`,
         "POST",
         token
     )
@@ -28,27 +21,20 @@ const CheckoutConfirmAppointment = () => {
 
     if (error) notifyError("Error del servidor. Inténtelo de nuevo más tarde.")
 
-    useEffect(() => {
 
-        const handleBuy = async () => {
-            const response = await fetchData({
-                serviceId: service.serviceId,
-                title: `Seña de turno para ${service.title}`,
-                price: service.price * 0.5,
-            })
+    const handleBuy = async () => {
+        const response = await fetchData({
+            serviceId: service.serviceId,
+            title: `Seña de turno para ${service.title}`,
+            price: service.price * 0.5,
+        })
 
-            if (response.data) setPreferenceId(response.data)
-            if (response.error) {
-                console.error(response.error)
-                notifyError("Error al generar el pago.")
-            }
+        if (response.init_point) window.location.href = response.init_point
+        if (response.error) {
+            console.error(response.error)
+            notifyError("Error al generar el pago.")
         }
-
-        handleBuy()
-
-    }, [])
-
-    if (isLoading) return <h2>Cargando...</h2>
+    }
 
     return (
         <div className="checkoutContainer">
@@ -65,25 +51,12 @@ const CheckoutConfirmAppointment = () => {
                     <li><p className="parrafDataCheckout"><span>Precio de la seña:</span> $ {service.price * 0.5}</p></li>
                 </ul>
             </div>
-            {
-                isWalletLoading &&
-                <div className="divWait">
-                    <h3>Aguarde a que se muestre el botón de Mercado Pago...</h3>
-                </div>
-            }
-            {
-                preferenceId &&
-                <Wallet
-                    onReady={() => setIsWalletLoading(false)}
-                    initialization={{
-                        preferenceId: preferenceId,
-                        redirectMode: "self"
-                    }}
-                    customization={{
-                        valueProp: "smart_option"
-                    }}
-                />
-            }
+            <Button
+                onSubmit={handleBuy}
+                disabled={isLoading}
+            >
+                Pagar seña con Mercado Pago
+            </Button>
         </div>
     );
 }

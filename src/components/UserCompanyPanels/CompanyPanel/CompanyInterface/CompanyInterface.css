@@ -9,6 +9,23 @@
     padding: 2rem;
 }
 
+.divGenerateURL {
+    font-size: 1rem;
+    display: flex;
+    margin-bottom: 1rem;
+    align-items: center;
+}
+
+.parrafVinculate span {
+    font-weight: 800;
+    color: var(--azul-clarito);
+}
+
+.buttonLink {
+    margin-left: .5rem;
+    padding: .2rem;
+}
+
 @media (max-width: 930px) {
     .divInterfaceCompanyContainer {
         flex-direction: column;
@@ -22,5 +39,10 @@
 @media (max-width: 530px) {
     .divCompanyPanel {
         padding: 2rem 1rem;
+    }
+
+    .parrafVinculate {
+        width: 50%;
+        font-size: .8rem;
     }
 }

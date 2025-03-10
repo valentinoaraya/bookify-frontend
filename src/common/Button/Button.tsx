@@ -10,16 +10,18 @@ interface Props {
     fontSize?: string;
     padding?: string;
     fontWeight?: string;
+    width?: string;
+    margin?: string;
 }
 
-const Button: React.FC<Props> = ({ children, iconSVG, onSubmit, type, disabled, fontSize, padding, fontWeight }) => {
+const Button: React.FC<Props> = ({ children, iconSVG, onSubmit, type, disabled, fontSize, padding, fontWeight, width, margin }) => {
     return (
         <button
             className="button"
             onClick={onSubmit}
             type={type}
             disabled={disabled}
-            style={{ fontSize: fontSize, padding: padding, fontWeight: fontWeight }}
+            style={{ fontSize: fontSize, padding: padding, fontWeight: fontWeight, width: width, margin: margin }}
         >
             <p>{disabled ? "Cargando..." : children}</p>
             {
