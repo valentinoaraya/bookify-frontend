@@ -21,12 +21,13 @@ const CheckoutConfirmAppointment = () => {
 
     if (error) notifyError("Error del servidor. Inténtelo de nuevo más tarde.")
 
-
     const handleBuy = async () => {
         const response = await fetchData({
             serviceId: service.serviceId,
             title: `Seña de turno para ${service.title}`,
             price: service.price * 0.5,
+            date: date,
+            companyId: service.copmanyId
         })
 
         if (response.init_point) window.location.href = response.init_point
