@@ -26,8 +26,7 @@ const CheckoutConfirmAppointment = () => {
             serviceId: service.serviceId,
             title: `Seña de turno para ${service.title}`,
             price: service.price * 0.5,
-            date: date,
-            companyId: service.copmanyId
+            date: date
         })
 
         if (response.init_point) window.location.href = response.init_point
