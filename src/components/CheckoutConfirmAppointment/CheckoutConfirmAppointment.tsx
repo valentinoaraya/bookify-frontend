@@ -1,13 +1,17 @@
 import "./CheckoutConfirmAppointment.css"
 import { useLocation } from "react-router-dom";
 import Title from "../../common/Title/Title";
-import { BACKEND_API_URL } from "../../config";
+import { BACKEND_API_URL, PUBLIC_KEY_MP } from "../../config";
 import { useFetchData } from "../../hooks/useFetchData";
 import { notifyError } from "../../utils/notifications";
 import { ToastContainer } from "react-toastify";
 import Button from "../../common/Button/Button";
+import { initMercadoPago } from "@mercadopago/sdk-react";
 
 const CheckoutConfirmAppointment = () => {
+
+    // Inicio Mercado Pago para subir puntos en la integración
+    initMercadoPago(PUBLIC_KEY_MP)
 
     const token = localStorage.getItem("access_token")
     const location = useLocation()
