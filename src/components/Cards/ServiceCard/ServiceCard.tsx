@@ -14,12 +14,14 @@ interface Props {
     price: number
     title: string
     description: string
+    signPrice: number
+    connectedWithMP: boolean
     onDeleteService: (id: string, scheduledAppointmentsToDelete: string[]) => void
     onUpdateService: (data: { [key: string]: any }) => void
     onRedirectToCalendar: (id: string, view: View) => void
 }
 
-const ServiceCard: React.FC<Props> = ({ id, duration, price, title, description, onDeleteService, onUpdateService, onRedirectToCalendar }) => {
+const ServiceCard: React.FC<Props> = ({ id, duration, price, title, description, signPrice, connectedWithMP, onDeleteService, onUpdateService, onRedirectToCalendar }) => {
 
     const token = localStorage.getItem("access_token")
     const { isLoading, error, fetchData } = useFetchData(
@@ -76,6 +78,7 @@ const ServiceCard: React.FC<Props> = ({ id, duration, price, title, description,
             <div className="dataService">
                 <p className="parrafService"><span>Duración:</span> {duration} mins</p>
                 <p className="parrafService"><span>Precio:</span> ${price}</p>
+                {signPrice !== 0 ? <p className="parrafService"><span>Precio de la seña:</span> ${signPrice}</p> : <p className="parrafService"><span>Sin seña</span></p>}
                 <p className="parrafService">{description}</p>
             </div>
             <div className="divButtons">
@@ -111,9 +114,13 @@ const ServiceCard: React.FC<Props> = ({ id, duration, price, title, description,
                     { type: "text", name: "title", placeholder: "Título", label: "Título" },
                     { type: "text", name: "description", placeholder: "Descripción", label: "Descripción" },
                     { type: "number", name: "price", placeholder: "Precio", label: "Precio" },
-                    { type: "number", name: "duration", placeholder: "Duración", label: "Duración (en minutos)" }
+                    { type: "number", name: "duration", placeholder: "Duración", label: "Duración (en minutos)" },
+                    connectedWithMP ?
+                        { type: "number", name: "signPrice", placeholder: "Precio de la seña", label: "Precio de la seña (Si no quieres cobrar señas para tus turnos deja '0')" }
+                        :
+                        { type: "none", name: "notConnectedWithMP", placeholder: "No puede cobrar señas", label: "Si quiere cobrar señas, vincule su cuenta de Mercado Pago." }
                 ]}
-                initialData={{ title, description, price, duration }}
+                initialData={{ title, description, price, duration, signPrice }}
                 onClose={() => setIsModalOpen(false)}
                 onSubmitForm={(data) => updateService(data)}
                 disabledButtons={isLoading}

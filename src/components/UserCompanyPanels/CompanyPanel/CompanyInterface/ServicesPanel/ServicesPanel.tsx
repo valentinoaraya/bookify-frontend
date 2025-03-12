@@ -12,11 +12,12 @@ import { CompanyContext } from "../../../../../contexts/CompanyContext";
 
 interface Props {
     companyServices: Service[]
+    connectedWithMP: boolean
     onDeleteService: (id: string, scheduledAppointmentsToDelete: string[]) => void
     handleChangeToCalendar: (id: string, view: View) => void
 }
 
-const ServicesPanel: React.FC<Props> = ({ companyServices, onDeleteService, handleChangeToCalendar }) => {
+const ServicesPanel: React.FC<Props> = ({ companyServices, connectedWithMP, onDeleteService, handleChangeToCalendar }) => {
 
     const token = localStorage.getItem("access_token")
     const { updateServices } = useContext(CompanyContext)
@@ -67,6 +68,8 @@ const ServicesPanel: React.FC<Props> = ({ companyServices, onDeleteService, hand
                                     duration={service.duration}
                                     price={service.price}
                                     description={service.description}
+                                    signPrice={service.signPrice}
+                                    connectedWithMP={connectedWithMP}
                                     onDeleteService={onDeleteService}
                                     onUpdateService={(data) => onUpdateService(data)}
                                     onRedirectToCalendar={(id: string, view: View) => handleChangeToCalendar(id, view)}
@@ -87,9 +90,14 @@ const ServicesPanel: React.FC<Props> = ({ companyServices, onDeleteService, hand
                     { type: "text", name: "title", placeholder: "Título", label: "Título" },
                     { type: "text", name: "description", placeholder: "Descripción", label: "Descripción" },
                     { type: "number", name: "price", placeholder: "Precio", label: "Precio" },
-                    { type: "number", name: "duration", placeholder: "Duración", label: "Duración (en minutos)" }
+                    { type: "number", name: "duration", placeholder: "Duración", label: "Duración (en minutos)" },
+                    connectedWithMP ?
+                        { type: "number", name: "signPrice", placeholder: "Precio de la seña", label: "Precio de la seña (Si no quieres cobrar señas para tus turnos deja '0')" }
+                        :
+                        { type: "none", name: "notConnectedWithMP", placeholder: "No puede cobrar señas", label: "Si quiere cobrar señas, vincule su cuenta de Mercado Pago." }
+
                 ]}
-                initialData={{ title: "", description: "", price: 0, duration: 0 }}
+                initialData={{ title: "", description: "", price: 0, duration: 0, signPrice: 0 }}
                 onClose={() => setIsModalOpen(false)}
                 onSubmitForm={(data) => handleAddService(data)}
                 disabledButtons={isLoading}

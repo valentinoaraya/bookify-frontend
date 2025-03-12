@@ -1,6 +1,6 @@
 import "./ServiceToSchedulePanel.css"
 import Button from "../../../../../common/Button/Button";
-import { type ServiceToSchedule } from "../../../../../types";
+import { type Service, type ServiceToSchedule } from "../../../../../types";
 import Title from "../../../../../common/Title/Title";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid"
@@ -8,21 +8,28 @@ import { notifyError } from "../../../../../utils/notifications";
 import { confirmDelete } from "../../../../../utils/alerts";
 import { parseDateToString } from "../../../../../utils/parseDateToString";
 import { useNavigate } from "react-router-dom";
+import { BACKEND_API_URL } from "../../../../../config";
+import { useContext } from "react";
+import { UserContext } from "../../../../../contexts/UserContext";
+import { useFetchData } from "../../../../../hooks/useFetchData";
 
 interface Props {
     serviceToSchedule: ServiceToSchedule;
     setServiceToSchedule: React.Dispatch<React.SetStateAction<ServiceToSchedule | null>>;
+    setResults: React.Dispatch<React.SetStateAction<Service[] | null>>;
 }
 
-const ServiceToSchedulePanel: React.FC<Props> = ({ serviceToSchedule, setServiceToSchedule }) => {
+const ServiceToSchedulePanel: React.FC<Props> = ({ serviceToSchedule, setServiceToSchedule, setResults }) => {
 
-    // const { error, fetchData } = useFetchData(
-    //     `${BACKEND_API_URL}/appointments/add-appointment`,
-    //     "POST",
-    //     token
-    // )
+    const { updateAppointments, state } = useContext(UserContext)
+    const token = localStorage.getItem("access_token")
+    const { error, fetchData } = useFetchData(
+        `${BACKEND_API_URL}/appointments/add-appointment`,
+        "POST",
+        token
+    )
 
-    // if (error) notifyError("Error al reservar turno.")
+    if (error) notifyError("Error al reservar turno.")
     const navigate = useNavigate()
 
     const confirmAppointment = async (date: Date) => {
@@ -31,12 +38,13 @@ const ServiceToSchedulePanel: React.FC<Props> = ({ serviceToSchedule, setService
 
         const decisionConfirmed = await confirmDelete({
             question: `¿Desea reservar un turno para ${serviceToSchedule.title} el día ${stringDate} a las ${time} hs?`,
-            mesasge: `Al aceptar, serás redirigido al Checkout donde realizarás el pago de la seña que requiere la empresa para confirmar el turno.`,
+            mesasge: serviceToSchedule.signPrice !== 0 ? `Al aceptar, serás redirigido al Checkout donde realizarás el pago de la seña que requiere la empresa para confirmar el turno.` : "",
             confirmButtonText: "Aceptar",
             cancelButtonText: "Cancelar",
             cancelButton: true
         })
-        if (decisionConfirmed) {
+
+        if (decisionConfirmed && serviceToSchedule.signPrice !== 0) {
 
             navigate("/checkout", {
                 state: {
@@ -44,32 +52,35 @@ const ServiceToSchedulePanel: React.FC<Props> = ({ serviceToSchedule, setService
                     service: {
                         serviceId: serviceToSchedule._id,
                         title: serviceToSchedule.title,
-                        price: serviceToSchedule.price, // Cambiar por porcentaje o por cantidad neta elegida por la empresa
-                        companyId: serviceToSchedule.companyId
+                        signPrice: serviceToSchedule.signPrice,
+                        companyId: serviceToSchedule.companyId,
+                        totalPrice: serviceToSchedule.price
                     }
                 }
             })
 
-            // const response = await fetchData({
-            //     date: `${stringDate} ${time}`,
-            //     serviceId: serviceToSchedule._id,
-            //     companyId: serviceToSchedule.companyId
-            // })
+        } else if (decisionConfirmed && serviceToSchedule.signPrice === 0) {
+            const response = await fetchData({
+                date: `${stringDate} ${time}`,
+                serviceId: serviceToSchedule._id,
+                companyId: serviceToSchedule.companyId
+            })
 
-            // if (response.data) {
-            //     updateAppointments([...state.appointments, response.data])
-            //     const confirm = await confirmDelete({
-            //         icon: "success",
-            //         question: `Turno confirmado correctamente.`,
-            //         confirmButtonText: "Aceptar",
-            //         cancelButton: false
-            //     })
-            //     if (confirm) {
-            //         setServiceToSchedule(null)
-            //         setResults(null)
-            //     }
-            // }
-            // if (response.error) notifyError("Error al confirmar turno. Inténtelo de nuevo más tarde.")
+            if (response.data) {
+                updateAppointments([...state.appointments, response.data])
+                const confirm = await confirmDelete({
+                    icon: "success",
+                    question: `Turno confirmado correctamente.`,
+                    confirmButtonText: "Aceptar",
+                    cancelButton: false
+                })
+                if (confirm) {
+                    setServiceToSchedule(null)
+                    setResults(null)
+                }
+            }
+            if (response.error) notifyError("Error al confirmar turno. Inténtelo de nuevo más tarde.")
+
         }
     }
 

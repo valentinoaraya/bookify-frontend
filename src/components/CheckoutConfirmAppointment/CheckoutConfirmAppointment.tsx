@@ -25,7 +25,7 @@ const CheckoutConfirmAppointment = () => {
         const response = await fetchData({
             serviceId: service.serviceId,
             title: `Seña de turno para ${service.title}`,
-            price: service.price * 0.5,
+            price: service.signPrice,
             date: date
         })
 
@@ -47,8 +47,8 @@ const CheckoutConfirmAppointment = () => {
                 </div>
                 <ul>
                     <li><p className="parrafDataCheckout"><span>Fecha del turno:</span> {date} hs</p></li>
-                    <li><p className="parrafDataCheckout"><span>Precio total del turno:</span> $ {service.price}</p></li>
-                    <li><p className="parrafDataCheckout"><span>Precio de la seña:</span> $ {service.price * 0.5}</p></li>
+                    <li><p className="parrafDataCheckout"><span>Precio total del turno:</span> ${service.totalPrice}</p></li>
+                    <li><p className="parrafDataCheckout"><span>Precio de la seña:</span> ${service.signPrice}</p></li>
                 </ul>
             </div>
             <Button

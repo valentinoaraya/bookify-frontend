@@ -102,14 +102,19 @@ const LabelInputComponent: React.FC<LabelInputComponentProps> = ({ label, type, 
 
                                     </select>
                                     :
-                                    <input
-                                        type={type}
-                                        name={name}
-                                        required={required}
-                                        onChange={onChange}
-                                        value={value}
-                                        placeholder={placeholder}
-                                    />
+                                    <>
+                                        {
+                                            type !== "none" &&
+                                            <input
+                                                type={type}
+                                                name={name}
+                                                required={required}
+                                                onChange={onChange}
+                                                value={value}
+                                                placeholder={placeholder}
+                                            />
+                                        }
+                                    </>
                             }
                         </>
                 }

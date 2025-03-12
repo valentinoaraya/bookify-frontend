@@ -102,6 +102,7 @@ const CompanyInterface: React.FC<Props> = ({ company }) => {
                                     />
                                     :
                                     <ServicesPanel
+                                        connectedWithMP={company.connectedWithMP}
                                         companyServices={company.services}
                                         onDeleteService={onDeleteService}
                                         handleChangeToCalendar={handleChangeToCalendar}

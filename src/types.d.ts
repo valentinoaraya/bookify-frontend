@@ -10,6 +10,7 @@ export interface Service extends ServiceBasicInfo {
     companyId: string
     availableAppointments: string[]
     scheduledAppointments: string[]
+    signPrice: number
 }
 
 export type ServiceToSchedule = Omit<Service, "description" | "duration">

@@ -50,6 +50,7 @@ const UserInterface: React.FC<Props> = ({ user }) => {
                 {
                     serviceToSchedule ?
                         <ServiceToSchedulePanel
+                            setResults={setResults}
                             serviceToSchedule={serviceToSchedule}
                             setServiceToSchedule={setServiceToSchedule}
                         />
