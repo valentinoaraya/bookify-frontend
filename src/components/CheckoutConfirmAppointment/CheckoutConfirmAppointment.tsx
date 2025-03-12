@@ -46,7 +46,7 @@ const CheckoutConfirmAppointment = () => {
             <Title fontSize={window.innerWidth <= 530 ? "1.5rem" : "2rem"} >Pagar seña para el turno de {service.title}</Title>
             <div className="divDataCheckout">
                 <div className="divExplicationCheckout">
-                    <p className="explicationCheckout">Hola, para confirmar el turno debes abonar una seña que cobra la empresa que ofrece el servicio.</p>
+                    <p className="explicationCheckout">Hola, para confirmar el turno debes abonar la seña que cobra la empresa que ofrece el servicio.</p>
                     <p className="explicationCheckout">Al abonar mediante Mercado Pago, el turno será agendado automáticamente.</p>
                 </div>
                 <ul>
