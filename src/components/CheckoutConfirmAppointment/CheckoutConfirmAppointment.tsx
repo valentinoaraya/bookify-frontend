@@ -7,6 +7,7 @@ import { notifyError } from "../../utils/notifications";
 import { ToastContainer } from "react-toastify";
 import Button from "../../common/Button/Button";
 import { initMercadoPago } from "@mercadopago/sdk-react";
+import { formatDate } from "../../utils/formatDate";
 
 const CheckoutConfirmAppointment = () => {
 
@@ -22,6 +23,8 @@ const CheckoutConfirmAppointment = () => {
     )
 
     if (!date || !service) return <h2>Checkout no disponible.</h2>
+    const hour = date.split(" ")[1]
+    const formattedDate = formatDate(date.split(" ")[0])
 
     if (error) notifyError("Error del servidor. Inténtelo de nuevo más tarde.")
 
@@ -50,7 +53,7 @@ const CheckoutConfirmAppointment = () => {
                     <p className="explicationCheckout">Al abonar mediante Mercado Pago, el turno será agendado automáticamente.</p>
                 </div>
                 <ul>
-                    <li><p className="parrafDataCheckout"><span>Fecha del turno:</span> {date} hs</p></li>
+                    <li><p className="parrafDataCheckout"><span>Fecha del turno:</span> {formattedDate} {hour} hs</p></li>
                     <li><p className="parrafDataCheckout"><span>Precio total del turno:</span> ${service.totalPrice}</p></li>
                     <li><p className="parrafDataCheckout"><span>Precio de la seña:</span> ${service.signPrice}</p></li>
                 </ul>

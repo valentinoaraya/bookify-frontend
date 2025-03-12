@@ -12,6 +12,7 @@ import { BACKEND_API_URL } from "../../../../../config";
 import { useContext } from "react";
 import { UserContext } from "../../../../../contexts/UserContext";
 import { useFetchData } from "../../../../../hooks/useFetchData";
+import { formatDate } from "../../../../../utils/formatDate";
 
 interface Props {
     serviceToSchedule: ServiceToSchedule;
@@ -35,9 +36,10 @@ const ServiceToSchedulePanel: React.FC<Props> = ({ serviceToSchedule, setService
     const confirmAppointment = async (date: Date) => {
 
         const { stringDate, time } = parseDateToString(date)
+        const formattedDate = formatDate(stringDate)
 
         const decisionConfirmed = await confirmDelete({
-            question: `¿Desea reservar un turno para ${serviceToSchedule.title} el día ${stringDate} a las ${time} hs?`,
+            question: `¿Desea reservar un turno para ${serviceToSchedule.title} el día ${formattedDate} a las ${time} hs?`,
             mesasge: serviceToSchedule.signPrice !== 0 ? `Al aceptar, serás redirigido al Checkout donde realizarás el pago de la seña que requiere la empresa para confirmar el turno.` : "",
             confirmButtonText: "Aceptar",
             cancelButtonText: "Cancelar",

@@ -6,6 +6,7 @@ import { useFetchData } from "../../../hooks/useFetchData";
 import { BACKEND_API_URL } from "../../../config";
 import { notifyError, notifySuccess } from "../../../utils/notifications";
 import { type User, type Appointment, type Company } from "../../../types";
+import { formatDate } from "../../../utils/formatDate";
 
 interface Props {
     _id: string;
@@ -48,6 +49,7 @@ const AppointmentCard: React.FC<Props> = ({
     if (error) notifyError("Error al cancelar turno. Inténtalo de nuevo más tarde.")
 
     const { stringDate, time } = parseDateToString(date)
+    const formattedDate = formatDate(stringDate)
     const handleCancelAppointment = async () => {
         const confirm = await confirmDelete({
             question: "¿Seguro que desea cancelar el turno?",
@@ -92,7 +94,7 @@ const AppointmentCard: React.FC<Props> = ({
                         <p className="parrafAppointment"><span>Precio:</span> ${servicePrice}</p>
                     </>
                 }
-                <p className="parrafAppointment"><span>Fecha:</span> {stringDate}</p>
+                <p className="parrafAppointment"><span>Fecha:</span> {formattedDate}</p>
                 <p className="parrafAppointment"><span>Horario:</span> {time} hs</p>
             </div>
             <Button
