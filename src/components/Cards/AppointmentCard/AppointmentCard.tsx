@@ -1,4 +1,4 @@
-import "./AppointmentCard.css"
+import "./AppointmentCard.css";
 import Button from "../../../common/Button/Button";
 import { parseDateToString } from "../../../utils/parseDateToString";
 import { confirmDelete } from "../../../utils/alerts";
@@ -21,7 +21,7 @@ interface Props {
     clientEmail?: string;
     clientPhone?: string;
     state: User | Company;
-    onCancelAppointment: (appointments: Appointment[], appointmentToDelete: string, serviceId: string) => void
+    onCancelAppointment: (appointments: Appointment[], appointmentToDelete: string, serviceId: string) => void;
 }
 
 const AppointmentCard: React.FC<Props> = ({
