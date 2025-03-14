@@ -13,6 +13,7 @@ import { NewWindowIcon } from "../../../../common/Icons/Icons";
 import { useFetchData } from "../../../../hooks/useFetchData";
 import { BACKEND_API_URL } from "../../../../config";
 import { notifyError } from "../../../../utils/notifications";
+import { confirmDelete } from "../../../../utils/alerts";
 
 interface Props {
     company: Company
@@ -34,9 +35,19 @@ const CompanyInterface: React.FC<Props> = ({ company }) => {
     if (error) notifyError("Error en el servidor. Inténtalo de nuevo más tarde.")
 
     const vinculateMP = async () => {
-        const response = await fetchData(null)
-        if (response.url) window.location.href = response.url
-        if (response.error) notifyError("Error al obtener URL.")
+        const confirm = await confirmDelete({
+            question: "Al vincular con Mercado Pago...",
+            mesasge: "Al vincular con Mercado Pago podrás cobrar señas a tus clientes directamente en tu cuenta de Mercado Pago.",
+            cancelButton: true,
+            confirmButtonText: "Aceptar",
+            cancelButtonText: "Cancelar"
+        })
+
+        if (confirm) {
+            const response = await fetchData(null)
+            if (response.url) window.location.href = response.url
+            if (response.error) notifyError("Error al obtener URL.")
+        }
     }
 
     const onDeleteService = (id: string, scheduledAppointmentsToDelete: string[]) => {
