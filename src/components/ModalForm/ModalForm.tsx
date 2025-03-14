@@ -78,6 +78,7 @@ const ModalForm: React.FC<Props> = ({ title, inputs, isOpen, onClose, onSubmitFo
                             dayPicker &&
                             <div className="dayPickerContainer">
                                 <DayPicker
+                                    disabled={{ before: new Date() }}
                                     mode="multiple"
                                     selected={selectedDays}
                                     onSelect={setSelectedDays}
