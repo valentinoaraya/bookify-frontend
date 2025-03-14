@@ -54,8 +54,9 @@ const CalendarServicePanel: React.FC<Props> = ({ service }) => {
         const response = await fetchData(data)
         setIsModalOpen(false)
         if (response.data) {
-            const serviceUpdated = { ...service, availableAppointments: response.data }
-            setAvailableAppointments(response.data)
+            const serviceUpdated = { ...service, availableAppointments: [...availableAppointments, ...response.data] }
+            console.log(serviceUpdated)
+            setAvailableAppointments(serviceUpdated.availableAppointments)
             updateServices(state.services.map(service => service._id === serviceUpdated._id ? serviceUpdated : service))
             notifySuccess("Turnos habilitados correctamente.")
         }

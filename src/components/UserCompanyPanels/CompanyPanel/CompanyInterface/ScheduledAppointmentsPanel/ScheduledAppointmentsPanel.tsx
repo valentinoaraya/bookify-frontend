@@ -4,6 +4,7 @@ import { type Appointment } from "../../../../../types";
 import AppointmentCard from "../../../../Cards/AppointmentCard/AppointmentCard";
 import { useContext } from "react";
 import { CompanyContext } from "../../../../../contexts/CompanyContext";
+import moment from "moment";
 
 interface Props {
     scheduledAppointments: Appointment[]
@@ -12,6 +13,8 @@ interface Props {
 const ScheduledAppointmentsPanel: React.FC<Props> = ({ scheduledAppointments }) => {
 
     const { state, updateAppointments, updateServices } = useContext(CompanyContext)
+
+    const sortedAppointments = scheduledAppointments.sort((a, b) => moment(a.date, "YYYY-MM-DD HH:mm").valueOf() - moment(b.date, "YYYY-MM-DD HH:mm").valueOf())
 
     const onCancelAppointment = (appointments: Appointment[], dateAppointment: string, serviceId: string) => {
         updateAppointments(appointments)
@@ -35,14 +38,14 @@ const ScheduledAppointmentsPanel: React.FC<Props> = ({ scheduledAppointments }) 
                 Próximos turnos
             </Title>
             {
-                scheduledAppointments.length === 0 ?
+                sortedAppointments.length === 0 ?
                     <div className="noServicesAppointments">
                         <h3>No tienes turnos agendados</h3>
                     </div>
                     :
-                    <div className={scheduledAppointments.length === 1 ? "oneCard" : "divListContainer"}>
+                    <div className={sortedAppointments.length === 1 ? "oneCard" : "divListContainer"}>
                         {
-                            scheduledAppointments.map((appointment) => {
+                            sortedAppointments.map((appointment) => {
                                 return <AppointmentCard
                                     _id={appointment._id}
                                     key={appointment._id}
