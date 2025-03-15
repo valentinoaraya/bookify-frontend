@@ -46,8 +46,11 @@ const FormRegister = () => {
             navigate(registerTo === "user" ? "/user-panel" : "/company-panel")
         }
         if (response.error) {
-            console.error(error)
-            notifyError("Error: Inténtalo de nuevo más tarde")
+            if (response.error === "Ya existe una cuenta con este email.") {
+                notifyError('Ya existe una cuenta con este email.')
+            } else {
+                notifyError("Error: Inténtalo de nuevo más tarde")
+            }
         }
     }
 
