@@ -70,6 +70,9 @@ const AppointmentCard: React.FC<Props> = ({
                 )
                 notifySuccess("Turno cancelado con éxito.")
             }
+            if (response.error) {
+                notifyError(response.error)
+            }
         }
     }
 
