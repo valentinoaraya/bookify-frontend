@@ -46,11 +46,18 @@ const CheckoutConfirmAppointment = () => {
     return (
         <div className="checkoutContainer">
             <ToastContainer />
-            <Title fontSize={window.innerWidth <= 530 ? "1.5rem" : "2rem"} >Pagar seña para el turno de {service.title}</Title>
+            <Title
+                fontSize={window.innerWidth <= 530 ? "1.5rem" : "2rem"}
+                textAlign="center"
+            >
+                Pagar seña para el turno de {service.title}
+            </Title>
             <div className="divDataCheckout">
                 <div className="divExplicationCheckout">
                     <p className="explicationCheckout">Hola, para confirmar el turno debes abonar la seña que cobra la empresa que ofrece el servicio.</p>
                     <p className="explicationCheckout">Al abonar mediante Mercado Pago, el turno será agendado automáticamente.</p>
+                    <p className="explicationCheckout">En caso de que la empresa cancele el turno, se te devolverá la totalidad del dinero. En caso de que tú canceles el turno, se te devolverá un 50% del dinero abonado.</p>
+                    <p className="explicationCheckout">Ten en cuenta que solo puedes cancelar el turno con más de 24 horas de anticipación.</p>
                 </div>
                 <ul>
                     <li><p className="parrafDataCheckout"><span>Fecha del turno:</span> {formattedDate} {hour} hs</p></li>

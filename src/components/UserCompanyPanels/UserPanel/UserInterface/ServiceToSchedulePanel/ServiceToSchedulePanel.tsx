@@ -40,7 +40,7 @@ const ServiceToSchedulePanel: React.FC<Props> = ({ serviceToSchedule, setService
 
         const decisionConfirmed = await confirmDelete({
             question: `¿Desea reservar un turno para ${serviceToSchedule.title} el día ${formattedDate} a las ${time} hs?`,
-            mesasge: serviceToSchedule.signPrice !== 0 ? `Al aceptar, serás redirigido al Checkout donde realizarás el pago de la seña que requiere la empresa para confirmar el turno.` : "",
+            mesasge: serviceToSchedule.signPrice !== 0 ? `Al aceptar, serás redirigido al Checkout donde realizarás el pago de la seña que requiere la empresa para confirmar el turno. Solo podrás cancelar el turno con más de 24 horas de anticipación y se te devolverá un 50% del dinero abonado.` : "Solo podrás cancelar el turno con más de 24 horas de anticipación.",
             confirmButtonText: "Aceptar",
             cancelButtonText: "Cancelar",
             cancelButton: true
