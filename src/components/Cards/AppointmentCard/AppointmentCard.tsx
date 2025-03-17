@@ -53,7 +53,7 @@ const AppointmentCard: React.FC<Props> = ({
     const handleCancelAppointment = async () => {
         const confirm = await confirmDelete({
             question: "¿Seguro que desea cancelar el turno?",
-            mesasge: "Si pagaste una seña para este turno, se te devolverá el 50% de la misma.",
+            mesasge: client ? "Si cobraste una seña por este turno, se le devolverá el dinero al cliente." : "Si pagaste una seña para este turno, se te devolverá el 50% del dinero.",
             icon: "warning",
             cancelButton: true,
             cancelButtonText: "Cancelar",
