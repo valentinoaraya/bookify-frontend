@@ -54,6 +54,8 @@ const FormRegister = () => {
         }
     }
 
+    if (registerTo === "company") return <h2>No estás autorizado a registrar empresas.</h2>
+
     return (
         <div className="divFormRegister">
             <ToastContainer />

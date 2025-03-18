@@ -175,7 +175,7 @@ const SideBar: React.FC<Props> = ({ data, onViewChange, onBack, mobile, setIsOpe
                             { type: "text", name: "name", placeholder: "Nombre", label: "Nombre" },
                             { type: "text", name: "phone", placeholder: "Teléfono", label: "Teléfono" },
                             { type: "email", name: "email", placeholder: "Email", label: "Email" },
-                            { type: "text", name: "city", placeholder: "Ciudad", label: "Ciudadd" },
+                            { type: "text", name: "city", placeholder: "Ciudad", label: "Ciudad" },
                             { type: "text", name: "street", placeholder: "Calle", label: "Calle" },
                             { type: "number", name: "number", placeholder: "Número", label: "Número" }
                         ]
