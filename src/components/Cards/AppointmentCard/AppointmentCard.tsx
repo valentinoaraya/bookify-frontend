@@ -7,13 +7,14 @@ import { BACKEND_API_URL } from "../../../config";
 import { notifyError, notifySuccess } from "../../../utils/notifications";
 import { type User, type Appointment, type Company } from "../../../types";
 import { formatDate } from "../../../utils/formatDate";
+import { NewWindowIcon } from "../../../common/Icons/Icons";
 
 interface Props {
     _id: string;
     title: string;
     date: string;
     serviceId: string;
-    company?: string;
+    company?: Company;
     companyLocation?: string;
     servicePrice?: number;
     serviceDuration?: number;
@@ -80,7 +81,7 @@ const AppointmentCard: React.FC<Props> = ({
     return (
         <div className="appointmentCard">
             <h2 className="titleService">{title}</h2>
-            {company && <p className="parrafAppointment"><span>En {company}</span></p>}
+            {company && <p className="parrafAppointment"><span>En {company.name}</span></p>}
             <div className="divDataContainer">
                 {
                     client &&
@@ -101,10 +102,30 @@ const AppointmentCard: React.FC<Props> = ({
                 <p className="parrafAppointment"><span>Fecha:</span> {formattedDate}</p>
                 <p className="parrafAppointment"><span>Horario:</span> {time} hs</p>
             </div>
+            {
+                company &&
+                <Button
+                    iconSVG={
+                        <NewWindowIcon
+                            width="14px"
+                            height="14px"
+                            fill="white"
+                        />
+                    }
+                    fontSize={window.innerWidth <= 930 ? "1rem" : "1.2rem"}
+                    onSubmit={() => {
+                        window.open(`https://www.google.com/maps/search/?api=1&query=${company?.street}+${company?.number}+${company?.city}`, '_blank')
+                    }}
+                    padding=".8rem"
+                >
+                    Ver ubicación
+                </Button>
+            }
             <Button
                 onSubmit={handleCancelAppointment}
                 fontSize={window.innerWidth <= 930 ? "1rem" : "1.2rem"}
                 padding=".8rem"
+                margin=".5rem 0 0 0"
             >
                 Cancelar turno
             </Button>

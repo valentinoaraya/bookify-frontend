@@ -38,7 +38,7 @@ const AppointmentsPanel: React.FC<Props> = ({ appointments }) => {
                                         state={state}
                                         onCancelAppointment={updateAppointments}
                                         title={appointment.serviceId.title}
-                                        company={appointment.companyId?.name}
+                                        company={appointment.companyId}
                                         companyLocation={`${appointment.companyId?.city} - ${appointment.companyId?.street} ${appointment.companyId?.number}`}
                                         serviceDuration={appointment.serviceId.duration}
                                         servicePrice={appointment.serviceId.price}
