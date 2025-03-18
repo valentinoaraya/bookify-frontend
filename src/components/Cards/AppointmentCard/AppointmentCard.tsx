@@ -114,7 +114,8 @@ const AppointmentCard: React.FC<Props> = ({
                     }
                     fontSize={window.innerWidth <= 930 ? "1rem" : "1.2rem"}
                     onSubmit={() => {
-                        window.open(`https://www.google.com/maps/search/?api=1&query=${company?.street}+${company?.number}+${company?.city}`, '_blank')
+                        const location = `${company.street} ${company.number} ${company.city}`.replace(/ /g, "+")
+                        window.open(`https://www.google.com/maps/search/?api=1&query=${location}`, '_blank')
                     }}
                     padding=".8rem"
                 >
