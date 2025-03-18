@@ -63,12 +63,15 @@ const FormLogin = () => {
                 >
                     Iniciar sesión
                 </Button>
-                <div className="divLinkForm">
-                    <p className="pDescriptionForm">¿No tienes cuenta?</p>
-                    <Link className="linkForm" to={"/register/" + loginTo}>
-                        <p>Regístrate ahora.</p>
-                    </Link>
-                </div>
+                {
+                    loginTo !== "company" &&
+                    <div className="divLinkForm">
+                        <p className="pDescriptionForm">¿No tienes cuenta?</p>
+                        <Link className="linkForm" to={"/register/" + loginTo}>
+                            <p>Regístrate ahora.</p>
+                        </Link>
+                    </div>
+                }
             </form>
         </div>
     );
