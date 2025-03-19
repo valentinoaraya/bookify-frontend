@@ -66,6 +66,7 @@ const ModalForm: React.FC<Props> = ({ title, inputs, isOpen, onClose, onSubmitFo
                                 const newDataForm = { ...dataForm, days: selectedDays }
                                 onSubmitForm(newDataForm)
                                 deleteData()
+                                setSelectedDays(undefined)
                             }
                         } else {
                             onSubmitForm(dataForm)
