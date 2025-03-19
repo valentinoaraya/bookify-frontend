@@ -1,6 +1,7 @@
 import "./ResultCard.css"
 import { type Company, type ServiceToSchedule } from "../../../types";
 import Button from "../../../common/Button/Button";
+import { NewWindowIcon } from "../../../common/Icons/Icons";
 
 interface Props {
     _id: string;
@@ -33,10 +34,28 @@ const ResultCard: React.FC<Props> = ({
             </div>
             <Button
                 onSubmit={() => setServiceToSchedule({ _id, availableAppointments, title, companyId: company._id, scheduledAppointments, price, signPrice })}
-                fontSize={window.innerWidth <= 930 ? "1rem" : "1.2rem"}
+                fontSize='1rem'
                 padding=".8rem"
+                margin=".5rem 0 0 0"
             >
                 Ver turnos disponibles
+            </Button>
+            <Button
+                fontSize='1rem'
+                padding=".8rem"
+                onSubmit={() => {
+                    const location = `${company.street} ${company.number} ${company.city}`.replace(/ /g, "+")
+                    window.open(`https://www.google.com/maps/search/?api=1&query=${location}`, '_blank')
+                }}
+                iconSVG={
+                    <NewWindowIcon
+                        width="14px"
+                        height="14px"
+                        fill="white"
+                    />
+                }
+            >
+                Ver ubicación
             </Button>
         </div>
     );
