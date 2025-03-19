@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 interface DataForm {
     [key: string]: string | number;
@@ -6,6 +6,10 @@ interface DataForm {
 
 export const useDataForm = (initialState: DataForm) => {
     const [dataForm, setDataForm] = useState(initialState);
+
+    useEffect(() => {
+        setDataForm(initialState)
+    }, [JSON.stringify(initialState)])
 
     const deleteData = () => {
         setDataForm(initialState)
