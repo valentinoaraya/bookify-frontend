@@ -1,50 +1,30 @@
-# React + TypeScript + Vite
+# 📘 Bookify - Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Descripción del Proyecto
+Bookify es una plataforma que permite a los usuarios reservar turnos en diversas empresas y a los administradores gestionar dichos turnos de manera eficiente. Este repositorio contiene el frontend de la aplicación, desarrollado con React y TypeScript.
 
-Currently, two official plugins are available:
+## Tecnologías Utilizadas
+- **React** - Biblioteca de JavaScript para construir interfaces de usuario.
+- **TypeScript** - Superset de JavaScript con tipado estático.
+- **Vite** - Herramienta para el desarrollo rápido de aplicaciones React.
+- **React Router** - Manejo de rutas dentro de la aplicación.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Funcionalidades Principales
+- Registro e inicio de sesión de usuarios.
+- Vista de turnos disponibles en empresas registradas.
+- Creación, modificación y cancelación de turnos.
+- Panel de administrador para gestionar turnos y usuarios.
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
-
-- Configure the top-level `parserOptions` property like this:
-
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+## Cómo Correr el Proyecto
+```sh
+npm install  # Instala las dependencias
+npm run dev  # Inicia el servidor de desarrollo
 ```
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+## Contribución
+Si deseas contribuir a *Bookify*, puedes enviar un pull request con tus mejoras o reportar issues en el repositorio.
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
+---
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+🔥 **Bookify** - Tu plataforma de reservas de confianza.
+
