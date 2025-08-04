@@ -1,7 +1,7 @@
 :root {
   --blanco: #ffffff;
-  --azul-clarito: #457B9D;
-  --azul-oscuro: #1D3557;
+  --azul-clarito: rgb(239 68 68);
+  --azul-oscuro: rgb(185 28 28);
   --gris-claro: #FBFBFB;
 }
 

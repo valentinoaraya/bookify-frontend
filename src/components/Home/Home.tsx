@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import "./Home.css"
 import Button from "../../common/Button/Button.tsx";
 import Title from "../../common/Title/Title.tsx";
-import { UserIcon, CompanyIcon } from "../../common/Icons/Icons.tsx";
+import { CompanyIcon } from "../../common/Icons/Icons.tsx";
 
 const Home = () => {
     return (
@@ -10,19 +10,6 @@ const Home = () => {
             <Title fontSize={window.innerWidth <= 560 ? "4.5rem" : "6rem"} margin="0 0 .5rem 0">Bookify</Title>
             <h2>Gestioná tus turnos de manera eficiente</h2>
             <div className="divButtonsHome">
-                <Link className="linkButton" to={"/login/user"}>
-                    <Button
-                        iconSVG={
-                            <UserIcon
-                                width={window.innerWidth <= 560 ? "24" : "36"}
-                                height={window.innerWidth <= 560 ? "24" : "36"}
-                                fill="#FFFF"
-                            />
-                        }
-                    >
-                        Ingresar como usuario
-                    </Button>
-                </Link>
                 <p className="pDescription">Para reservar turnos.</p>
                 <Link className="linkButton" to={"/login/company"}>
                     <Button
