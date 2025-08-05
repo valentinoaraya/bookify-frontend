@@ -2,7 +2,7 @@ import { type Company, type User, type View } from "../../../types";
 import "./SideBar.css"
 import Title from "../../../common/Title/Title";
 import Button from "../../../common/Button/Button";
-import { UserIcon, CompanyIcon, PencilIcon, CloseIcon } from "../../../common/Icons/Icons";
+import { CompanyIcon, PencilIcon, CloseIcon } from "../../../common/Icons/Icons";
 import ModalForm from "../../ModalForm/ModalForm";
 import { useState } from "react";
 import { useFetchData } from "../../../hooks/useFetchData";
@@ -73,18 +73,12 @@ const SideBar: React.FC<Props> = ({ data, onViewChange, onBack, mobile, setIsOpe
             <div className="dataUserCompany">
                 <div className="titleContainer">
                     {
-                        dataSideBar.type === "user" ?
-                            <UserIcon
-                                width="32"
-                                height="32"
-                                fill="#457B9D"
-                            />
-                            :
-                            <CompanyIcon
-                                width="32"
-                                height="32"
-                                fill="#457B9D"
-                            />
+
+                        <CompanyIcon
+                            width="32"
+                            height="32"
+                            fill="#457B9D"
+                        />
                     }
                     <Title fontSize="1.5rem">
                         {dataSideBar.type === "user" ? "Mis datos:" : "Mi empresa:"}
