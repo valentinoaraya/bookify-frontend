@@ -1,7 +1,7 @@
 :root {
   --blanco: #ffffff;
-  --azul-clarito: #457B9D;
-  --azul-oscuro: #1D3557;
+  --azul-clarito: #1282A2;
+  --azul-oscuro: #0A4A5A;
   --gris-claro: #FBFBFB;
 }
 
@@ -10,7 +10,7 @@ html {
 }
 
 body {
-  background-color: var(--blanco);
+  background-color: #F5F5F5;
 }
 
 input,

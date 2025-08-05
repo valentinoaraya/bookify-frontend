@@ -18,7 +18,7 @@
     padding: .5rem;
     border-radius: 10px;
     border: 1px solid grey;
-    background-color: white;
+    background-color: #F5F5F5;
 }
 
 @media (max-width: 930px) {
