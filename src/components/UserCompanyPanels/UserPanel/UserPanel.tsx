@@ -10,6 +10,8 @@ const UserPanel = () => {
     if (error) console.error(error)
     if (isLoading) return <h2>Cargando...</h2>
 
+    console.log(state)
+
     return (
         <>
             {
@@ -17,7 +19,7 @@ const UserPanel = () => {
                     <h2>Usuario no encontrado</h2>
                     :
                     <UserInterface
-                        user={state}
+                        company={state}
                     />
             }
         </>

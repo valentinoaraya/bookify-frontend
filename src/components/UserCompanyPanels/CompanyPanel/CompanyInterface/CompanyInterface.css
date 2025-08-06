@@ -2,17 +2,32 @@
     width: 100%;
     min-height: 100vh;
     display: flex;
+    flex-direction: column;
+}
+
+.divCompanyPanelContainer {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
 }
 
 .divCompanyPanel {
+    padding: 0 2rem;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    max-width: 1500px;
+    gap: 2rem;
     width: 100%;
-    padding: 2rem;
 }
 
 .divGenerateURL {
+    margin-top: 2rem;
     font-size: 1rem;
     display: flex;
-    margin-bottom: 1rem;
+    flex-direction: column;
     align-items: center;
 }
 
@@ -24,6 +39,97 @@
 .buttonLink {
     margin-left: .5rem;
     padding: .2rem;
+}
+
+.dataCompanyPanel {
+    margin-top: 2rem;
+    padding: 2rem;
+    border-radius: 10px;
+    background-color: var(--blanco);
+    box-shadow: 0px 0px 5px 0px grey;
+    width: 400px;
+    height: fit-content;
+}
+
+.h2TitleCompanyPanel {
+    margin-bottom: 2rem;
+}
+
+.parrafData {
+    margin: 1rem 0;
+    font-size: 1rem;
+    display: flex;
+    flex-direction: column;
+
+    span {
+        font-weight: bold;
+    }
+}
+
+.divSectionAndButtonsContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    width: 100%;
+}
+
+.divButtonsContainer {
+    background-color: white;
+    border-radius: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 2rem;
+    gap: 1rem;
+    padding: .3rem;
+    border: 1px solid rgb(192, 192, 192);
+}
+
+.buttonSection {
+    padding: .8rem 1.8rem;
+    width: 100%;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 1.3rem;
+    cursor: pointer;
+    border: none;
+    color: var(--azul-oscuro);
+    background-color: var(--blanco);
+}
+
+.active {
+    border: 2px solid var(--azul-clarito);
+    background-color: var(--azul-clarito);
+    color: var(--blanco);
+    box-shadow: 0px 0px 3px 0px grey;
+}
+
+.divSectionContainer {
+    padding: 2rem;
+    border-radius: 10px;
+    background-color: var(--blanco);
+    border: 2px solid var(--azul-clarito);
+}
+
+.divIconParrafContainer {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: .5rem;
+    cursor: pointer;
+}
+
+.parrafConfig {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--azul-oscuro);
+}
+
+.configurationsContainer {
+    display: flex;
+    gap: 1rem;
+    flex-direction: column;
+    margin-top: 2rem;
 }
 
 @media (max-width: 930px) {

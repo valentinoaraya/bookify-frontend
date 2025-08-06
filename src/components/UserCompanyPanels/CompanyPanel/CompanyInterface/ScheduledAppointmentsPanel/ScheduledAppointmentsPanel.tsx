@@ -33,9 +33,9 @@ const ScheduledAppointmentsPanel: React.FC<Props> = ({ scheduledAppointments }) 
         <>
             <Title
                 fontSize={window.innerWidth <= 530 ? "1.8rem" : ""}
-                margin="0 0 1rem 0"
+                margin="0 0 2rem 0"
             >
-                Próximos turnos
+                Turnos pendientes
             </Title>
             {
                 sortedAppointments.length === 0 ?

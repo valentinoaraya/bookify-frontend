@@ -50,7 +50,7 @@ export interface User {
     appointments: Appointment[]
 }
 
-export type View = "appointments" | "services" | "calendar"
+export type View = "appointments" | "services" | "calendar" | "mi-empresa"
 
 export interface Input {
     type: string;

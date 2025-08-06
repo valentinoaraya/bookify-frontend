@@ -33,20 +33,9 @@ const SideBar: React.FC<Props> = ({ data, onViewChange, onBack, mobile, setIsOpe
         notifyError("Error del servidor: Inténtalo de nuevo más tarde")
     }
 
-    const updateData = async (data: { [key: string]: any }) => {
-        const response = await fetchData(data)
-        setIsModalOpen(false)
-        if (response?.data) {
-            setDataSideBar(response.data)
-            notifySuccess("Datos actualizados")
-        }
-        if (response?.error) notifyError("Error al actualizar los datos")
-    }
 
-    const handleLogout = async () => {
-        localStorage.removeItem("access_token")
-        window.location.href = "/"
-    }
+
+
 
     return (
         <div className={`sideBar ${isOpen ? "open" : ""}`}>
@@ -144,7 +133,6 @@ const SideBar: React.FC<Props> = ({ data, onViewChange, onBack, mobile, setIsOpe
                 </div>
                 <div
                     className="divIconParrafContainer"
-                    onClick={handleLogout}
                 >
                     <CloseIcon
                         width="16"
@@ -195,7 +183,7 @@ const SideBar: React.FC<Props> = ({ data, onViewChange, onBack, mobile, setIsOpe
                 isOpen={isModalOpen}
                 disabledButtons={isLoading}
                 onClose={() => setIsModalOpen(false)}
-                onSubmitForm={(data) => updateData(data)}
+                onSubmitForm={(data) => { }}
             />
         </div>
     );

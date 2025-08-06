@@ -20,7 +20,7 @@ function App() {
             <Route path='/' element={<Home />} />
             <Route path='/login/:loginTo' element={<FormLogin />} />
             <Route path='/register/:registerTo' element={<FormRegister />} />
-            <Route path='/user-panel' element={
+            <Route path='/company/:company_id' element={
               <UserProvider>
                 <UserPanel />
               </UserProvider>
