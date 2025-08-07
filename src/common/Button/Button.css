@@ -10,7 +10,7 @@
     color: var(--blanco);
     background: linear-gradient(to right, var(--azul-clarito), var(--azul-oscuro));
     border: none;
-    border-radius: 10px;
+    border-radius: 8px;
     cursor: pointer;
     transition: all .1s ease;
     margin-bottom: .4rem;

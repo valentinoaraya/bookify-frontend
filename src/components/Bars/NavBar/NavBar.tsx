@@ -6,7 +6,6 @@ const NavBar = () => {
         <div className="navBar">
             <div className="navBarContent">
                 <Title cursorPointer >Panel de administración</Title>
-                <p className="parrafNavbar">Gestioná tus turnos de manera eficiente</p>
             </div>
         </div>
     );

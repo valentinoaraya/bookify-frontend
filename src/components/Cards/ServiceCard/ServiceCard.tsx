@@ -7,6 +7,7 @@ import { confirmDelete } from "../../../utils/alerts"
 import ModalForm from "../../ModalForm/ModalForm"
 import { useState } from "react"
 import { View } from "../../../types"
+import { ClockIcon } from "../../../common/Icons/Icons"
 
 interface Props {
     id: string
@@ -64,6 +65,7 @@ const ServiceCard: React.FC<Props> = ({ id, duration, price, title, description,
 
     const updateService = async (data: { [key: string]: any }) => {
         const response = await fetchDataUpdate(data)
+        console.log(response.data)
         setIsModalOpen(false)
         if (response?.data) {
             onUpdateService(response.data)
@@ -76,10 +78,19 @@ const ServiceCard: React.FC<Props> = ({ id, duration, price, title, description,
         <div className="serviceCard">
             <h2 className="titleService">{title}</h2>
             <div className="dataService">
-                <p className="parrafService"><span>Duración:</span> {duration} mins</p>
-                <p className="parrafService"><span>Precio:</span> ${price}</p>
-                {signPrice !== 0 ? <p className="parrafService"><span>Precio de la seña:</span> ${signPrice}</p> : <p className="parrafService"><span>Sin seña</span></p>}
                 <p className="parrafService">{description}</p>
+                {signPrice !== 0 ? <p className="parrafService"><span>Precio de la seña:</span> $ {signPrice}</p> : <p className="parrafService"><span>Sin seña</span></p>}
+                <div className="durationPriceContainer">
+                    <div className="divDuration">
+                        <ClockIcon
+                            width="18px"
+                            height="18px"
+                            fill="grey"
+                        />
+                        <p className="parrafDuration">{duration} min</p>
+                    </div>
+                    <p className="parrafPrice"><span className="spanPrice">$</span> {price}</p>
+                </div>
             </div>
             <div className="divButtons">
                 <Button

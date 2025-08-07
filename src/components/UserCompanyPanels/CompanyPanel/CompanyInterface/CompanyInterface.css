@@ -73,13 +73,34 @@
     width: 100%;
 }
 
+.divQuantityAppointmentsContainer {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.divQuantityAppointments {
+    display: flex;
+    gap: 1.5rem;
+    align-items: center;
+    border-radius: 10px;
+    background-color: var(--blanco);
+    padding: 2rem;
+    box-shadow: 0px 0px 5px 0px grey;
+    width: 100%;
+
+    h2 {
+        margin-bottom: .5rem;
+        font-size: 2rem;
+    }
+}
+
 .divButtonsContainer {
     background-color: white;
     border-radius: 10px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-top: 2rem;
     gap: 1rem;
     padding: .3rem;
     border: 1px solid rgb(192, 192, 192);
@@ -105,10 +126,11 @@
 }
 
 .divSectionContainer {
+    margin-bottom: 2rem;
     padding: 2rem;
     border-radius: 10px;
     background-color: var(--blanco);
-    border: 2px solid var(--azul-clarito);
+    box-shadow: 0px 0px 5px 0px grey;
 }
 
 .divIconParrafContainer {

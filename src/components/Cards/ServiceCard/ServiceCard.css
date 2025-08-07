@@ -1,6 +1,7 @@
 .serviceCard {
     padding: 1rem;
-    border: 2px solid var(--azul-clarito);
+    border: 1px solid var(--azul-clarito);
+    box-shadow: 0 0 3px 0 grey;
     border-radius: 10px;
     display: flex;
     flex-direction: column;
@@ -13,6 +14,50 @@
 
 .parrafService span {
     font-weight: bold;
+}
+
+.servicesPanelHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.plusButton {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: white;
+    margin-right: 0.8rem;
+}
+
+.durationPriceContainer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: .8rem;
+}
+
+.divDuration {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.parrafDuration {
+    font-size: 1rem;
+    color: grey;
+    font-weight: 500;
+}
+
+.parrafPrice {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--azul-clarito);
+}
+
+.spanPrice {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--azul-clarito);
 }
 
 @media (max-width: 930px) {

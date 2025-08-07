@@ -6,18 +6,14 @@ import ScheduledAppointmentsPanel from "./ScheduledAppointmentsPanel/ScheduledAp
 import CalendarServicePanel from "./CalendarServicePanel/CalendarServicePanel";
 import { CompanyContext } from "../../../../contexts/CompanyContext";
 import { ToastContainer } from "react-toastify";
-import NavBar from "../../../Bars/NavBar/NavBar";
 import Button from "../../../../common/Button/Button";
-import { NewWindowIcon } from "../../../../common/Icons/Icons";
+import { NewWindowIcon, PencilIcon, CloseIcon, CalendarCheckIcon, ClockIcon, UsersIcon } from "../../../../common/Icons/Icons";
 import { useFetchData } from "../../../../hooks/useFetchData";
 import { BACKEND_API_URL } from "../../../../config";
 import { notifyError } from "../../../../utils/notifications";
 import { confirmDelete } from "../../../../utils/alerts";
 import ModalForm from "../../../ModalForm/ModalForm";
 import { notifySuccess } from "../../../../utils/notifications";
-import { PencilIcon } from "../../../../common/Icons/Icons";
-import { CloseIcon } from "../../../../common/Icons/Icons";
-
 
 interface Props {
     company: Company
@@ -45,12 +41,11 @@ const CompanyInterface: React.FC<Props> = ({ company }) => {
     if (error) notifyError("Error en el servidor. Inténtalo de nuevo más tarde.")
     if (errorUpdate) notifyError("Error al actualizar los datos. Inténtalo de nuevo más tarde.")
 
-
     const updateData = async (data: { [key: string]: any }) => {
         const response = await fetchDataUpdate(data)
         setIsModalOpen(false)
         if (response?.data) {
-            setNewData(response.data)
+            setNewData({ ...company, ...response.data })
             notifySuccess("Datos actualizados")
         }
         if (response?.error) notifyError("Error al actualizar los datos")
@@ -90,7 +85,6 @@ const CompanyInterface: React.FC<Props> = ({ company }) => {
     return (
         <div className="divInterfaceCompanyContainer">
             <ToastContainer />
-            <NavBar />
             <div className="divCompanyPanelContainer">
                 <div className="divCompanyPanel">
                     <div className="dataCompanyPanel">
@@ -162,9 +156,45 @@ const CompanyInterface: React.FC<Props> = ({ company }) => {
                         activeView === "calendar" ?
                             <CalendarServicePanel
                                 service={serviceOnCalendar as Service}
+                                setActiveView={setActiveView}
                             />
                             :
                             <div className="divSectionAndButtonsContainer">
+                                <div className="divQuantityAppointmentsContainer">
+                                    <div className="divQuantityAppointments">
+                                        <ClockIcon
+                                            width="36px"
+                                            height="36px"
+                                            fill="#1282A2"
+                                        />
+                                        <div>
+                                            <h2>{company.scheduledAppointments.length}</h2>
+                                            <h3>Turnos para hoy</h3>
+                                        </div>
+                                    </div>
+                                    <div className="divQuantityAppointments">
+                                        <CalendarCheckIcon
+                                            width="36px"
+                                            height="36px"
+                                            fill="#1282A2"
+                                        />
+                                        <div>
+                                            <h2>{company.scheduledAppointments.length}</h2>
+                                            <h3>Turnos totales</h3>
+                                        </div>
+                                    </div>
+                                    <div className="divQuantityAppointments">
+                                        <UsersIcon
+                                            width="36px"
+                                            height="36px"
+                                            fill="#1282A2"
+                                        />
+                                        <div>
+                                            <h2>{company.services.length}</h2>
+                                            <h3>Servicios activos</h3>
+                                        </div>
+                                    </div>
+                                </div>
                                 <div className="divButtonsContainer">
                                     <button
                                         className={`buttonSection ${activeView === "appointments" ? "active" : ""}`}
@@ -183,12 +213,12 @@ const CompanyInterface: React.FC<Props> = ({ company }) => {
                                     {
                                         activeView === "appointments" ?
                                             <ScheduledAppointmentsPanel
-                                                scheduledAppointments={newData.scheduledAppointments}
+                                                scheduledAppointments={company.scheduledAppointments}
                                             />
                                             :
                                             <ServicesPanel
-                                                connectedWithMP={newData.connectedWithMP}
-                                                companyServices={newData.services}
+                                                connectedWithMP={company.connectedWithMP}
+                                                companyServices={company.services}
                                                 onDeleteService={onDeleteService}
                                                 handleChangeToCalendar={handleChangeToCalendar}
                                             />
