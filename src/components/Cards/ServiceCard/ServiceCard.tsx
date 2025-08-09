@@ -107,7 +107,7 @@ const ServiceCard: React.FC<Props> = ({ id, duration, price, title, description,
                     disabled={isLoading || isLoadingUpdate}
                     onSubmit={() => setIsModalOpen(true)}
                 >
-                    Editar servicio
+                    Editar
                 </Button>
                 <Button
                     fontSize={window.innerWidth <= 930 ? "1rem" : "1.2rem"}
@@ -115,7 +115,7 @@ const ServiceCard: React.FC<Props> = ({ id, duration, price, title, description,
                     onSubmit={deleteService}
                     disabled={isLoading || isLoadingUpdate}
                 >
-                    Eliminar servicio
+                    Eliminar
                 </Button>
             </div>
             <ModalForm

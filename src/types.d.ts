@@ -32,6 +32,8 @@ export interface Company extends CompanyBasicInfo {
     connectedWithMP: boolean
 }
 
+export type CompanyToUser = Omit<Company, "scheduledAppointments" | "connectedWithMP">
+
 export interface Appointment {
     _id: string
     serviceId: Service

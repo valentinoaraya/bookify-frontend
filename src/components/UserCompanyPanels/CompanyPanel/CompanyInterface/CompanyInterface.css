@@ -18,22 +18,9 @@
     display: flex;
     flex-direction: row;
     justify-content: center;
-    max-width: 1500px;
     gap: 2rem;
     width: 100%;
-}
-
-.divGenerateURL {
-    margin-top: 2rem;
-    font-size: 1rem;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.parrafVinculate span {
-    font-weight: 800;
-    color: var(--azul-clarito);
+    margin-left: calc(300px + 6rem);
 }
 
 .buttonLink {
@@ -41,61 +28,15 @@
     padding: .2rem;
 }
 
-.dataCompanyPanel {
-    margin-top: 2rem;
-    padding: 2rem;
-    border-radius: 10px;
-    background-color: var(--blanco);
-    box-shadow: 0px 0px 5px 0px grey;
-    width: 400px;
-    height: fit-content;
-}
-
-.h2TitleCompanyPanel {
-    margin-bottom: 2rem;
-}
-
-.parrafData {
-    margin: 1rem 0;
-    font-size: 1rem;
-    display: flex;
-    flex-direction: column;
-
-    span {
-        font-weight: bold;
-    }
-}
-
 .divSectionAndButtonsContainer {
     display: flex;
     flex-direction: column;
-    gap: 2rem;
-    width: 100%;
-}
-
-.divQuantityAppointmentsContainer {
-    display: flex;
     gap: 1rem;
-    margin-top: 2rem;
-}
-
-.divQuantityAppointments {
-    display: flex;
-    gap: 1.5rem;
-    align-items: center;
-    border-radius: 10px;
-    background-color: var(--blanco);
-    padding: 2rem;
-    box-shadow: 0px 0px 5px 0px grey;
     width: 100%;
-
-    h2 {
-        margin-bottom: .5rem;
-        font-size: 2rem;
-    }
 }
 
 .divButtonsContainer {
+    margin-top: 2rem;
     background-color: white;
     border-radius: 10px;
     display: flex;
@@ -114,7 +55,7 @@
     font-size: 1.3rem;
     cursor: pointer;
     border: none;
-    color: var(--azul-oscuro);
+    color: var(--azul-clarito);
     background-color: var(--blanco);
 }
 
@@ -133,27 +74,6 @@
     box-shadow: 0px 0px 5px 0px grey;
 }
 
-.divIconParrafContainer {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: .5rem;
-    cursor: pointer;
-}
-
-.parrafConfig {
-    font-size: 1rem;
-    font-weight: 600;
-    color: var(--azul-oscuro);
-}
-
-.configurationsContainer {
-    display: flex;
-    gap: 1rem;
-    flex-direction: column;
-    margin-top: 2rem;
-}
-
 @media (max-width: 930px) {
     .divInterfaceCompanyContainer {
         flex-direction: column;
@@ -167,10 +87,5 @@
 @media (max-width: 530px) {
     .divCompanyPanel {
         padding: 2rem 1rem;
-    }
-
-    .parrafVinculate {
-        width: 50%;
-        font-size: .8rem;
     }
 }

@@ -15,8 +15,32 @@
     font-weight: bold;
 }
 
-.divDataContainer {
+.divDataContainerAppointmentCard {
     margin: .8rem 0;
+    display: flex;
+    justify-content: space-between;
+}
+
+.divButtonsContainerAppointmentCard {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+}
+
+.divTitleAndTodayContainer {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.todayAppointmentSpan {
+    background-color: rgb(245, 154, 69);
+    color: var(--blanco);
+    font-size: .8rem;
+    font-weight: 600;
+    padding: .2rem .5rem;
+    border-radius: 5px;
 }
 
 @media (max-width: 930px) {

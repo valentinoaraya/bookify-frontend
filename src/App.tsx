@@ -9,7 +9,6 @@ import CheckoutConfirmAppointment from './components/CheckoutConfirmAppointment/
 import { CompanyProvider } from './contexts/CompanyContext.tsx'
 import { UserProvider } from './contexts/UserContext.tsx'
 
-
 function App() {
 
   return (

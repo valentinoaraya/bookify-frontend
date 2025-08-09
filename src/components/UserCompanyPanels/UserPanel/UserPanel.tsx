@@ -10,8 +10,6 @@ const UserPanel = () => {
     if (error) console.error(error)
     if (isLoading) return <h2>Cargando...</h2>
 
-    console.log(state)
-
     return (
         <>
             {

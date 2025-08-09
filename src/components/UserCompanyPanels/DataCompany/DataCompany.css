@@ -1,0 +1,101 @@
+.dataCompanyPanel {
+    position: fixed;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    left: 2rem;
+    z-index: 1000;
+    margin-top: 2rem;
+    width: 300px;
+    height: fit-content;
+}
+
+.dataContent {
+    padding: 2rem;
+    background-color: var(--blanco);
+    border-radius: 10px;
+    box-shadow: 0px 0px 5px 0px grey;
+    width: 100%;
+}
+
+.titleContainer {
+    margin-bottom: 2rem;
+}
+
+.h2TitleCompanyPanel {
+    margin-bottom: .2rem;
+}
+
+.parrafData {
+    margin: 1rem 0;
+    font-size: 1rem;
+    display: flex;
+    flex-direction: column;
+
+    span {
+        font-weight: bold;
+    }
+}
+
+.divGenerateURL {
+    margin-top: 2rem;
+    font-size: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.parrafVinculate span {
+    font-weight: 800;
+    color: var(--azul-clarito);
+}
+
+.configurationsContainer {
+    display: flex;
+    gap: 1rem;
+    flex-direction: column;
+    margin-top: 2rem;
+}
+
+.divIconParrafContainer {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: .5rem;
+    cursor: pointer;
+}
+
+.parrafConfig {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--azul-clarito);
+}
+
+.divQuantityAppointmentsContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.divQuantityAppointments {
+    display: flex;
+    gap: 1.5rem;
+    align-items: center;
+    border-radius: 10px;
+    background-color: var(--blanco);
+    padding: 2rem;
+    box-shadow: 0px 0px 5px 0px grey;
+    width: 100%;
+
+    h2 {
+        margin-bottom: .5rem;
+        font-size: 2rem;
+    }
+}
+
+@media (max-width: 530px) {
+    .parrafVinculate {
+        width: 50%;
+        font-size: .8rem;
+    }
+}

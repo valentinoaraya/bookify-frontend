@@ -1,20 +1,20 @@
 import { createContext, ReactNode, useEffect, useReducer } from "react";
-import { type Company } from "../types";
+import { type CompanyToUser } from "../types";
 import { useFetchData } from "../hooks/useFetchData";
 import { BACKEND_API_URL } from "../config";
 import { useParams } from "react-router-dom";
 
 interface ContextProps {
-    state: Omit<Company, "scheduledAppointments">;
+    state: CompanyToUser;
     isLoading: boolean;
     error: string | null;
     fetchUserData: () => Promise<void>;
 }
 
 type Action =
-    | { type: "SET_COMPANY_DATA"; payload: Omit<Company, "scheduledAppointments"> }
+    | { type: "SET_COMPANY_DATA"; payload: CompanyToUser }
 
-const initialState: Omit<Company, "scheduledAppointments"> = {
+const initialState: CompanyToUser = {
     _id: "",
     type: "company",
     name: "",
@@ -22,12 +22,11 @@ const initialState: Omit<Company, "scheduledAppointments"> = {
     phone: "",
     city: "",
     street: "",
-    connectedWithMP: false,
     number: "",
     services: [],
 }
 
-const userReducer = (_state: Omit<Company, "scheduledAppointments">, action: Action): Omit<Company, "scheduledAppointments"> => {
+const userReducer = (_state: CompanyToUser, action: Action): CompanyToUser => {
     switch (action.type) {
         case "SET_COMPANY_DATA":
             return action.payload

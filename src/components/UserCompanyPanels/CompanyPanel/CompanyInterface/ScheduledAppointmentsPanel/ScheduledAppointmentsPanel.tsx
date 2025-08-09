@@ -43,12 +43,13 @@ const ScheduledAppointmentsPanel: React.FC<Props> = ({ scheduledAppointments }) 
                         <h3>No tienes turnos agendados</h3>
                     </div>
                     :
-                    <div className={sortedAppointments.length === 1 ? "oneCard" : "divListContainer"}>
+                    <div className="divListContainerScheduledAppointments">
                         {
                             sortedAppointments.map((appointment) => {
                                 return <AppointmentCard
                                     _id={appointment._id}
                                     key={appointment._id}
+                                    todayAppointment={moment(appointment.date).isSame(moment(), 'day')}
                                     serviceId={appointment.serviceId._id}
                                     state={state}
                                     onCancelAppointment={(appointments: Appointment[], appointmentToDelete: string, serviceId: string) => onCancelAppointment(appointments, appointmentToDelete, serviceId)}

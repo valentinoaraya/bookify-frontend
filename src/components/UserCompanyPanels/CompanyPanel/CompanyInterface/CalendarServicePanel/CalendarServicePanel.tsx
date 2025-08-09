@@ -150,6 +150,7 @@ const CalendarServicePanel: React.FC<Props> = ({ service, setActiveView }) => {
             </div>
             <div className="divButtonsCalendar">
                 <Button margin="0" padding=".8rem 0" fontSize="1.4rem" onSubmit={() => setIsModalOpen(true)}
+                    backgroundColor="green"
                     iconSVG={
                         <CalendarCheckIcon
                             width="20px"
@@ -157,7 +158,9 @@ const CalendarServicePanel: React.FC<Props> = ({ service, setActiveView }) => {
                             fill="white"
                         />
                     }
-                >Habilitar turnos</Button>
+                >
+                    Habilitar turnos
+                </Button>
                 <Button margin="0" padding=".8rem 0" fontSize="1.4rem" onSubmit={() => setActiveView("services")}>Volver</Button>
             </div>
             <ModalForm
