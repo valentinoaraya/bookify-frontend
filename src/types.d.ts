@@ -52,7 +52,7 @@ export interface User {
     appointments: Appointment[]
 }
 
-export type View = "appointments" | "services" | "calendar" | "mi-empresa"
+export type View = "appointments" | "services" | "calendar" | "history"
 
 export interface Input {
     type: string;

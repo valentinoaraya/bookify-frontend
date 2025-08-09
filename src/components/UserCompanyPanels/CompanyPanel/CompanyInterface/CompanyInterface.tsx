@@ -52,6 +52,12 @@ const CompanyInterface: React.FC<Props> = ({ company }) => {
                                         Próximos turnos
                                     </button>
                                     <button
+                                        className={`buttonSection ${activeView === "history" ? "active" : ""}`}
+                                        onClick={() => setActiveView("history")}
+                                    >
+                                        Historial
+                                    </button>
+                                    <button
                                         className={`buttonSection ${activeView === "services" ? "active" : ""}`}
                                         onClick={() => setActiveView("services")}
                                     >
@@ -65,12 +71,22 @@ const CompanyInterface: React.FC<Props> = ({ company }) => {
                                                 scheduledAppointments={company.scheduledAppointments}
                                             />
                                             :
-                                            <ServicesPanel
-                                                connectedWithMP={company.connectedWithMP}
-                                                companyServices={company.services}
-                                                onDeleteService={onDeleteService}
-                                                handleChangeToCalendar={handleChangeToCalendar}
-                                            />
+                                            <>
+                                                {
+                                                    activeView === "history" ?
+                                                        <div className="noServicesAppointments">
+                                                            <h3>Historial de turnos</h3>
+                                                            <p>Aún no tienes historial de turnos.</p>
+                                                        </div>
+                                                        :
+                                                        <ServicesPanel
+                                                            connectedWithMP={company.connectedWithMP}
+                                                            companyServices={company.services}
+                                                            onDeleteService={onDeleteService}
+                                                            handleChangeToCalendar={handleChangeToCalendar}
+                                                        />
+                                                }
+                                            </>
                                     }
                                 </div>
                             </div>
