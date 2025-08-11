@@ -33,9 +33,9 @@ const ScheduledAppointmentsPanel: React.FC<Props> = ({ scheduledAppointments }) 
         <>
             <Title
                 fontSize={window.innerWidth <= 530 ? "1.8rem" : ""}
-                margin="0 0 1rem 0"
+                margin="0 0 2rem 0"
             >
-                Próximos turnos
+                Turnos pendientes
             </Title>
             {
                 sortedAppointments.length === 0 ?
@@ -43,19 +43,20 @@ const ScheduledAppointmentsPanel: React.FC<Props> = ({ scheduledAppointments }) 
                         <h3>No tienes turnos agendados</h3>
                     </div>
                     :
-                    <div className={sortedAppointments.length === 1 ? "oneCard" : "divListContainer"}>
+                    <div className="divListContainerScheduledAppointments">
                         {
                             sortedAppointments.map((appointment) => {
                                 return <AppointmentCard
                                     _id={appointment._id}
                                     key={appointment._id}
+                                    todayAppointment={moment(appointment.date).isSame(moment(), 'day')}
                                     serviceId={appointment.serviceId._id}
                                     state={state}
                                     onCancelAppointment={(appointments: Appointment[], appointmentToDelete: string, serviceId: string) => onCancelAppointment(appointments, appointmentToDelete, serviceId)}
                                     title={appointment.serviceId.title}
-                                    client={`${appointment.clientId?.name} ${appointment.clientId?.lastName}`}
-                                    clientEmail={appointment.clientId?.email}
-                                    clientPhone={appointment.clientId?.phone}
+                                    client={`${appointment.name} ${appointment.lastName}`}
+                                    clientEmail={appointment.email}
+                                    clientPhone={appointment.phone}
                                     date={appointment.date}
                                 />
                             })

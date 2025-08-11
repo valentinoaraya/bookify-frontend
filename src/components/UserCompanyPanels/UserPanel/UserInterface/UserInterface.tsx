@@ -1,74 +1,49 @@
 import "./UserInterface.css"
-import SideBar from "../../../Bars/SideBar/SideBar";
-import { type ServiceToSchedule, type Service, type User } from "../../../../types";
-import SearchBar from "../../../Bars/SearchBar/SearchBar";
+import { type ServiceToSchedule, type Service, type CompanyToUser } from "../../../../types";
 import { ToastContainer } from "react-toastify";
 import { useState } from "react";
-import AppointmentsPanel from "./AppointmentsPanel/AppointmentsPanel";
 import ResultsPanel from "./ResultsPanel/ResultsPanel";
 import ServiceToSchedulePanel from "./ServiceToSchedulePanel/ServiceToSchedulePanel";
-import moment from "moment";
-import NavBar from "../../../Bars/NavBar/NavBar";
+import DataCompany from "../../DataCompany/DataCompany";
+import Title from "../../../../common/Title/Title";
 
 interface Props {
-    user: User
+    company: CompanyToUser;
 }
 
-const UserInterface: React.FC<Props> = ({ user }) => {
+const UserInterface: React.FC<Props> = ({ company }) => {
 
-    const [results, setResults] = useState<Service[] | null>(null)
+    const [results, setResults] = useState<Service[] | null>(company.services || null)
     const [serviceToSchedule, setServiceToSchedule] = useState<ServiceToSchedule | null>(null)
-    const [isOpen, setIsOpen] = useState(false)
-
-    const sortedAppointments = user.appointments.sort((a, b) => moment(a.date, "YYYY-MM-DD HH:mm").valueOf() - moment(b.date, "YYYY-MM-DD HH:mm").valueOf())
 
     return (
         <div className="divInterfaceUserContainer">
             <ToastContainer />
-            <NavBar
-                data={{ ...user, type: "user" }}
-                onBack={() => {
-                    setServiceToSchedule(null)
-                    setResults(null)
-                }}
-                setIsOpen={setIsOpen}
-            />
-            <SideBar
-                data={{ ...user, type: "user" }}
-                onBack={() => {
-                    setServiceToSchedule(null)
-                    setResults(null)
-                }}
-                isOpen={isOpen}
-                setIsOpen={setIsOpen}
-                mobile={window.innerWidth <= 930}
-            />
             <div className="divUserPanel">
-                <SearchBar
-                    setResults={setResults}
+                <DataCompany
+                    dataCompany={company}
                 />
-                {
-                    serviceToSchedule ?
-                        <ServiceToSchedulePanel
-                            setResults={setResults}
-                            serviceToSchedule={serviceToSchedule}
-                            setServiceToSchedule={setServiceToSchedule}
-                        />
-                        :
-                        <>
-                            {
-                                !results ?
-                                    <AppointmentsPanel
-                                        appointments={sortedAppointments}
-                                    />
-                                    :
-                                    <ResultsPanel
-                                        setServiceToSchedule={setServiceToSchedule}
-                                        results={results}
-                                    />
-                            }
-                        </>
-                }
+                <div className="userPanelContent">
+                    {
+                        serviceToSchedule ?
+                            <ServiceToSchedulePanel
+                                setResults={setResults}
+                                serviceToSchedule={serviceToSchedule}
+                                setServiceToSchedule={setServiceToSchedule}
+                            />
+                            :
+                            <>
+                                <Title>
+                                    Servicios disponibles
+                                </Title>
+                                <ResultsPanel
+                                    company={company}
+                                    setServiceToSchedule={setServiceToSchedule}
+                                    results={results}
+                                />
+                            </>
+                    }
+                </div>
             </div>
         </div>
     );

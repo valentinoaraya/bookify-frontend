@@ -1,36 +1,35 @@
 import { createContext, ReactNode, useEffect, useReducer } from "react";
-import { type Appointment, type User } from "../types";
+import { type CompanyToUser } from "../types";
 import { useFetchData } from "../hooks/useFetchData";
 import { BACKEND_API_URL } from "../config";
+import { useParams } from "react-router-dom";
 
 interface ContextProps {
-    state: User;
+    state: CompanyToUser;
     isLoading: boolean;
     error: string | null;
     fetchUserData: () => Promise<void>;
-    updateAppointments: (appointments: Appointment[]) => void;
 }
 
 type Action =
-    | { type: "SET_USER_DATA"; payload: User }
-    | { type: "UPDATE_APPOINTMENTS"; payload: Appointment[] }
+    | { type: "SET_COMPANY_DATA"; payload: CompanyToUser }
 
-const initialState: User = {
+const initialState: CompanyToUser = {
     _id: "",
-    type: "user",
+    type: "company",
     name: "",
-    lastName: "",
     email: "",
     phone: "",
-    appointments: []
+    city: "",
+    street: "",
+    number: "",
+    services: [],
 }
 
-const userReducer = (state: User, action: Action): User => {
+const userReducer = (_state: CompanyToUser, action: Action): CompanyToUser => {
     switch (action.type) {
-        case "SET_USER_DATA":
+        case "SET_COMPANY_DATA":
             return action.payload
-        case "UPDATE_APPOINTMENTS":
-            return { ...state, appointments: action.payload }
     }
 }
 
@@ -39,30 +38,25 @@ export const UserContext = createContext<ContextProps>({
     isLoading: false,
     error: null,
     fetchUserData: async () => { },
-    updateAppointments: () => { },
 })
 
 export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-    const token = localStorage.getItem("access_token")
+    const { company_id } = useParams();
     const [state, dispatch] = useReducer(userReducer, initialState)
-    const { isLoading, error, fetchData } = useFetchData(`${BACKEND_API_URL}/users/get-user`, "GET", token)
+    const { isLoading, error, fetchData } = useFetchData(`${BACKEND_API_URL}/companies/company/${company_id}`, "GET")
 
     const fetchUserData = async () => {
         try {
             const response = await fetchData({});
             if (response.error) {
-                dispatch({ type: "SET_USER_DATA", payload: initialState });
-                console.error("Error fetching user data:", response.error);
+                dispatch({ type: "SET_COMPANY_DATA", payload: initialState });
+                console.error("Error fetching company data:", response.error);
                 return
             }
-            dispatch({ type: "SET_USER_DATA", payload: response.data });
+            dispatch({ type: "SET_COMPANY_DATA", payload: response.data });
         } catch (error) {
             console.error("Error fetching company data:", error);
         }
-    }
-
-    const updateAppointments = (appointments: Appointment[]) => {
-        dispatch({ type: "UPDATE_APPOINTMENTS", payload: appointments })
     }
 
     useEffect(() => {
@@ -70,7 +64,7 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }, [])
 
     return (
-        <UserContext.Provider value={{ state, isLoading, error, fetchUserData, updateAppointments }}>
+        <UserContext.Provider value={{ state, isLoading, error, fetchUserData }}>
             {children}
         </UserContext.Provider>
     )

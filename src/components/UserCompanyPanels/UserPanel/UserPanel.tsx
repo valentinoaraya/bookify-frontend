@@ -17,7 +17,7 @@ const UserPanel = () => {
                     <h2>Usuario no encontrado</h2>
                     :
                     <UserInterface
-                        user={state}
+                        company={state}
                     />
             }
         </>

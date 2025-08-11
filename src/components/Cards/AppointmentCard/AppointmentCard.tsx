@@ -5,35 +5,28 @@ import { confirmDelete } from "../../../utils/alerts";
 import { useFetchData } from "../../../hooks/useFetchData";
 import { BACKEND_API_URL } from "../../../config";
 import { notifyError, notifySuccess } from "../../../utils/notifications";
-import { type User, type Appointment, type Company } from "../../../types";
+import { type Appointment, type Company } from "../../../types";
 import { formatDate } from "../../../utils/formatDate";
-import { NewWindowIcon } from "../../../common/Icons/Icons";
 
 interface Props {
     _id: string;
     title: string;
     date: string;
     serviceId: string;
-    company?: Company;
-    companyLocation?: string;
-    servicePrice?: number;
-    serviceDuration?: number;
+    todayAppointment?: boolean;
     client?: string;
     clientEmail?: string;
     clientPhone?: string;
-    state: User | Company;
+    state: Company;
     onCancelAppointment: (appointments: Appointment[], appointmentToDelete: string, serviceId: string) => void;
 }
 
 const AppointmentCard: React.FC<Props> = ({
     _id,
     serviceId,
+    todayAppointment,
     title,
     date,
-    company,
-    companyLocation,
-    serviceDuration,
-    servicePrice,
     client,
     clientEmail,
     clientPhone,
@@ -42,7 +35,7 @@ const AppointmentCard: React.FC<Props> = ({
 }) => {
     const token = localStorage.getItem("access_token")
     const { error, fetchData } = useFetchData(
-        `${BACKEND_API_URL}/appointments/${state.type === "user" ? "cancel" : "delete"}-appointment/${_id}`,
+        `${BACKEND_API_URL}/appointments/delete-appointment/${_id}`,
         "DELETE",
         token
     )
@@ -54,7 +47,7 @@ const AppointmentCard: React.FC<Props> = ({
     const handleCancelAppointment = async () => {
         const confirm = await confirmDelete({
             question: "¿Seguro que desea cancelar el turno?",
-            mesasge: client ? "Si cobraste una seña por este turno, se le devolverá el dinero al cliente." : "Si pagaste una seña para este turno, se te devolverá el 50% del dinero.",
+            mesasge: "Si cobraste una seña por este turno, se le devolverá el dinero al cliente.",
             icon: "warning",
             cancelButton: true,
             cancelButtonText: "Cancelar",
@@ -64,10 +57,7 @@ const AppointmentCard: React.FC<Props> = ({
             const response = await fetchData({})
             if (response.data) {
                 onCancelAppointment(
-                    state.type === "user" ?
-                        state.appointments.filter(appointment => appointment._id !== response.data._id)
-                        :
-                        state.scheduledAppointments.filter(appointment => appointment._id !== response.data._id)
+                    state.scheduledAppointments.filter(appointment => appointment._id !== response.data._id)
                     , `${stringDate} ${time}`, serviceId
                 )
                 notifySuccess("Turno cancelado con éxito.")
@@ -80,56 +70,40 @@ const AppointmentCard: React.FC<Props> = ({
 
     return (
         <div className="appointmentCard">
-            <h2 className="titleService">{title}</h2>
-            {company && <p className="parrafAppointment"><span>En {company.name}</span></p>}
-            <div className="divDataContainer">
-                {
-                    client &&
-                    <>
-                        <p className="parrafAppointment"><span>Cliente:</span> {client}</p>
-                        <p className="parrafAppointment"><span>Email:</span> {clientEmail}</p>
-                        <p className="parrafAppointment"><span>Teléfono:</span> {clientPhone}</p>
-                    </>
-                }
-                {
-                    company &&
-                    <>
-                        <p className="parrafAppointment"><span>Ubicación:</span> {companyLocation}</p>
-                        <p className="parrafAppointment"><span>Duración:</span> {serviceDuration} mins</p>
-                        <p className="parrafAppointment"><span>Precio:</span> ${servicePrice}</p>
-                    </>
-                }
-                <p className="parrafAppointment"><span>Fecha:</span> {formattedDate}</p>
-                <p className="parrafAppointment"><span>Horario:</span> {time} hs</p>
+            <div className="divTitleAndTodayContainer">
+                <h2 className="titleService">{client}</h2>
+                {todayAppointment && <span className="todayAppointmentSpan">Hoy</span>}
             </div>
-            {
-                company &&
-                <Button
-                    iconSVG={
-                        <NewWindowIcon
-                            width="14px"
-                            height="14px"
-                            fill="white"
-                        />
-                    }
-                    fontSize={window.innerWidth <= 930 ? "1rem" : "1.2rem"}
-                    onSubmit={() => {
-                        const location = `${company.street} ${company.number} ${company.city}`.replace(/ /g, "+")
-                        window.open(`https://www.google.com/maps/search/?api=1&query=${location}`, '_blank')
-                    }}
-                    padding=".8rem"
-                >
-                    Ver ubicación
-                </Button>
-            }
-            <Button
-                onSubmit={handleCancelAppointment}
-                fontSize={window.innerWidth <= 930 ? "1rem" : "1.2rem"}
-                padding=".8rem"
-                margin=".5rem 0 0 0"
-            >
-                Cancelar turno
-            </Button>
+            <div className="divDataContainerAppointmentCard">
+                <div>
+                    <p className="parrafAppointment"><span>Teléfono:</span> {clientPhone}</p>
+                    <p className="parrafAppointment"><span>Email:</span> {clientEmail}</p>
+                </div>
+                <div>
+                    <p className="parrafAppointment"><span>Servicio:</span> {title}</p>
+                    <p className="parrafAppointment"><span>Fecha:</span> {formattedDate}</p>
+                    <p className="parrafAppointment"><span>Horario:</span> {time} hs</p>
+                </div>
+                <div className="divButtonsContainerAppointmentCard">
+                    <Button
+                        backgroundColor="green"
+                        fontSize={window.innerWidth <= 930 ? "1rem" : "1.2rem"}
+                        padding=".8rem"
+                        margin="0 0 0 0"
+                    >
+                        Finalizar
+                    </Button>
+                    <Button
+                        backgroundColor="red"
+                        onSubmit={handleCancelAppointment}
+                        fontSize={window.innerWidth <= 930 ? "1rem" : "1.2rem"}
+                        padding=".8rem"
+                        margin="0 0 0 0"
+                    >
+                        Cancelar
+                    </Button>
+                </div>
+            </div>
         </div>
     );
 }

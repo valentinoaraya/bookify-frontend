@@ -1,6 +1,6 @@
 import "./ServiceToSchedulePanel.css"
 import Button from "../../../../../common/Button/Button";
-import { type Service, type ServiceToSchedule } from "../../../../../types";
+import { UserData, type Service, type ServiceToSchedule } from "../../../../../types";
 import Title from "../../../../../common/Title/Title";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid"
@@ -9,10 +9,10 @@ import { confirmDelete } from "../../../../../utils/alerts";
 import { parseDateToString } from "../../../../../utils/parseDateToString";
 import { useNavigate } from "react-router-dom";
 import { BACKEND_API_URL } from "../../../../../config";
-import { useContext } from "react";
-import { UserContext } from "../../../../../contexts/UserContext";
 import { useFetchData } from "../../../../../hooks/useFetchData";
 import { formatDate } from "../../../../../utils/formatDate";
+import ModalForm from "../../../../ModalForm/ModalForm";
+import { useState } from "react";
 
 interface Props {
     serviceToSchedule: ServiceToSchedule;
@@ -20,20 +20,19 @@ interface Props {
     setResults: React.Dispatch<React.SetStateAction<Service[] | null>>;
 }
 
-const ServiceToSchedulePanel: React.FC<Props> = ({ serviceToSchedule, setServiceToSchedule, setResults }) => {
+const ServiceToSchedulePanel: React.FC<Props> = ({ serviceToSchedule, setServiceToSchedule }) => {
 
-    const { updateAppointments, state } = useContext(UserContext)
-    const token = localStorage.getItem("access_token")
-    const { error, fetchData } = useFetchData(
+    const [isOpen, setIsOpen] = useState(false)
+    const [dateAppointment, setDateAppointment] = useState<Date | null>(null)
+    const { error, isLoading, fetchData } = useFetchData(
         `${BACKEND_API_URL}/appointments/add-appointment`,
         "POST",
-        token
     )
 
     if (error) notifyError("Error al reservar turno.")
     const navigate = useNavigate()
 
-    const confirmAppointment = async (date: Date) => {
+    const confirmAppointment = async (date: Date, dataUser: UserData) => {
 
         const { stringDate, time } = parseDateToString(date)
         const formattedDate = formatDate(stringDate)
@@ -47,7 +46,6 @@ const ServiceToSchedulePanel: React.FC<Props> = ({ serviceToSchedule, setService
         })
 
         if (decisionConfirmed && serviceToSchedule.signPrice !== 0) {
-
             navigate("/checkout", {
                 state: {
                     date: `${stringDate} ${time}`,
@@ -57,19 +55,20 @@ const ServiceToSchedulePanel: React.FC<Props> = ({ serviceToSchedule, setService
                         signPrice: serviceToSchedule.signPrice,
                         companyId: serviceToSchedule.companyId,
                         totalPrice: serviceToSchedule.price
-                    }
+                    },
+                    dataUser
                 }
             })
-
         } else if (decisionConfirmed && serviceToSchedule.signPrice === 0) {
             const response = await fetchData({
-                date: `${stringDate} ${time}`,
-                serviceId: serviceToSchedule._id,
-                companyId: serviceToSchedule.companyId
+                dataAppointment: {
+                    date: `${stringDate} ${time}`,
+                    serviceId: serviceToSchedule._id,
+                    companyId: serviceToSchedule.companyId
+                },
+                dataUser
             })
-
             if (response.data) {
-                updateAppointments([...state.appointments, response.data])
                 const confirm = await confirmDelete({
                     icon: "success",
                     question: `Turno confirmado correctamente.`,
@@ -78,11 +77,10 @@ const ServiceToSchedulePanel: React.FC<Props> = ({ serviceToSchedule, setService
                 })
                 if (confirm) {
                     setServiceToSchedule(null)
-                    setResults(null)
+                    window.location.reload()
                 }
             }
             if (response.error) notifyError("Error al confirmar turno. Inténtelo de nuevo más tarde.")
-
         }
     }
 
@@ -163,13 +161,32 @@ const ServiceToSchedulePanel: React.FC<Props> = ({ serviceToSchedule, setService
                         if (info.event.backgroundColor === "red") {
                             notifyError("El turno seleccionado ya está ocupado.")
                         } else {
-                            confirmAppointment(info.event.start as Date)
+                            setDateAppointment(info.event.start as Date)
+                            setIsOpen(true)
                         }
                     }}
                 />
             </div>
             <Button onSubmit={() => setServiceToSchedule(null)}>Cancelar</Button>
-
+            <ModalForm
+                title="Completa tus datos"
+                isOpen={isOpen}
+                inputs={[
+                    { type: "text", name: "name", placeholder: "Nombre", label: "Nombre" },
+                    { type: "text", name: "lastName", placeholder: "Apellido", label: "Apellido" },
+                    { type: "text", name: "email", placeholder: "Email", label: "Email" },
+                    { type: "text", name: "dni", placeholder: "DNI", label: "DNI" },
+                    { type: "text", name: "phone", placeholder: "Teléfono", label: "Teléfono" },
+                ]}
+                initialData={{ name: "", lastName: "", email: "", dni: "", phone: "", }}
+                onClose={() => setIsOpen(false)}
+                onSubmitForm={(data) => {
+                    if (!dateAppointment) return notifyError("No se ha especificado una fecha para el turno.")
+                    confirmAppointment(dateAppointment, data as UserData)
+                    setIsOpen(false)
+                }}
+                disabledButtons={isLoading}
+            />
         </div>
     );
 }

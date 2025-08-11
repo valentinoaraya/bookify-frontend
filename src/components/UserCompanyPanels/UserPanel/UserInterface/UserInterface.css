@@ -2,11 +2,21 @@
     width: 100%;
     min-height: 100vh;
     display: flex;
+    flex-direction: column;
 }
 
 .divUserPanel {
+    padding: 0 2rem;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 2rem;
+    margin-left: calc(300px + 6rem);
+}
+
+.userPanelContent {
     width: 100%;
-    padding: 2rem;
+    margin-top: 2rem;
 }
 
 @media (max-width: 930px) {

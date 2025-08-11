@@ -1,11 +1,35 @@
 .divResultCard {
-    margin-top: 1rem;
+    background-color: var(--blanco);
     padding: 1rem;
-    border: 2px solid var(--azul-clarito);
+    border: 1px solid var(--azul-clarito);
+    box-shadow: 0 0 5px 0 grey;
     border-radius: 10px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+}
+
+.titleResultCardContainer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.spanResultCard {
+    font-size: .9rem;
+    font-weight: 600;
+    border-radius: 5px;
+    padding: .2rem .5rem;
+}
+
+.noAvailables {
+    background-color: red;
+    color: var(--blanco);
+}
+
+.availables {
+    background-color: green;
+    color: var(--blanco);
 }
 
 .parrafCompanyName {
@@ -26,6 +50,47 @@
     span {
         font-weight: 700;
     }
+}
+
+.divDescriptionAndButtonsContainer {
+    margin-top: 1rem;
+    display: flex;
+    justify-content: space-between
+}
+
+.divDescriptionContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: .5rem;
+}
+
+.durationPriceContainerResultCard {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.divDurationResultCard {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+}
+
+.parrafDurationResultCard {
+    font-size: 1.2rem;
+    color: grey;
+    font-weight: 600;
+}
+
+.parrafPriceResultCard {
+    font-size: 1.2rem;
+    color: var(--azul-clarito);
+    font-weight: bold;
+}
+
+.withSignPrice {
+    color: orangered;
 }
 
 @media (max-width: 930px) {

@@ -1,14 +1,14 @@
-import { type Service, type Company, type ServiceToSchedule } from "../../../../../types";
+import { type Service, type ServiceToSchedule, CompanyToUser } from "../../../../../types";
 import ResultCard from "../../../../Cards/ResultCard/ResultCard";
 import "./ResultsPanel.css"
 
 interface Props {
     results: Service[] | null
     setServiceToSchedule: React.Dispatch<React.SetStateAction<ServiceToSchedule | null>>
+    company: CompanyToUser
 }
 
-const ResultsPanel: React.FC<Props> = ({ results, setServiceToSchedule }) => {
-
+const ResultsPanel: React.FC<Props> = ({ results, setServiceToSchedule, company }) => {
     return (
         <>
             {
@@ -17,13 +17,13 @@ const ResultsPanel: React.FC<Props> = ({ results, setServiceToSchedule }) => {
                         <h3>No se encontraron resultados</h3>
                     </div>
                     :
-                    <div className={`resultCardsContainer ${results?.length === 1 ? "oneCard" : "divListContainer"}`}>
+                    <div className="resultCardsContainer divListContainerResultsPanel">
                         {
                             results?.map(service => {
                                 return <ResultCard
                                     key={service._id}
                                     _id={service._id}
-                                    company={service.companyId as unknown as Omit<Company, "type" | "services" | "scheduledAppointments">}
+                                    company={company}
                                     availableAppointments={service.availableAppointments}
                                     scheduledAppointments={service.scheduledAppointments}
                                     description={service.description}

@@ -1,6 +1,6 @@
 import "./CalendarServicePanel.css"
 import Title from "../../../../../common/Title/Title";
-import { type Service } from "../../../../../types";
+import { type View, type Service } from "../../../../../types";
 import Button from "../../../../../common/Button/Button";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid"
@@ -11,12 +11,14 @@ import { BACKEND_API_URL } from "../../../../../config";
 import { notifyError, notifySuccess } from "../../../../../utils/notifications";
 import { parseDateToString } from "../../../../../utils/parseDateToString";
 import { CompanyContext } from "../../../../../contexts/CompanyContext";
+import { CalendarCheckIcon } from "../../../../../common/Icons/Icons";
 
 interface Props {
+    setActiveView: (view: View) => void
     service: Service
 }
 
-const CalendarServicePanel: React.FC<Props> = ({ service }) => {
+const CalendarServicePanel: React.FC<Props> = ({ service, setActiveView }) => {
 
     const token = localStorage.getItem("access_token")
     const { state, updateServices } = useContext(CompanyContext)
@@ -82,7 +84,7 @@ const CalendarServicePanel: React.FC<Props> = ({ service }) => {
     if (error || errorDelete) notifyError("Error al habilitar los turnos")
 
     return (
-        <>
+        <div className="calendarServicePanel">
             <Title
                 fontSize={window.innerWidth <= 930 ? "1.5rem" : ""}
             >
@@ -146,7 +148,21 @@ const CalendarServicePanel: React.FC<Props> = ({ service }) => {
                     }}
                 />
             </div>
-            <Button onSubmit={() => setIsModalOpen(true)}>Habilitar turnos</Button>
+            <div className="divButtonsCalendar">
+                <Button margin="0" padding=".8rem 0" fontSize="1.4rem" onSubmit={() => setIsModalOpen(true)}
+                    backgroundColor="green"
+                    iconSVG={
+                        <CalendarCheckIcon
+                            width="20px"
+                            height="20px"
+                            fill="white"
+                        />
+                    }
+                >
+                    Habilitar turnos
+                </Button>
+                <Button margin="0" padding=".8rem 0" fontSize="1.4rem" onSubmit={() => setActiveView("services")}>Volver</Button>
+            </div>
             <ModalForm
                 title="Selecciona los días para habilitar turnos"
                 isOpen={isModalOpen}
@@ -182,7 +198,7 @@ const CalendarServicePanel: React.FC<Props> = ({ service }) => {
                     days: null
                 }}
             />
-        </>
+        </div>
     );
 }
 

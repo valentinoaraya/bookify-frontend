@@ -2,13 +2,13 @@ import "./ServicesPanel.css"
 import Title from "../../../../../common/Title/Title";
 import { type Service, type View } from "../../../../../types";
 import ServiceCard from "../../../../Cards/ServiceCard/ServiceCard";
-import AddSomethingCard from "../../../../Cards/AddSomethingCard/AddSomethingCard";
 import { useContext, useState } from "react";
 import { useFetchData } from "../../../../../hooks/useFetchData";
 import { BACKEND_API_URL } from "../../../../../config";
 import { notifyError } from "../../../../../utils/notifications";
 import ModalForm from "../../../../ModalForm/ModalForm";
 import { CompanyContext } from "../../../../../contexts/CompanyContext";
+import Button from "../../../../../common/Button/Button";
 
 interface Props {
     companyServices: Service[]
@@ -49,16 +49,25 @@ const ServicesPanel: React.FC<Props> = ({ companyServices, connectedWithMP, onDe
 
     return (
         <>
-            <Title
-                margin="0 0 1rem 0"
-                fontSize={window.innerWidth <= 530 ? "1.8rem" : ""}
-            >
-                Mis servicios
-            </Title>
-            <div className="divListContainer">
-                {
-                    companyServices.length > 0 &&
-                    <>
+            <div className="servicesPanelHeader">
+                <Title
+                    margin="0 0 1rem 0"
+                    fontSize={window.innerWidth <= 530 ? "1.8rem" : ""}
+                >
+                    Servicios activos
+                </Title>
+                <Button onSubmit={() => setIsModalOpen(true)} width="fit-content" padding="0.5rem 1rem" fontSize="1.1rem" margin="0 0 1rem 0" backgroundColor="green">
+                    <span className="plusButton">+</span>
+                    Agregar servicio
+                </Button>
+            </div>
+            {
+                companyServices.length === 0 ?
+                    <div className="noServicesAppointments">
+                        <h3>No tienes servicios activos</h3>
+                    </div>
+                    :
+                    <div className="divListContainer">
                         {
                             companyServices.map(service => {
                                 return <ServiceCard
@@ -70,19 +79,16 @@ const ServicesPanel: React.FC<Props> = ({ companyServices, connectedWithMP, onDe
                                     description={service.description}
                                     signPrice={service.signPrice}
                                     connectedWithMP={connectedWithMP}
+                                    availableAppointmentsLenght={service.availableAppointments.length}
+                                    scheduledAppointmentsLenght={service.scheduledAppointments.length}
                                     onDeleteService={onDeleteService}
                                     onUpdateService={(data) => onUpdateService(data)}
                                     onRedirectToCalendar={(id: string, view: View) => handleChangeToCalendar(id, view)}
                                 />
                             })
                         }
-                    </>
-                }
-                <AddSomethingCard
-                    label="Agregar servicio"
-                    onClick={() => setIsModalOpen(true)}
-                />
-            </div>
+                    </div>
+            }
             <ModalForm
                 title="Agregar servicio"
                 isOpen={isModalOpen}

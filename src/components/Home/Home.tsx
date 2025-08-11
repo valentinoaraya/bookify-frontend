@@ -10,7 +10,6 @@ const Home = () => {
             <Title fontSize={window.innerWidth <= 560 ? "4.5rem" : "6rem"} margin="0 0 .5rem 0">Bookify</Title>
             <h2>Gestioná tus turnos de manera eficiente</h2>
             <div className="divButtonsHome">
-                <p className="pDescription">Para reservar turnos.</p>
                 <Link className="linkButton" to={"/login/company"}>
                     <Button
                         iconSVG={

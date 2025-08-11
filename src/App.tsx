@@ -9,7 +9,6 @@ import CheckoutConfirmAppointment from './components/CheckoutConfirmAppointment/
 import { CompanyProvider } from './contexts/CompanyContext.tsx'
 import { UserProvider } from './contexts/UserContext.tsx'
 
-
 function App() {
 
   return (
@@ -20,7 +19,7 @@ function App() {
             <Route path='/' element={<Home />} />
             <Route path='/login/:loginTo' element={<FormLogin />} />
             <Route path='/register/:registerTo' element={<FormRegister />} />
-            <Route path='/user-panel' element={
+            <Route path='/company/:company_id' element={
               <UserProvider>
                 <UserPanel />
               </UserProvider>

@@ -65,13 +65,11 @@ export const CompanyContext = createContext<ContextProps>({
     deleteAppointment: () => { },
 });
 
-// **Provider para envolver la app**
 export const CompanyProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     const token = localStorage.getItem("access_token")
     const [state, dispatch] = useReducer(companyReducer, initialState);
     const { isLoading, error, fetchData } = useFetchData(`${BACKEND_API_URL}/companies/get-company`, "GET", token)
 
-    // Función para obtener datos de la empresa
     const fetchCompanyData = async () => {
         try {
             const response = await fetchData({});
@@ -86,27 +84,22 @@ export const CompanyProvider: React.FC<{ children: ReactNode }> = ({ children })
         }
     };
 
-    // Actualizar servicios en el estado global
     const updateServices = (services: Service[]) => {
         dispatch({ type: "UPDATE_SERVICES", payload: services });
     };
 
-    // Eliminar servicio en el estado global
     const deleteService = (services: Service[]) => {
         dispatch({ type: "DELETE_SERVICE", payload: services })
     }
 
-    // Actualizar turnos en el estado global
     const updateAppointments = (appointments: Appointment[]) => {
         dispatch({ type: "UPDATE_APPOINTMENTS", payload: appointments });
     };
 
-    // Eliminar servicio en el estado global
     const deleteAppointment = (appointments: Appointment[]) => {
         dispatch({ type: "DELETE_APPOINTMENT", payload: appointments })
     }
 
-    // Obtener datos al montar el provider
     useEffect(() => {
         fetchCompanyData();
     }, []);

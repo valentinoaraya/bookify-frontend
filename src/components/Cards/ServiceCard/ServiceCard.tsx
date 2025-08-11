@@ -7,6 +7,7 @@ import { confirmDelete } from "../../../utils/alerts"
 import ModalForm from "../../ModalForm/ModalForm"
 import { useState } from "react"
 import { View } from "../../../types"
+import { ClockIcon } from "../../../common/Icons/Icons"
 
 interface Props {
     id: string
@@ -16,12 +17,14 @@ interface Props {
     description: string
     signPrice: number
     connectedWithMP: boolean
+    scheduledAppointmentsLenght?: number
+    availableAppointmentsLenght?: number
     onDeleteService: (id: string, scheduledAppointmentsToDelete: string[]) => void
     onUpdateService: (data: { [key: string]: any }) => void
     onRedirectToCalendar: (id: string, view: View) => void
 }
 
-const ServiceCard: React.FC<Props> = ({ id, duration, price, title, description, signPrice, connectedWithMP, onDeleteService, onUpdateService, onRedirectToCalendar }) => {
+const ServiceCard: React.FC<Props> = ({ id, duration, price, title, description, signPrice, connectedWithMP, scheduledAppointmentsLenght = 0, availableAppointmentsLenght = 0, onDeleteService, onUpdateService, onRedirectToCalendar }) => {
 
     const token = localStorage.getItem("access_token")
     const { isLoading, error, fetchData } = useFetchData(
@@ -64,6 +67,7 @@ const ServiceCard: React.FC<Props> = ({ id, duration, price, title, description,
 
     const updateService = async (data: { [key: string]: any }) => {
         const response = await fetchDataUpdate(data)
+        console.log(response.data)
         setIsModalOpen(false)
         if (response?.data) {
             onUpdateService(response.data)
@@ -76,10 +80,23 @@ const ServiceCard: React.FC<Props> = ({ id, duration, price, title, description,
         <div className="serviceCard">
             <h2 className="titleService">{title}</h2>
             <div className="dataService">
-                <p className="parrafService"><span>Duración:</span> {duration} mins</p>
-                <p className="parrafService"><span>Precio:</span> ${price}</p>
-                {signPrice !== 0 ? <p className="parrafService"><span>Precio de la seña:</span> ${signPrice}</p> : <p className="parrafService"><span>Sin seña</span></p>}
+                <div className="spanServiceCardContainer">
+                    <span className="spanServiceCard availables">{availableAppointmentsLenght} habilitados</span>
+                    <span className="spanServiceCard noAvailables">{scheduledAppointmentsLenght} agendados</span>
+                </div>
                 <p className="parrafService">{description}</p>
+                {signPrice !== 0 ? <p className="parrafService"><span>Precio de la seña:</span> $ {signPrice}</p> : <p className="parrafService"><span>Sin seña</span></p>}
+                <div className="durationPriceContainer">
+                    <div className="divDuration">
+                        <ClockIcon
+                            width="18px"
+                            height="18px"
+                            fill="grey"
+                        />
+                        <p className="parrafDuration">{duration} min</p>
+                    </div>
+                    <p className="parrafPrice"><span className="spanPrice">$</span> {price}</p>
+                </div>
             </div>
             <div className="divButtons">
                 <Button
@@ -96,7 +113,7 @@ const ServiceCard: React.FC<Props> = ({ id, duration, price, title, description,
                     disabled={isLoading || isLoadingUpdate}
                     onSubmit={() => setIsModalOpen(true)}
                 >
-                    Editar servicio
+                    Editar
                 </Button>
                 <Button
                     fontSize={window.innerWidth <= 930 ? "1rem" : "1.2rem"}
@@ -104,7 +121,7 @@ const ServiceCard: React.FC<Props> = ({ id, duration, price, title, description,
                     onSubmit={deleteService}
                     disabled={isLoading || isLoadingUpdate}
                 >
-                    Eliminar servicio
+                    Eliminar
                 </Button>
             </div>
             <ModalForm
