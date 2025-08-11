@@ -6,6 +6,7 @@ import FormRegister from './components/LoginRegisterForms/FormRegister/FormRegis
 import UserPanel from './components/UserCompanyPanels/UserPanel/UserPanel.tsx'
 import CompanyPanel from './components/UserCompanyPanels/CompanyPanel/CompanyPanel.tsx'
 import CheckoutConfirmAppointment from './components/CheckoutConfirmAppointment/CheckoutConfirmAppointment.tsx'
+import ProcessingPayment from './components/ProcessingPayment/ProcessingPayment.tsx'
 import { CompanyProvider } from './contexts/CompanyContext.tsx'
 import { UserProvider } from './contexts/UserContext.tsx'
 
@@ -32,6 +33,7 @@ function App() {
             <Route path='/checkout' element={
               <CheckoutConfirmAppointment />
             } />
+            <Route path='/processingpayment' element={<ProcessingPayment />} />
           </Routes>
         </main>
       </BrowserRouter>
