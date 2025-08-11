@@ -57,6 +57,7 @@ const ScheduledAppointmentsPanel: React.FC<Props> = ({ scheduledAppointments }) 
                                     client={`${appointment.name} ${appointment.lastName}`}
                                     clientEmail={appointment.email}
                                     clientPhone={appointment.phone}
+                                    clientDNI={appointment.dni}
                                     date={appointment.date}
                                 />
                             })

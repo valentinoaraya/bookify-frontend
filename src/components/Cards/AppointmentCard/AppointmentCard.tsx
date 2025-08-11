@@ -17,6 +17,7 @@ interface Props {
     client?: string;
     clientEmail?: string;
     clientPhone?: string;
+    clientDNI?: string;
     state: Company;
     onCancelAppointment: (appointments: Appointment[], appointmentToDelete: string, serviceId: string) => void;
 }
@@ -30,6 +31,7 @@ const AppointmentCard: React.FC<Props> = ({
     client,
     clientEmail,
     clientPhone,
+    clientDNI,
     state,
     onCancelAppointment
 }) => {
@@ -78,6 +80,7 @@ const AppointmentCard: React.FC<Props> = ({
                 <div>
                     <p className="parrafAppointment"><span>Teléfono:</span> {clientPhone}</p>
                     <p className="parrafAppointment"><span>Email:</span> {clientEmail}</p>
+                    <p className="parrafAppointment"><span>DNI:</span> {clientDNI}</p>
                 </div>
                 <div>
                     <p className="parrafAppointment"><span>Servicio:</span> {title}</p>

@@ -34,7 +34,10 @@ const CheckoutConfirmAppointment = () => {
             dataUser
         })
 
-        if (response.init_point) window.location.href = response.init_point
+        if (response.init_point) {
+            sessionStorage.setItem("paymentInProcess", "true")
+            window.location.href = response.init_point
+        }
         if (response.error) {
             console.error(response.error)
             notifyError("Error al generar el pago.")
