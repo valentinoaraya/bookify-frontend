@@ -34,12 +34,19 @@ export interface Company extends CompanyBasicInfo {
 
 export type CompanyToUser = Omit<Company, "scheduledAppointments" | "connectedWithMP">
 
-export interface Appointment {
+export interface Appointment extends UserData {
     _id: string
     serviceId: Service
     companyId?: Company
-    clientId?: User
     date: string
+}
+
+export interface UserData {
+    name: string
+    lastName: string
+    email: string
+    phone: string
+    dni: string
 }
 
 export interface User {

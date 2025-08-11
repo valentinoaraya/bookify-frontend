@@ -16,8 +16,6 @@ interface Props {
 }
 
 const Button: React.FC<Props> = ({ children, iconSVG, onSubmit, type, disabled, fontSize, padding, fontWeight, width, margin, backgroundColor }) => {
-
-    console.log(backgroundColor)
     return (
         <button
             className="button"

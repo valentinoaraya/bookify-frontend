@@ -17,12 +17,14 @@ interface Props {
     description: string
     signPrice: number
     connectedWithMP: boolean
+    scheduledAppointmentsLenght?: number
+    availableAppointmentsLenght?: number
     onDeleteService: (id: string, scheduledAppointmentsToDelete: string[]) => void
     onUpdateService: (data: { [key: string]: any }) => void
     onRedirectToCalendar: (id: string, view: View) => void
 }
 
-const ServiceCard: React.FC<Props> = ({ id, duration, price, title, description, signPrice, connectedWithMP, onDeleteService, onUpdateService, onRedirectToCalendar }) => {
+const ServiceCard: React.FC<Props> = ({ id, duration, price, title, description, signPrice, connectedWithMP, scheduledAppointmentsLenght = 0, availableAppointmentsLenght = 0, onDeleteService, onUpdateService, onRedirectToCalendar }) => {
 
     const token = localStorage.getItem("access_token")
     const { isLoading, error, fetchData } = useFetchData(
@@ -78,6 +80,10 @@ const ServiceCard: React.FC<Props> = ({ id, duration, price, title, description,
         <div className="serviceCard">
             <h2 className="titleService">{title}</h2>
             <div className="dataService">
+                <div className="spanServiceCardContainer">
+                    <span className="spanServiceCard availables">{availableAppointmentsLenght} habilitados</span>
+                    <span className="spanServiceCard noAvailables">{scheduledAppointmentsLenght} agendados</span>
+                </div>
                 <p className="parrafService">{description}</p>
                 {signPrice !== 0 ? <p className="parrafService"><span>Precio de la seña:</span> $ {signPrice}</p> : <p className="parrafService"><span>Sin seña</span></p>}
                 <div className="durationPriceContainer">

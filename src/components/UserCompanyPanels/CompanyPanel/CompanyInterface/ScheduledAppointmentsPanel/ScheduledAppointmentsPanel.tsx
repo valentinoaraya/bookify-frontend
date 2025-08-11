@@ -54,9 +54,9 @@ const ScheduledAppointmentsPanel: React.FC<Props> = ({ scheduledAppointments }) 
                                     state={state}
                                     onCancelAppointment={(appointments: Appointment[], appointmentToDelete: string, serviceId: string) => onCancelAppointment(appointments, appointmentToDelete, serviceId)}
                                     title={appointment.serviceId.title}
-                                    client={`${appointment.clientId?.name} ${appointment.clientId?.lastName}`}
-                                    clientEmail={appointment.clientId?.email}
-                                    clientPhone={appointment.clientId?.phone}
+                                    client={`${appointment.name} ${appointment.lastName}`}
+                                    clientEmail={appointment.email}
+                                    clientPhone={appointment.phone}
                                     date={appointment.date}
                                 />
                             })

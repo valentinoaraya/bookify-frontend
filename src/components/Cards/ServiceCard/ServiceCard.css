@@ -60,6 +60,26 @@
     color: var(--azul-clarito);
 }
 
+.titleServiceCardContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    justify-content: space-between;
+}
+
+.spanServiceCardContainer {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.spanServiceCard {
+    font-size: .9rem;
+    font-weight: 600;
+    border-radius: 5px;
+    padding: .2rem .5rem;
+}
+
 @media (max-width: 930px) {
     .serviceCard {
         padding: .8rem;

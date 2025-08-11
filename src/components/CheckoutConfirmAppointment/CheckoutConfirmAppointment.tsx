@@ -11,18 +11,15 @@ import { formatDate } from "../../utils/formatDate";
 
 const CheckoutConfirmAppointment = () => {
 
-    // Inicio Mercado Pago para subir puntos en la integración
     initMercadoPago(PUBLIC_KEY_MP)
 
-    const token = localStorage.getItem("access_token")
     const location = useLocation()
-    const { date, service } = location.state
+    const { date, service, dataUser } = location.state
     const { isLoading, error, fetchData } = useFetchData(`${BACKEND_API_URL}/mercadopago/create-preference/${service.companyId}`,
         "POST",
-        token
     )
 
-    if (!date || !service) return <h2>Checkout no disponible.</h2>
+    if (!date || !service || !dataUser) return <h2>Checkout no disponible.</h2>
     const hour = date.split(" ")[1]
     const formattedDate = formatDate(date.split(" ")[0])
 
@@ -33,7 +30,8 @@ const CheckoutConfirmAppointment = () => {
             serviceId: service.serviceId,
             title: `Seña de turno para ${service.title}`,
             price: service.signPrice,
-            date: date
+            date: date,
+            dataUser
         })
 
         if (response.init_point) window.location.href = response.init_point

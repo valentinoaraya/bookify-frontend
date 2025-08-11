@@ -24,9 +24,6 @@ const UserInterface: React.FC<Props> = ({ company }) => {
                     dataCompany={company}
                 />
                 <div className="userPanelContent">
-                    <Title>
-                        Servicios disponibles
-                    </Title>
                     {
                         serviceToSchedule ?
                             <ServiceToSchedulePanel
@@ -35,10 +32,16 @@ const UserInterface: React.FC<Props> = ({ company }) => {
                                 setServiceToSchedule={setServiceToSchedule}
                             />
                             :
-                            <ResultsPanel
-                                setServiceToSchedule={setServiceToSchedule}
-                                results={results}
-                            />
+                            <>
+                                <Title>
+                                    Servicios disponibles
+                                </Title>
+                                <ResultsPanel
+                                    company={company}
+                                    setServiceToSchedule={setServiceToSchedule}
+                                    results={results}
+                                />
+                            </>
                     }
                 </div>
             </div>

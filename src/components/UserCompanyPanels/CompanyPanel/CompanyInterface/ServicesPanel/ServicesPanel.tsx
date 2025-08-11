@@ -79,6 +79,8 @@ const ServicesPanel: React.FC<Props> = ({ companyServices, connectedWithMP, onDe
                                     description={service.description}
                                     signPrice={service.signPrice}
                                     connectedWithMP={connectedWithMP}
+                                    availableAppointmentsLenght={service.availableAppointments.length}
+                                    scheduledAppointmentsLenght={service.scheduledAppointments.length}
                                     onDeleteService={onDeleteService}
                                     onUpdateService={(data) => onUpdateService(data)}
                                     onRedirectToCalendar={(id: string, view: View) => handleChangeToCalendar(id, view)}
