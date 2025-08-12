@@ -1,10 +1,3 @@
-.serviceToScheduleContainer {
-    padding: 2rem;
-    background-color: var(--blanco);
-    border-radius: 10px;
-    box-shadow: 0 0 5px 0 grey;
-}
-
 .calendarContainerUser {
     margin: 1rem 0;
 }

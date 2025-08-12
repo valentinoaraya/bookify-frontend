@@ -13,6 +13,7 @@ import { useFetchData } from "../../../../../hooks/useFetchData";
 import { formatDate } from "../../../../../utils/formatDate";
 import ModalForm from "../../../../ModalForm/ModalForm";
 import { useState } from "react";
+import LoadingModal from "../../../../../common/LoadingModal/LoadingModal";
 
 interface Props {
     serviceToSchedule: ServiceToSchedule;
@@ -28,6 +29,7 @@ const ServiceToSchedulePanel: React.FC<Props> = ({ serviceToSchedule, setService
         `${BACKEND_API_URL}/appointments/add-appointment`,
         "POST",
     )
+    const [isScheduling, setIsScheduling] = useState(false)
 
     if (error) notifyError("Error al reservar turno.")
     const navigate = useNavigate()
@@ -60,6 +62,7 @@ const ServiceToSchedulePanel: React.FC<Props> = ({ serviceToSchedule, setService
                 }
             })
         } else if (decisionConfirmed && serviceToSchedule.signPrice === 0) {
+            setIsScheduling(true)
             const response = await fetchData({
                 dataAppointment: {
                     date: `${stringDate} ${time}`,
@@ -68,6 +71,7 @@ const ServiceToSchedulePanel: React.FC<Props> = ({ serviceToSchedule, setService
                 },
                 dataUser
             })
+            setIsScheduling(true)
             if (response.data) {
                 const confirm = await confirmDelete({
                     icon: "success",
@@ -186,6 +190,10 @@ const ServiceToSchedulePanel: React.FC<Props> = ({ serviceToSchedule, setService
                     setIsOpen(false)
                 }}
                 disabledButtons={isLoading}
+            />
+            <LoadingModal
+                text="Agendando turno..."
+                isOpen={isScheduling}
             />
         </div>
     );
