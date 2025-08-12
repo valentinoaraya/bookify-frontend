@@ -9,6 +9,7 @@ import CheckoutConfirmAppointment from './components/CheckoutConfirmAppointment/
 import ProcessingPayment from './components/ProcessingPayment/ProcessingPayment.tsx'
 import { CompanyProvider } from './contexts/CompanyContext.tsx'
 import { UserProvider } from './contexts/UserContext.tsx'
+import CancelAppointment from './components/CancelAppointment/CancelAppointment.tsx'
 
 function App() {
 
@@ -19,6 +20,7 @@ function App() {
           <Routes>
             <Route path='/' element={<Home />} />
             <Route path='/login/:loginTo' element={<FormLogin />} />
+            <Route path='/cancel/:appointmentId' element={<CancelAppointment />} />
             <Route path='/register/:registerTo' element={<FormRegister />} />
             <Route path='/company/:company_id' element={
               <UserProvider>

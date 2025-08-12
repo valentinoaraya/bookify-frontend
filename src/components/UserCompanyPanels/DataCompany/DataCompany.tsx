@@ -10,6 +10,10 @@ interface Props {
 
 const DataCompany: React.FC<Props> = ({ dataCompany, children, scheduledAppointments }) => {
 
+    const availableAppointmentsQuantity = dataCompany.services.reduce((total, service) => {
+        return total + (service.availableAppointments ? service.availableAppointments.length : 0);
+    }, 0);
+
     const todayAppointments = scheduledAppointments
         ? scheduledAppointments.filter(appointment => {
             const appointmentDate = new Date(appointment.date);
@@ -45,32 +49,45 @@ const DataCompany: React.FC<Props> = ({ dataCompany, children, scheduledAppointm
             </div>
             <div className="divQuantityAppointmentsContainer">
                 {
-                    scheduledAppointments &&
-                    <>
-                        <div className="divQuantityAppointments">
-                            <ClockIcon
-                                width="36px"
-                                height="36px"
-                                fill="#1282A2"
-                            />
-                            <div>
-                                <h2>{todayAppointments.length}</h2>
-                                <h3>Turnos para hoy</h3>
+                    scheduledAppointments ?
+                        <>
+                            <div className="divQuantityAppointments">
+                                <ClockIcon
+                                    width="36px"
+                                    height="36px"
+                                    fill="#1282A2"
+                                />
+                                <div>
+                                    <h2>{todayAppointments.length}</h2>
+                                    <h3>Turnos para hoy</h3>
+                                </div>
                             </div>
-                        </div>
-                        <div className="divQuantityAppointments">
-                            <CalendarCheckIcon
-                                width="36px"
-                                height="36px"
-                                fill="#1282A2"
-                            />
-                            <div>
-                                <h2>{scheduledAppointments.length}</h2>
-                                <h3>Turnos totales</h3>
+                            <div className="divQuantityAppointments">
+                                <CalendarCheckIcon
+                                    width="36px"
+                                    height="36px"
+                                    fill="#1282A2"
+                                />
+                                <div>
+                                    <h2>{scheduledAppointments.length}</h2>
+                                    <h3>Turnos totales</h3>
+                                </div>
                             </div>
-
-                        </div>
-                    </>
+                        </>
+                        :
+                        <>
+                            <div className="divQuantityAppointments">
+                                <CalendarCheckIcon
+                                    width="36px"
+                                    height="36px"
+                                    fill="#1282A2"
+                                />
+                                <div>
+                                    <h2>{availableAppointmentsQuantity}</h2>
+                                    <h3>Turnos disponibles</h3>
+                                </div>
+                            </div>
+                        </>
                 }
                 <div className="divQuantityAppointments">
                     <UsersIcon
