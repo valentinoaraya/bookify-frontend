@@ -1,7 +1,6 @@
 .divResultCard {
     background-color: var(--blanco);
     padding: 1rem;
-    border: 1px solid var(--azul-clarito);
     box-shadow: 0 0 5px 0 grey;
     border-radius: 10px;
     display: flex;

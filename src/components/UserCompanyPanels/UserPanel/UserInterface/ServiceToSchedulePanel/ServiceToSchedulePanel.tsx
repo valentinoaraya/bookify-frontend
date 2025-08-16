@@ -14,6 +14,7 @@ import { formatDate } from "../../../../../utils/formatDate";
 import ModalForm from "../../../../ModalForm/ModalForm";
 import { useState } from "react";
 import LoadingModal from "../../../../../common/LoadingModal/LoadingModal";
+import { generateAvailableAppointmentsArray, generateScheudledAppointmentArray } from "../../../../../utils/cleanAppointmentsArray";
 
 interface Props {
     serviceToSchedule: ServiceToSchedule;
@@ -71,7 +72,7 @@ const ServiceToSchedulePanel: React.FC<Props> = ({ serviceToSchedule, setService
                 },
                 dataUser
             })
-            setIsScheduling(true)
+            setIsScheduling(false)
             if (response.data) {
                 const confirm = await confirmDelete({
                     icon: "success",
@@ -88,22 +89,8 @@ const ServiceToSchedulePanel: React.FC<Props> = ({ serviceToSchedule, setService
         }
     }
 
-    const arrayEvents = serviceToSchedule.availableAppointments.map(date => {
-        return {
-            title: window.innerWidth <= 1150 ? "" : "Disponible",
-            start: date,
-            backgroundColor: "green",
-            borderColor: "green"
-        }
-    })
-    const arrayEventsScheduled = serviceToSchedule.scheduledAppointments.map(date => {
-        return {
-            title: window.innerWidth <= 1150 ? "" : "Ocupado",
-            start: date,
-            backgroundColor: "red",
-            borderColor: "red"
-        }
-    })
+    const arrayEvents = generateAvailableAppointmentsArray(serviceToSchedule.availableAppointments)
+    const arrayEventsScheduled = generateScheudledAppointmentArray(serviceToSchedule.scheduledAppointments, serviceToSchedule.availableAppointments)
 
     return (
         <div className="serviceToScheduleContainer">
