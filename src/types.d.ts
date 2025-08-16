@@ -1,3 +1,9 @@
+export interface AvailableAppointment {
+    datetime: string
+    capacity: number
+    taken: number
+}
+
 export interface ServiceBasicInfo {
     _id: string
     title: string
@@ -5,10 +11,11 @@ export interface ServiceBasicInfo {
 
 export interface Service extends ServiceBasicInfo {
     description: string
+    capacityPerShift: number
     duration: number
     price: number
     companyId: string
-    availableAppointments: string[]
+    availableAppointments: AvailableAppointment[]
     scheduledAppointments: string[]
     signPrice: number
 }
@@ -68,4 +75,11 @@ export interface Input {
     placeholder?: string;
     selectOptions?: string[];
     mainSelectOption?: string;
+}
+
+export interface EventFullCalendar {
+    title: string
+    start: string
+    backgroundColor: string
+    borderColor: string
 }

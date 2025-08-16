@@ -75,6 +75,7 @@ const ServicesPanel: React.FC<Props> = ({ companyServices, connectedWithMP, onDe
                                     id={service._id}
                                     title={service.title}
                                     duration={service.duration}
+                                    capacityPerShift={service.capacityPerShift}
                                     price={service.price}
                                     description={service.description}
                                     signPrice={service.signPrice}
@@ -97,13 +98,14 @@ const ServicesPanel: React.FC<Props> = ({ companyServices, connectedWithMP, onDe
                     { type: "text", name: "description", placeholder: "Descripción", label: "Descripción" },
                     { type: "number", name: "price", placeholder: "Precio", label: "Precio" },
                     { type: "number", name: "duration", placeholder: "Duración", label: "Duración (en minutos)" },
+                    { type: "number", name: "capacityPerShift", placeholder: "Capacidad de personas por turno", label: "Capacidad de personas por turno" },
                     connectedWithMP ?
                         { type: "number", name: "signPrice", placeholder: "Precio de la seña", label: "Precio de la seña (Si no quieres cobrar señas para tus turnos deja '0')" }
                         :
                         { type: "none", name: "notConnectedWithMP", placeholder: "No puede cobrar señas", label: "Si quiere cobrar señas, vincule su cuenta de Mercado Pago." }
 
                 ]}
-                initialData={{ title: "", description: "", price: 0, duration: 0, signPrice: 0 }}
+                initialData={{ title: "", description: "", price: 0, duration: 0, signPrice: 0, capacityPerShift: 1 }}
                 onClose={() => setIsModalOpen(false)}
                 onSubmitForm={(data) => handleAddService(data)}
                 disabledButtons={isLoading}

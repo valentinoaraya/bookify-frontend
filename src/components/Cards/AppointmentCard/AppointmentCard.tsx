@@ -7,6 +7,8 @@ import { BACKEND_API_URL } from "../../../config";
 import { notifyError, notifySuccess } from "../../../utils/notifications";
 import { type Appointment, type Company } from "../../../types";
 import { formatDate } from "../../../utils/formatDate";
+import LoadingModal from "../../../common/LoadingModal/LoadingModal";
+import { useState } from "react";
 
 interface Props {
     _id: string;
@@ -41,6 +43,7 @@ const AppointmentCard: React.FC<Props> = ({
         "DELETE",
         token
     )
+    const [isOpen, setIsOpen] = useState(false)
 
     if (error) notifyError("Error al cancelar turno. Inténtalo de nuevo más tarde.")
 
@@ -56,6 +59,7 @@ const AppointmentCard: React.FC<Props> = ({
             confirmButtonText: "Aceptar"
         })
         if (confirm) {
+            setIsOpen(true)
             const response = await fetchData({})
             if (response.data) {
                 onCancelAppointment(
@@ -67,6 +71,7 @@ const AppointmentCard: React.FC<Props> = ({
             if (response.error) {
                 notifyError(response.error)
             }
+            setIsOpen(false)
         }
     }
 
@@ -107,6 +112,10 @@ const AppointmentCard: React.FC<Props> = ({
                     </Button>
                 </div>
             </div>
+            <LoadingModal
+                text="Cancelando..."
+                isOpen={isOpen}
+            />
         </div>
     );
 }

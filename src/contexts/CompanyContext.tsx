@@ -35,7 +35,6 @@ const initialState: Company = {
     connectedWithMP: false
 };
 
-// Reducer para manejar las actualizaciones de estado
 const companyReducer = (state: Company, action: Action): Company => {
     switch (action.type) {
         case "SET_COMPANY_DATA":
@@ -53,7 +52,6 @@ const companyReducer = (state: Company, action: Action): Company => {
     }
 };
 
-// Crear el contexto
 export const CompanyContext = createContext<ContextProps>({
     state: initialState,
     isLoading: false,

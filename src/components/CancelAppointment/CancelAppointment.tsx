@@ -7,6 +7,7 @@ import { formatDate } from "../../utils/formatDate";
 import { confirmDelete } from "../../utils/alerts";
 import { notifySuccess, notifyError } from "../../utils/notifications";
 import { ToastContainer } from "react-toastify";
+import LoadingSpinner from "../../common/LoadingSpinner/LoadingSpinner";
 
 const isAppointmentDatePassed = (appointmentDate: string): boolean => {
     const appointmentDateTime = new Date(appointmentDate);
@@ -78,12 +79,9 @@ const CancelAppointment = () => {
     )
 
     if (isLoading) return (
-        <div className="loading-container">
-            <div className="loading-content">
-                <div className="loading-spinner"></div>
-                <h2>Cargando información del turno...</h2>
-            </div>
-        </div>
+        <LoadingSpinner
+            text="Cargando información del turno..."
+        />
     )
 
     return (
