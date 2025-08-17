@@ -24,6 +24,7 @@ const ResultsPanel: React.FC<Props> = ({ results, setServiceToSchedule, company 
                                     key={service._id}
                                     _id={service._id}
                                     company={company}
+                                    capacityPerShift={service.capacityPerShift}
                                     availableAppointments={service.availableAppointments}
                                     scheduledAppointments={service.scheduledAppointments}
                                     description={service.description}

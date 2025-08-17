@@ -1,23 +1,24 @@
 import "./ResultCard.css"
-import { CompanyToUser, type ServiceToSchedule } from "../../../types";
+import { AvailableAppointment, CompanyToUser, type ServiceToSchedule } from "../../../types";
 import Button from "../../../common/Button/Button";
 import { NewWindowIcon, ClockIcon } from "../../../common/Icons/Icons";
 
 interface Props {
     _id: string;
     company: CompanyToUser;
-    availableAppointments: string[];
+    availableAppointments: AvailableAppointment[];
     scheduledAppointments: string[];
     description: string;
     duration: number;
     price: number;
     title: string;
     signPrice: number;
+    capacityPerShift: number;
     setServiceToSchedule: React.Dispatch<React.SetStateAction<ServiceToSchedule | null>>
 }
 
 const ResultCard: React.FC<Props> = ({
-    _id, company, availableAppointments, description, duration, price, title, signPrice, scheduledAppointments, setServiceToSchedule
+    _id, company, availableAppointments, description, duration, price, title, signPrice, capacityPerShift, scheduledAppointments, setServiceToSchedule
 }) => {
 
     return (
@@ -57,7 +58,7 @@ const ResultCard: React.FC<Props> = ({
                 <div>
                     <Button
                         margin="0"
-                        onSubmit={() => setServiceToSchedule({ _id, availableAppointments, title, companyId: company._id, scheduledAppointments, price, signPrice })}
+                        onSubmit={() => setServiceToSchedule({ _id, availableAppointments, title, companyId: company._id, scheduledAppointments, price, signPrice, capacityPerShift })}
                         fontSize='1rem'
                         padding=".8rem"
                     >

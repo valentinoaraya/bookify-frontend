@@ -1,6 +1,6 @@
 import "./ScheduledAppointmentsPanel.css"
 import Title from "../../../../../common/Title/Title";
-import { type Appointment } from "../../../../../types";
+import { Service, type Appointment } from "../../../../../types";
 import AppointmentCard from "../../../../Cards/AppointmentCard/AppointmentCard";
 import { useContext } from "react";
 import { CompanyContext } from "../../../../../contexts/CompanyContext";
@@ -16,17 +16,10 @@ const ScheduledAppointmentsPanel: React.FC<Props> = ({ scheduledAppointments }) 
 
     const sortedAppointments = scheduledAppointments.sort((a, b) => moment(a.date, "YYYY-MM-DD HH:mm").valueOf() - moment(b.date, "YYYY-MM-DD HH:mm").valueOf())
 
-    const onCancelAppointment = (appointments: Appointment[], dateAppointment: string, serviceId: string) => {
+    const onCancelAppointment = (appointments: Appointment[], service: Service) => {
         updateAppointments(appointments)
-        const serviceToUpdate = state.services.find(service => service._id === serviceId);
-        if (!serviceToUpdate) {
-            console.error(`Service with id ${serviceId} not found`);
-            return;
-        }
-        const newScheduledAppointments = serviceToUpdate.scheduledAppointments.filter(availableAppointment => availableAppointment !== dateAppointment)
-        const newAvailableAppointments = [...serviceToUpdate.availableAppointments, dateAppointment]
-        const serviceUpdated = { ...serviceToUpdate, availableAppointments: newAvailableAppointments, scheduledAppointments: newScheduledAppointments }
-        updateServices(state.services.map(service => service._id === serviceUpdated._id ? serviceUpdated : service))
+        updateServices(state.services.map(s => s._id === service._id ? service : s))
+        console.log(service)
     }
 
     return (
@@ -50,9 +43,8 @@ const ScheduledAppointmentsPanel: React.FC<Props> = ({ scheduledAppointments }) 
                                     _id={appointment._id}
                                     key={appointment._id}
                                     todayAppointment={moment(appointment.date).isSame(moment(), 'day')}
-                                    serviceId={appointment.serviceId._id}
                                     state={state}
-                                    onCancelAppointment={(appointments: Appointment[], appointmentToDelete: string, serviceId: string) => onCancelAppointment(appointments, appointmentToDelete, serviceId)}
+                                    onCancelAppointment={(appointments: Appointment[], service: Service) => onCancelAppointment(appointments, service)}
                                     title={appointment.serviceId.title}
                                     client={`${appointment.name} ${appointment.lastName}`}
                                     clientEmail={appointment.email}
