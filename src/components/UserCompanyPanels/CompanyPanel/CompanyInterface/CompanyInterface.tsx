@@ -2,6 +2,7 @@ import "./CompanyInterface.css"
 import { type Company, type View, type Service } from "../../../../types";
 import { useContext, useState } from "react";
 import ServicesPanel from "./ServicesPanel/ServicesPanel";
+import HistoryPanel from "./HistoryPanel/HistoryPanel";
 import ScheduledAppointmentsPanel from "./ScheduledAppointmentsPanel/ScheduledAppointmentsPanel";
 import CalendarServicePanel from "./CalendarServicePanel/CalendarServicePanel";
 import { CompanyContext } from "../../../../contexts/CompanyContext";
@@ -74,10 +75,7 @@ const CompanyInterface: React.FC<Props> = ({ company }) => {
                                             <>
                                                 {
                                                     activeView === "history" ?
-                                                        <div className="noServicesAppointments">
-                                                            <h3>Historial de turnos</h3>
-                                                            <p>Aún no tienes historial de turnos.</p>
-                                                        </div>
+                                                        <HistoryPanel company={company} />
                                                         :
                                                         <ServicesPanel
                                                             connectedWithMP={company.connectedWithMP}
