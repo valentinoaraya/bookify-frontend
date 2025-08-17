@@ -47,6 +47,8 @@ const ServicesPanel: React.FC<Props> = ({ companyServices, connectedWithMP, onDe
         updateServices(companyServices.map(service => service._id === data._id ? { ...service, ...data } : service))
     }
 
+    console.log(companyServices)
+
     return (
         <>
             <div className="servicesPanelHeader">
