@@ -20,9 +20,6 @@ interface Props {
 }
 
 const CalendarServicePanel: React.FC<Props> = ({ service, setActiveView }) => {
-
-    console.log(service)
-
     const token = localStorage.getItem("access_token")
     const { state, updateServices } = useContext(CompanyContext)
     const [availableAppointments, setAvailableAppointments] = useState<AvailableAppointment[]>(service.availableAppointments)

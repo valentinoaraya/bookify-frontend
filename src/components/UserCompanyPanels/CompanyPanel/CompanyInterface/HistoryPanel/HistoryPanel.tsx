@@ -1,14 +1,14 @@
 import { useState, useEffect, useMemo } from "react";
-import { DatePicker, Select, Input, Card, Empty, Spin, Statistic } from "antd";
+import { DatePicker, Select, Input, Card, Empty, Statistic } from "antd";
 import { SearchOutlined, CalendarOutlined } from "@ant-design/icons";
 import dayjs, { Dayjs } from "dayjs";
 import isBetween from "dayjs/plugin/isBetween";
 import Title from "../../../../../common/Title/Title";
 import { type Company, type Appointment } from "../../../../../types";
 import { BACKEND_API_URL } from "../../../../../config";
+import LoadingSpinner from "../../../../../common/LoadingSpinner/LoadingSpinner";
 import "./HistoryPanel.css";
 
-// Extender dayjs con el plugin isBetween
 dayjs.extend(isBetween);
 
 const { RangePicker } = DatePicker;
@@ -26,15 +26,13 @@ const HistoryPanel: React.FC<HistoryPanelProps> = ({ company }) => {
   const [filteredAppointments, setFilteredAppointments] = useState<Appointment[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Estado para guardar los turnos que vienen del backend
   const [backendAppointments, setBackendAppointments] = useState<Appointment[]>([]);
 
-  // Obtener datos del backend
   const fetchHistoryFromBackend = async () => {
     try {
       setLoading(true);
       const token = localStorage.getItem("access_token");
-      
+
       const url = `${BACKEND_API_URL}/appointments/company-history/${company._id}`;
 
       const response = await fetch(url, {
@@ -58,26 +56,18 @@ const HistoryPanel: React.FC<HistoryPanelProps> = ({ company }) => {
     }
   };
 
-  // Llamar al backend cuando se monta el componente o cambia la empresa
   useEffect(() => {
     fetchHistoryFromBackend();
   }, [company._id]);
 
-  // Datos finales: solo los del backend (historial real)
   const historyData = useMemo(() => {
-    console.log("Backend appointments recibidos:", backendAppointments);
-    console.log("IDs de las citas:", backendAppointments.map(apt => apt._id));
-    // Solo usar los datos del backend, no combinar con scheduledAppointments
     return backendAppointments;
   }, [backendAppointments]);
 
-  // Filtrar y ordenar turnos
   const processedAppointments = useMemo(() => {
     if (!historyData.length) return [];
 
-    // Filtrar por término de búsqueda y servicio
     const filtered = historyData.filter((appointment) => {
-      // Solo filtrar por término de búsqueda si existe
       if (searchTerm) {
         const searchLower = searchTerm.toLowerCase();
         const matchesClient =
@@ -87,13 +77,11 @@ const HistoryPanel: React.FC<HistoryPanelProps> = ({ company }) => {
         if (!matchesClient) return false;
       }
 
-      // Solo filtrar por servicio si no es "all"
       if (selectedService !== "all" && appointment.serviceId._id !== selectedService) return false;
 
       return true;
     });
 
-    // Ordenar por fecha, más reciente primero
     filtered.sort((a, b) => dayjs(b.date).valueOf() - dayjs(a.date).valueOf());
 
     return filtered;
@@ -103,7 +91,6 @@ const HistoryPanel: React.FC<HistoryPanelProps> = ({ company }) => {
     setFilteredAppointments(processedAppointments);
   }, [processedAppointments]);
 
-  // Estadísticas simples
   const statistics = useMemo(() => {
     if (!filteredAppointments.length) return null;
 
@@ -183,10 +170,10 @@ const HistoryPanel: React.FC<HistoryPanelProps> = ({ company }) => {
 
       <div className="appointmentsContainer">
         {loading ? (
-          <div className="loadingContainer">
-            <Spin size="large" />
-            <p>Cargando historial...</p>
-          </div>
+          <LoadingSpinner
+            shadow="none"
+            text="Cargando historial..."
+          />
         ) : filteredAppointments.length === 0 ? (
           <div className="noServicesAppointments">
             <Empty description="No se encontraron turnos en el historial" />
