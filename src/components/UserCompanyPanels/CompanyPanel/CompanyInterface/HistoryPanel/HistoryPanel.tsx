@@ -1,14 +1,14 @@
 import { useState, useEffect, useMemo } from "react";
-import { DatePicker, Select, Input, Card, Empty, Statistic } from "antd";
-import { SearchOutlined, CalendarOutlined } from "@ant-design/icons";
+import { DatePicker, Select, Input, Card, Empty, Spin, Statistic } from "antd";
+import { SearchOutlined, CalendarOutlined, DollarOutlined } from "@ant-design/icons";
 import dayjs, { Dayjs } from "dayjs";
 import isBetween from "dayjs/plugin/isBetween";
 import Title from "../../../../../common/Title/Title";
 import { type Company, type Appointment } from "../../../../../types";
 import { BACKEND_API_URL } from "../../../../../config";
-import LoadingSpinner from "../../../../../common/LoadingSpinner/LoadingSpinner";
 import "./HistoryPanel.css";
 
+// Extender dayjs con el plugin isBetween
 dayjs.extend(isBetween);
 
 const { RangePicker } = DatePicker;
@@ -26,13 +26,15 @@ const HistoryPanel: React.FC<HistoryPanelProps> = ({ company }) => {
   const [filteredAppointments, setFilteredAppointments] = useState<Appointment[]>([]);
   const [loading, setLoading] = useState(true);
 
+  // Estado para guardar los turnos que vienen del backend
   const [backendAppointments, setBackendAppointments] = useState<Appointment[]>([]);
 
+  // Obtener datos del backend
   const fetchHistoryFromBackend = async () => {
     try {
       setLoading(true);
       const token = localStorage.getItem("access_token");
-
+      
       const url = `${BACKEND_API_URL}/appointments/company-history/${company._id}`;
 
       const response = await fetch(url, {
@@ -56,18 +58,26 @@ const HistoryPanel: React.FC<HistoryPanelProps> = ({ company }) => {
     }
   };
 
+  // Llamar al backend cuando se monta el componente o cambia la empresa
   useEffect(() => {
     fetchHistoryFromBackend();
   }, [company._id]);
 
+  // Datos finales: solo los del backend (historial real)
   const historyData = useMemo(() => {
+    console.log("Backend appointments recibidos:", backendAppointments);
+    console.log("IDs de las citas:", backendAppointments.map(apt => apt._id));
+    // Solo usar los datos del backend, no combinar con scheduledAppointments
     return backendAppointments;
   }, [backendAppointments]);
 
+  // Filtrar y ordenar turnos
   const processedAppointments = useMemo(() => {
     if (!historyData.length) return [];
 
+    // Filtrar por término de búsqueda, servicio y rango de fechas
     const filtered = historyData.filter((appointment) => {
+      // Filtrar por término de búsqueda si existe
       if (searchTerm) {
         const searchLower = searchTerm.toLowerCase();
         const matchesClient =
@@ -77,20 +87,33 @@ const HistoryPanel: React.FC<HistoryPanelProps> = ({ company }) => {
         if (!matchesClient) return false;
       }
 
+      // Filtrar por servicio si no es "all"
       if (selectedService !== "all" && appointment.serviceId._id !== selectedService) return false;
+
+      // Filtrar por rango de fechas si está definido
+      if (dateRange && dateRange[0] && dateRange[1]) {
+        const aptDate = dayjs(appointment.date);
+        // Para fecha específica: si inicio y fin son el mismo día, filtra solo ese día
+        // Para rango: filtra entre inicio y fin, inclusivo
+        if (!aptDate.isBetween(dateRange[0], dateRange[1], 'day', '[]')) {
+          return false;
+        }
+      }
 
       return true;
     });
 
+    // Ordenar por fecha, más reciente primero
     filtered.sort((a, b) => dayjs(b.date).valueOf() - dayjs(a.date).valueOf());
 
     return filtered;
-  }, [historyData, searchTerm, selectedService]);
+  }, [historyData, searchTerm, selectedService, dateRange]);
 
   useEffect(() => {
     setFilteredAppointments(processedAppointments);
   }, [processedAppointments]);
 
+  // Estadísticas simples
   const statistics = useMemo(() => {
     if (!filteredAppointments.length) return null;
 
@@ -103,34 +126,47 @@ const HistoryPanel: React.FC<HistoryPanelProps> = ({ company }) => {
 
     const mostPopularService = Object.entries(serviceStats).sort(([, a], [, b]) => b - a)[0]?.[0] || "N/A";
 
+    const isFiltered = searchTerm !== "" || selectedService !== "all" || dateRange !== null;
+
+    let totalIncome;
+    if (isFiltered) {
+      totalIncome = filteredAppointments.reduce((acc, apt) => acc + apt.serviceId.price, 0);
+    } else {
+      const currentMonthStart = dayjs().startOf('month');
+      const currentMonthEnd = dayjs().endOf('month');
+      const currentMonthAppointments = historyData.filter(apt => dayjs(apt.date).isBetween(currentMonthStart, currentMonthEnd, 'day', '[]'));
+      totalIncome = currentMonthAppointments.reduce((acc, apt) => acc + apt.serviceId.price, 0);
+    }
+
     return {
       totalAppointments,
       mostPopularService,
+      totalIncome,
     };
-  }, [filteredAppointments]);
+  }, [filteredAppointments, historyData, searchTerm, selectedService, dateRange]);
 
   return (
-    <div className="divListContainerHistory">
+    <div className="history-list-container">
       <Title margin="0 0 1rem 0">Historial de Turnos</Title>
 
-      <div className="filtersContainer">
-        <div className="filtersRow">
-          <div className="filterItem">
+      <div className="history-filters-container">
+        <div className="history-filters-row">
+          <div className="history-filter-item">
             <Search
               placeholder="Buscar por cliente o email"
               allowClear
               enterButton={<SearchOutlined />}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="searchInput"
+              className="history-search-input"
             />
           </div>
-          <div className="filterItem">
+          <div className="history-filter-item">
             <Select
               placeholder="Filtrar por servicio"
               value={selectedService}
               onChange={setSelectedService}
-              className="filterSelect"
+              className="history-filter-select"
             >
               <Option value="all">Todos los servicios</Option>
               {company.services.map((service) => (
@@ -140,12 +176,12 @@ const HistoryPanel: React.FC<HistoryPanelProps> = ({ company }) => {
               ))}
             </Select>
           </div>
-          <div className="filterItem">
+          <div className="history-filter-item">
             <RangePicker
               placeholder={["Fecha inicio", "Fecha fin"]}
               value={dateRange}
               onChange={(dates) => setDateRange(dates as [Dayjs | null, Dayjs | null] | null)}
-              className="dateRangePicker"
+              className="history-date-range-picker"
               format="DD/MM/YYYY"
             />
           </div>
@@ -153,33 +189,36 @@ const HistoryPanel: React.FC<HistoryPanelProps> = ({ company }) => {
       </div>
 
       {statistics && (
-        <div className="statisticsContainer">
-          <div className="statsRow">
-            <Card className="statCard">
+        <div className="history-statistics-container">
+          <div className="history-stats-row">
+            <Card className="history-stat-card">
               <Statistic title="Total de Turnos" value={statistics.totalAppointments} prefix={<CalendarOutlined />} />
             </Card>
-            <Card className="statCard">
-              <div className="popularService">
-                <div className="statTitle">Servicio Más Popular</div>
-                <div className="statValue">{statistics.mostPopularService}</div>
+            <Card className="history-stat-card">
+              <div className="history-popular-service">
+                <div className="history-stat-title">Servicio Más Popular</div>
+                <div className="history-stat-value">{statistics.mostPopularService}</div>
               </div>
+            </Card>
+            <Card className="history-stat-card">
+              <Statistic title="Ingresos Totales" value={statistics.totalIncome} prefix={<DollarOutlined />} />
             </Card>
           </div>
         </div>
       )}
 
-      <div className="appointmentsContainer">
+      <div className="history-appointments-container">
         {loading ? (
-          <LoadingSpinner
-            shadow="none"
-            text="Cargando historial..."
-          />
+          <div className="history-loading-container">
+            <Spin size="large" />
+            <p>Cargando historial...</p>
+          </div>
         ) : filteredAppointments.length === 0 ? (
-          <div className="noServicesAppointments">
+          <div className="history-no-services-appointments">
             <Empty description="No se encontraron turnos en el historial" />
           </div>
         ) : (
-          <div className="appointmentsList">
+          <div className="history-appointments-list">
             {filteredAppointments.map((appointment) => (
               <HistoryAppointmentItem key={appointment._id} appointment={appointment} />
             ))}
@@ -196,22 +235,22 @@ const HistoryAppointmentItem = ({ appointment }: { appointment: Appointment }) =
   const time = dayjs(appointment.date).format("HH:mm");
 
   return (
-    <div className="appointmentItem">
-      <div className="appointmentHeader">
-        <div className="clientInfo">
-          <h3 className="clientName">{`${appointment.name} ${appointment.lastName}`}</h3>
-          <p className="clientEmail">{appointment.email}</p>
-          {appointment.phone && <p className="clientPhone">{appointment.phone}</p>}
+    <div className="history-appointment-item">
+      <div className="history-appointment-header">
+        <div className="history-client-info">
+          <h3 className="history-client-name">{`${appointment.name} ${appointment.lastName}`}</h3>
+          <p className="history-client-email">{appointment.email}</p>
+          {appointment.phone && <p className="history-client-phone">{appointment.phone}</p>}
         </div>
       </div>
-      <div className="appointmentDetails">
-        <div className="serviceInfo">
-          <h4 className="serviceTitle">{appointment.serviceId.title}</h4>
-          <p className="serviceDuration">Duración: {appointment.serviceId.duration} min</p>
-          <p className="servicePrice">Precio: ${appointment.serviceId.price}</p>
+      <div className="history-appointment-details">
+        <div className="history-service-info">
+          <h4 className="history-service-title">{appointment.serviceId.title}</h4>
+          <p className="history-service-duration">Duración: {appointment.serviceId.duration} min</p>
+          <p className="history-service-price">Precio: ${appointment.serviceId.price}</p>
         </div>
-        <div className="dateTimeInfo">
-          <p className="appointmentDate">
+        <div className="history-date-time-info">
+          <p className="history-appointment-date">
             <CalendarOutlined /> {dayjs(appointment.date).format("DD/MM/YYYY")} {time}
           </p>
         </div>
