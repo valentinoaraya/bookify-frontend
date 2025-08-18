@@ -19,7 +19,6 @@ const ScheduledAppointmentsPanel: React.FC<Props> = ({ scheduledAppointments }) 
     const onCancelAppointment = (appointments: Appointment[], service: Service) => {
         updateAppointments(appointments)
         updateServices(state.services.map(s => s._id === service._id ? service : s))
-        console.log(service)
     }
 
     return (
