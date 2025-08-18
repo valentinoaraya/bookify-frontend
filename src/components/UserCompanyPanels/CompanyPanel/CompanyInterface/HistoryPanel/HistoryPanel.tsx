@@ -192,6 +192,9 @@ const HistoryPanel: React.FC<HistoryPanelProps> = ({ company }) => {
 
 // Subcomponente para cada turno como item de lista
 const HistoryAppointmentItem = ({ appointment }: { appointment: Appointment }) => {
+  // Extraer la hora de formattedDate
+  const time = dayjs(appointment.date).format("HH:mm");
+
   return (
     <div className="appointmentItem">
       <div className="appointmentHeader">
@@ -209,7 +212,7 @@ const HistoryAppointmentItem = ({ appointment }: { appointment: Appointment }) =
         </div>
         <div className="dateTimeInfo">
           <p className="appointmentDate">
-            <CalendarOutlined /> {dayjs(appointment.date).format("DD/MM/YYYY")}
+            <CalendarOutlined /> {dayjs(appointment.date).format("DD/MM/YYYY")} {time}
           </p>
         </div>
       </div>
