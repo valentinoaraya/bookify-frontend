@@ -3,7 +3,7 @@ import Button from "../../../../../common/Button/Button";
 import { UserData, type Service, type ServiceToSchedule } from "../../../../../types";
 import Title from "../../../../../common/Title/Title";
 import FullCalendar from "@fullcalendar/react";
-import dayGridPlugin from "@fullcalendar/daygrid"
+import dayGridPlugin from "@fullcalendar/daygrid/index.js"
 import { notifyError } from "../../../../../utils/notifications";
 import { confirmDelete } from "../../../../../utils/alerts";
 import { parseDateToString } from "../../../../../utils/parseDateToString";

@@ -3,7 +3,7 @@ import Title from "../../../../../common/Title/Title";
 import { type View, type Service, AvailableAppointment } from "../../../../../types";
 import Button from "../../../../../common/Button/Button";
 import FullCalendar from "@fullcalendar/react";
-import dayGridPlugin from "@fullcalendar/daygrid"
+import dayGridPlugin from "@fullcalendar/daygrid/index.js"
 import { useContext, useState } from "react";
 import ModalForm from "../../../../ModalForm/ModalForm";
 import { useFetchData } from "../../../../../hooks/useFetchData";
