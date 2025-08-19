@@ -1,6 +1,6 @@
 import './App.css'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
-import Home from './components/Home/Home'
+import Home from './components/Home/Home.tsx'
 import FormLogin from './components/LoginRegisterForms/FormLogin/FormLogin.tsx'
 import FormRegister from './components/LoginRegisterForms/FormRegister/FormRegister.tsx'
 import UserPanel from './components/UserCompanyPanels/UserPanel/UserPanel.tsx'
