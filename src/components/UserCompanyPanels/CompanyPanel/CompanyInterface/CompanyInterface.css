@@ -66,6 +66,14 @@
     box-shadow: 0px 0px 3px 0px grey;
 }
 
+.noActive {
+    transition: all .2s;
+}
+
+.noActive:hover {
+    background-color: #eeeeee;
+}
+
 .divSectionContainer {
     margin-bottom: 2rem;
     padding: 2rem;

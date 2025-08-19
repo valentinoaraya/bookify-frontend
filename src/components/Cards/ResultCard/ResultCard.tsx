@@ -20,7 +20,6 @@ interface Props {
 const ResultCard: React.FC<Props> = ({
     _id, company, availableAppointments, description, duration, price, title, signPrice, capacityPerShift, scheduledAppointments, setServiceToSchedule
 }) => {
-
     return (
         <div className="divResultCard">
             <div className="titleResultCardContainer">
@@ -28,7 +27,7 @@ const ResultCard: React.FC<Props> = ({
                 {availableAppointments.length === 0 ?
                     <span className="spanResultCard noAvailables">0 disponibles</span>
                     :
-                    <span className="spanResultCard availables">{availableAppointments.length} disponibles</span>
+                    <span className="spanResultCard availables">{availableAppointments.length * capacityPerShift - scheduledAppointments.length} disponibles</span>
                 }
             </div>
             <div className="divDescriptionAndButtonsContainer">

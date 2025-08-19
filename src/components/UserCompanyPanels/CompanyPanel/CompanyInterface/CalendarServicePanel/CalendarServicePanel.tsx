@@ -13,6 +13,7 @@ import { parseDateToString } from "../../../../../utils/parseDateToString";
 import { CompanyContext } from "../../../../../contexts/CompanyContext";
 import { CalendarCheckIcon } from "../../../../../common/Icons/Icons";
 import { generateAvailableAppointmentsArray, generateScheudledAppointmentArray } from "../../../../../utils/cleanAppointmentsArray";
+import ModalDisponibility from "./ModalDisponibility/ModalDisponibility";
 
 interface Props {
     setActiveView: (view: View) => void
@@ -24,14 +25,11 @@ const CalendarServicePanel: React.FC<Props> = ({ service, setActiveView }) => {
     const { state, updateServices } = useContext(CompanyContext)
     const [availableAppointments, setAvailableAppointments] = useState<AvailableAppointment[]>(service.availableAppointments)
     const [isModalOpen, setIsModalOpen] = useState(false)
+    const [isModalDisponibilityOpen, setIsModalDisponibilityOpen] = useState(false)
+    const [appointment, setAppointment] = useState<AvailableAppointment | undefined>(undefined)
     const { isLoading, error, fetchData } = useFetchData(
         `${BACKEND_API_URL}/services/enable-appointments/${service._id}`,
         "POST",
-        token
-    )
-    const { isLoading: isLoadingDelete, error: errorDelete, fetchData: fetchDataDelete } = useFetchData(
-        `${BACKEND_API_URL}/services/delete-appointment/${service._id}`,
-        "DELETE",
         token
     )
 
@@ -51,22 +49,16 @@ const CalendarServicePanel: React.FC<Props> = ({ service, setActiveView }) => {
             console.error(response.error)
             notifyError("Error al habilitar los turnos.")
         }
-
     }
 
-    const deleteAppointment = async (date: Date) => {
+    const onClickAppointment = (date: Date) => {
         const { stringDate, time } = parseDateToString(date)
-        const response = await fetchDataDelete({ date: `${stringDate} ${time}` })
-        if (response.data) {
-            const newAvailableAppointments = availableAppointments.filter(availableAppointment => availableAppointment.datetime !== `${stringDate} ${time}`)
-            setAvailableAppointments(newAvailableAppointments)
-            const serviceUpdated = { ...service, availableAppointments: newAvailableAppointments }
-            updateServices(state.services.map(service => service._id === serviceUpdated._id ? serviceUpdated : service))
-        }
-        if (response.error) notifyError("Error al eliminar turno")
+        const appointment = availableAppointments.find(app => app.datetime === `${stringDate} ${time}`)
+        setAppointment(appointment)
+        setIsModalDisponibilityOpen(true)
     }
 
-    if (error || errorDelete) notifyError("Error al habilitar los turnos")
+    if (error) notifyError("Error al habilitar los turnos")
 
     return (
         <div className="calendarServicePanel">
@@ -128,7 +120,7 @@ const CalendarServicePanel: React.FC<Props> = ({ service, setActiveView }) => {
                         if (info.event.backgroundColor === "red") {
                             notifyError("No es posible eliminar un turno asignado desde este panel.")
                         } else {
-                            deleteAppointment(info.event.start as Date)
+                            onClickAppointment(info.event.start as Date)
                         }
                     }}
                 />
@@ -175,13 +167,21 @@ const CalendarServicePanel: React.FC<Props> = ({ service, setActiveView }) => {
                         }
                     ]
                 }
-                disabledButtons={isLoading || isLoadingDelete}
+                disabledButtons={isLoading}
                 initialData={{
                     hourStart: "",
                     hourFinish: "",
                     turnEach: "",
                     days: null
                 }}
+            />
+            <ModalDisponibility
+                serviceId={service._id}
+                isOpen={isModalDisponibilityOpen}
+                setAvailableAppointments={setAvailableAppointments}
+                setIsOpen={setIsModalDisponibilityOpen}
+                setAppointment={setAppointment}
+                appointment={appointment}
             />
         </div>
     );

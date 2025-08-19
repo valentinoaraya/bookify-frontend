@@ -46,6 +46,7 @@ body.modal-open {
 }
 
 .dayPickerContainer {
+    background-color: var(--blanco);
     margin: 2rem 0;
     width: 100%;
 }
