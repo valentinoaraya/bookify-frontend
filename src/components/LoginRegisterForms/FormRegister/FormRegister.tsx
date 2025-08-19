@@ -1,6 +1,6 @@
 import { useNavigate, useParams } from "react-router-dom";
 import "./FormRegister.css"
-import { useDataForm } from "../../../hooks/useDataForm";
+import { useDataForm } from "../../../hooks/useDataForm.ts";
 import Title from "../../../common/Title/Title.tsx";
 import LabelInputComponent from "../LabelInputComponent/LabelInputComponent.tsx";
 import LabelSelectComponent from "../LabelSelectComponent/LabelSelectComponent.tsx";
