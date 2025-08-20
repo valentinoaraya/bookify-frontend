@@ -24,6 +24,7 @@ const CalendarServicePanel: React.FC<Props> = ({ service, setActiveView }) => {
     const token = localStorage.getItem("access_token")
     const { state, updateServices } = useContext(CompanyContext)
     const [availableAppointments, setAvailableAppointments] = useState<AvailableAppointment[]>(service.availableAppointments)
+    const [scheduledAppointments, setScheduledAppointments] = useState<string[]>(service.scheduledAppointments)
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [isModalDisponibilityOpen, setIsModalDisponibilityOpen] = useState(false)
     const [appointment, setAppointment] = useState<AvailableAppointment | undefined>(undefined)
@@ -34,7 +35,7 @@ const CalendarServicePanel: React.FC<Props> = ({ service, setActiveView }) => {
     )
 
     const arrayEvents = generateAvailableAppointmentsArray(availableAppointments)
-    const arrayEventsScheduled = generateScheudledAppointmentArray(service.scheduledAppointments, service.availableAppointments)
+    const arrayEventsScheduled = generateScheudledAppointmentArray(scheduledAppointments, availableAppointments)
 
     const onSubmitForm = async (data: { [key: string]: any }) => {
         const response = await fetchData(data)
@@ -54,7 +55,8 @@ const CalendarServicePanel: React.FC<Props> = ({ service, setActiveView }) => {
     const onClickAppointment = (date: Date) => {
         const { stringDate, time } = parseDateToString(date)
         const appointment = availableAppointments.find(app => app.datetime === `${stringDate} ${time}`)
-        setAppointment(appointment)
+        const scheduleds = scheduledAppointments.filter(date => date === `${stringDate} ${time}`).length
+        setAppointment(appointment || { datetime: `${stringDate} ${time}`, capacity: 0, taken: scheduleds })
         setIsModalDisponibilityOpen(true)
     }
 
@@ -117,11 +119,7 @@ const CalendarServicePanel: React.FC<Props> = ({ service, setActiveView }) => {
                         ...arrayEventsScheduled || []
                     ]}
                     eventClick={(info) => {
-                        if (info.event.backgroundColor === "red") {
-                            notifyError("No es posible eliminar un turno asignado desde este panel.")
-                        } else {
-                            onClickAppointment(info.event.start as Date)
-                        }
+                        onClickAppointment(info.event.start as Date)
                     }}
                 />
             </div>
@@ -179,6 +177,7 @@ const CalendarServicePanel: React.FC<Props> = ({ service, setActiveView }) => {
                 serviceId={service._id}
                 isOpen={isModalDisponibilityOpen}
                 setAvailableAppointments={setAvailableAppointments}
+                setScheduledAppointments={setScheduledAppointments}
                 setIsOpen={setIsModalDisponibilityOpen}
                 setAppointment={setAppointment}
                 appointment={appointment}
