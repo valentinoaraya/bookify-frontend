@@ -47,19 +47,19 @@ const CompanyInterface: React.FC<Props> = ({ company }) => {
                             <div className="divSectionAndButtonsContainer">
                                 <div className="divButtonsContainer">
                                     <button
-                                        className={`buttonSection ${activeView === "appointments" ? "active" : ""}`}
+                                        className={`buttonSection ${activeView === "appointments" ? "active" : "noActive"}`}
                                         onClick={() => setActiveView("appointments")}
                                     >
                                         Próximos turnos
                                     </button>
                                     <button
-                                        className={`buttonSection ${activeView === "history" ? "active" : ""}`}
+                                        className={`buttonSection ${activeView === "history" ? "active" : "noActive"}`}
                                         onClick={() => setActiveView("history")}
                                     >
                                         Historial
                                     </button>
                                     <button
-                                        className={`buttonSection ${activeView === "services" ? "active" : ""}`}
+                                        className={`buttonSection ${activeView === "services" ? "active" : "noActive"}`}
                                         onClick={() => setActiveView("services")}
                                     >
                                         Servicios

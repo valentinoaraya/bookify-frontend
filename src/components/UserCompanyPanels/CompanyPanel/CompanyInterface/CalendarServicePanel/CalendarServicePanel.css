@@ -20,6 +20,11 @@
 .event {
     padding: .8rem .5rem;
     cursor: pointer;
+    transition: all .2s;
+}
+
+.event:hover {
+    padding: 2rem 0 2rem 1rem;
 }
 
 .fc-sticky,
