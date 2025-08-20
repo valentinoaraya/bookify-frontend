@@ -26,8 +26,13 @@ const ModalDisponibility: React.FC<Props> = ({ isOpen, appointment, serviceId, s
         "DELETE",
         token
     )
+    const { isLoading: isLoadingAddApp, error: errorAddApp, fetchData: fetchDataAddApp } = useFetchData(
+        `${BACKEND_API_URL}/services/add-enable-appointment/${serviceId}`,
+        "POST",
+        token
+    )
 
-    if (error) notifyError("Error al habilitar los turnos")
+    if (error || errorAddApp) notifyError("Error al modificar los turnos")
 
     useEffect(() => {
         if (isOpen) {
@@ -52,6 +57,17 @@ const ModalDisponibility: React.FC<Props> = ({ isOpen, appointment, serviceId, s
         if (response.error) notifyError("Error al eliminar turno")
     }
 
+    const addAppointment = async (date: string) => {
+        const response = await fetchDataAddApp({ date })
+        if (response.data) {
+            setAppointment(response.data.appointment)
+            setAvailableAppointments(response.data.service.availableAppointments)
+            setScheduledAppointments(response.data.service.scheduledAppointments)
+            updateServices(state.services.map(service => service._id === serviceId ? response.data.service : service))
+        }
+        if (response.error) notifyError("Error al habilitar turno")
+    }
+
     const takenCount = appointment?.taken ?? 0
     const capacityCount = appointment?.capacity ?? 0
     const availableCount = Math.max(capacityCount - takenCount, 0)
@@ -72,24 +88,28 @@ const ModalDisponibility: React.FC<Props> = ({ isOpen, appointment, serviceId, s
                     {Array.from({ length: availableCount }).map((_, index) => (
                         <div key={`a-${index}`} className="disponibilitySlot available"
                             onClick={() => {
-                                if (!isLoading) deleteAppointment(appointment?.datetime as string, false)
+                                if (!isLoading && !isLoadingAddApp) deleteAppointment(appointment?.datetime as string, false)
                             }}
                         >
                             <h3>Disponible</h3>
                         </div>
                     ))}
-                    <div className="addAvailable" >
+                    <div className="addAvailable"
+                        onClick={() => {
+                            if (!isLoading && !isLoadingAddApp) addAppointment(appointment?.datetime as string)
+                        }}
+                    >
                         <h3>+ Agregar disponible</h3>
                     </div>
                     <div className="addAvailable"
                         onClick={() => {
-                            if (!isLoading) deleteAppointment(appointment?.datetime as string, true)
+                            if (!isLoading && !isLoadingAddApp && availableCount !== 0) deleteAppointment(appointment?.datetime as string, true)
                         }}
                     >
                         <h3>🗑️ Eliminar todos los disponibles</h3>
                     </div>
                 </div>
-                <Button onSubmit={() => setIsOpen(false)} disabled={isLoading}>Aceptar</Button>
+                <Button onSubmit={() => setIsOpen(false)} disabled={isLoading || isLoadingAddApp}>Aceptar</Button>
             </div>
         </div>
     );
