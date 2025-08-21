@@ -81,7 +81,7 @@ const ServiceCard: React.FC<Props> = ({ id, duration, price, title, description,
             <h2 className="titleService">{title}</h2>
             <div className="dataService">
                 <div className="spanServiceCardContainer">
-                    <span className="spanServiceCard availables">{availableAppointmentsLenght * capacityPerShift - scheduledAppointmentsLenght} disponibles</span>
+                    <span className="spanServiceCard availables">{availableAppointmentsLenght} disponibles</span>
                     <span className="spanServiceCard noAvailables">{scheduledAppointmentsLenght} agendados</span>
                 </div>
                 <p className="parrafService">{description}</p>
