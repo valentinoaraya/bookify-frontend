@@ -1,10 +1,10 @@
-import { type Service, type ServiceToSchedule, CompanyToUser } from "../../../../../types";
+import { type Service, type CompanyToUser } from "../../../../../types";
 import ResultCard from "../../../../Cards/ResultCard/ResultCard";
 import "./ResultsPanel.css"
 
 interface Props {
     results: Service[] | null
-    setServiceToSchedule: React.Dispatch<React.SetStateAction<ServiceToSchedule | null>>
+    setServiceToSchedule: React.Dispatch<React.SetStateAction<string | null>>
     company: CompanyToUser
 }
 
