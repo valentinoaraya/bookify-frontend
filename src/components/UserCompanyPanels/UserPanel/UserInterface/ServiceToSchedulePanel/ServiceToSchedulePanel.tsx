@@ -1,6 +1,6 @@
 import "./ServiceToSchedulePanel.css"
 import Button from "../../../../../common/Button/Button";
-import { UserData, type Service, type ServiceToSchedule } from "../../../../../types";
+import { type UserData, type ServiceToSchedule } from "../../../../../types";
 import Title from "../../../../../common/Title/Title";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid/index.js"
@@ -12,28 +12,61 @@ import { BACKEND_API_URL } from "../../../../../config";
 import { useFetchData } from "../../../../../hooks/useFetchData";
 import { formatDate } from "../../../../../utils/formatDate";
 import ModalForm from "../../../../ModalForm/ModalForm";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import LoadingModal from "../../../../../common/LoadingModal/LoadingModal";
 import { generateAvailableAppointmentsArray, generateScheudledAppointmentArray } from "../../../../../utils/cleanAppointmentsArray";
+import LoadingSpinner from "../../../../../common/LoadingSpinner/LoadingSpinner";
 
 interface Props {
-    serviceToSchedule: ServiceToSchedule;
-    setServiceToSchedule: React.Dispatch<React.SetStateAction<ServiceToSchedule | null>>;
-    setResults: React.Dispatch<React.SetStateAction<Service[] | null>>;
+    serviceToSchedule: string;
+    setServiceToSchedule: React.Dispatch<React.SetStateAction<string | null>>;
 }
 
 const ServiceToSchedulePanel: React.FC<Props> = ({ serviceToSchedule, setServiceToSchedule }) => {
 
     const [isOpen, setIsOpen] = useState(false)
     const [dateAppointment, setDateAppointment] = useState<Date | null>(null)
+    const [isScheduling, setIsScheduling] = useState(false)
     const { error, isLoading, fetchData } = useFetchData(
         `${BACKEND_API_URL}/appointments/add-appointment`,
         "POST",
     )
-    const [isScheduling, setIsScheduling] = useState(false)
+    const { error: errorData, isLoading: isLoadingData, fetchData: fetchDataService } = useFetchData(
+        `${BACKEND_API_URL}/services/${serviceToSchedule}`,
+        "GET",
+    )
 
     if (error) notifyError("Error al reservar turno.")
+    if (errorData) notifyError("Error al obtener el servicio.")
+
+    const [serviceToScheduleData, setServiceToScheduleData] = useState<ServiceToSchedule | null>(null)
+
     const navigate = useNavigate()
+
+    useEffect(() => {
+        const fetchService = async () => {
+            const response = await fetchDataService({})
+            console.log(response)
+            if (response.data) {
+                setServiceToScheduleData(response.data)
+            } else if (response.error) {
+                notifyError("Error al obtener el servicio. Inténtelo de nuevo más tarde.")
+            }
+        }
+
+        fetchService()
+    }, [])
+
+    if (isLoadingData) return <div className="serviceToScheduleContainer">
+        <LoadingSpinner
+            text="Cargando servicio..."
+            shadow="none"
+        />
+    </div>
+
+    if (!serviceToScheduleData) return <div className="serviceToScheduleContainer">
+        <h1>Lo sentimos, no encontramos el servicio que buscabas...</h1>
+    </div>
 
     const confirmAppointment = async (date: Date, dataUser: UserData) => {
 
@@ -41,34 +74,34 @@ const ServiceToSchedulePanel: React.FC<Props> = ({ serviceToSchedule, setService
         const formattedDate = formatDate(stringDate)
 
         const decisionConfirmed = await confirmDelete({
-            question: `¿Desea reservar un turno para ${serviceToSchedule.title} el día ${formattedDate} a las ${time} hs?`,
-            mesasge: serviceToSchedule.signPrice !== 0 ? `Al aceptar, serás redirigido al Checkout donde realizarás el pago de la seña que requiere la empresa para confirmar el turno. Solo podrás cancelar el turno con más de 24 horas de anticipación y se te devolverá un 50% del dinero abonado.` : "Solo podrás cancelar el turno con más de 24 horas de anticipación.",
+            question: `¿Desea reservar un turno para ${serviceToScheduleData.title} el día ${formattedDate} a las ${time} hs?`,
+            mesasge: serviceToScheduleData.signPrice !== 0 ? `Al aceptar, serás redirigido al Checkout donde realizarás el pago de la seña que requiere la empresa para confirmar el turno. Solo podrás cancelar el turno con más de 24 horas de anticipación y se te devolverá un 50% del dinero abonado.` : "Solo podrás cancelar el turno con más de 24 horas de anticipación.",
             confirmButtonText: "Aceptar",
             cancelButtonText: "Cancelar",
             cancelButton: true
         })
 
-        if (decisionConfirmed && serviceToSchedule.signPrice !== 0) {
+        if (decisionConfirmed && serviceToScheduleData.signPrice !== 0) {
             navigate("/checkout", {
                 state: {
                     date: `${stringDate} ${time}`,
                     service: {
-                        serviceId: serviceToSchedule._id,
-                        title: serviceToSchedule.title,
-                        signPrice: serviceToSchedule.signPrice,
-                        companyId: serviceToSchedule.companyId,
-                        totalPrice: serviceToSchedule.price
+                        serviceId: serviceToScheduleData._id,
+                        title: serviceToScheduleData.title,
+                        signPrice: serviceToScheduleData.signPrice,
+                        companyId: serviceToScheduleData.companyId,
+                        totalPrice: serviceToScheduleData.price
                     },
                     dataUser
                 }
             })
-        } else if (decisionConfirmed && serviceToSchedule.signPrice === 0) {
+        } else if (decisionConfirmed && serviceToScheduleData.signPrice === 0) {
             setIsScheduling(true)
             const response = await fetchData({
                 dataAppointment: {
                     date: `${stringDate} ${time}`,
-                    serviceId: serviceToSchedule._id,
-                    companyId: serviceToSchedule.companyId
+                    serviceId: serviceToScheduleData._id,
+                    companyId: serviceToScheduleData.companyId
                 },
                 dataUser
             })
@@ -89,15 +122,15 @@ const ServiceToSchedulePanel: React.FC<Props> = ({ serviceToSchedule, setService
         }
     }
 
-    const arrayEvents = generateAvailableAppointmentsArray(serviceToSchedule.availableAppointments)
-    const arrayEventsScheduled = generateScheudledAppointmentArray(serviceToSchedule.scheduledAppointments, serviceToSchedule.availableAppointments)
+    const arrayEvents = generateAvailableAppointmentsArray(serviceToScheduleData.availableAppointments)
+    const arrayEventsScheduled = generateScheudledAppointmentArray(serviceToScheduleData.scheduledAppointments, serviceToScheduleData.availableAppointments)
 
     return (
         <div className="serviceToScheduleContainer">
             <Title
                 fontSize={window.innerWidth <= 930 ? "1.5rem" : ""}
             >
-                Turnos disponibles para {serviceToSchedule.title}
+                Turnos disponibles para {serviceToScheduleData.title}
             </Title>
             {
                 window.innerWidth <= 1150 &&

@@ -10,8 +10,10 @@ interface Props {
 
 const DataCompany: React.FC<Props> = ({ dataCompany, children, scheduledAppointments }) => {
 
-    const availableAppointmentsQuantity = dataCompany.services.reduce((total, service) => {
-        return total + (service.availableAppointments ? service.availableAppointments.length : 0);
+    const availableAppointmentsQuantity = dataCompany.services.reduce((acc, service) => {
+        return acc + service.availableAppointments.reduce((acc, appointment) => {
+            return acc + appointment.capacity - appointment.taken;
+        }, 0);
     }, 0);
 
     const todayAppointments = scheduledAppointments

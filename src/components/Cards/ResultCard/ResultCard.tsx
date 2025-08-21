@@ -1,5 +1,5 @@
 import "./ResultCard.css"
-import { AvailableAppointment, CompanyToUser, type ServiceToSchedule } from "../../../types";
+import { type AvailableAppointment, type CompanyToUser } from "../../../types";
 import Button from "../../../common/Button/Button";
 import { NewWindowIcon, ClockIcon } from "../../../common/Icons/Icons";
 
@@ -7,19 +7,25 @@ interface Props {
     _id: string;
     company: CompanyToUser;
     availableAppointments: AvailableAppointment[];
-    scheduledAppointments: string[];
     description: string;
     duration: number;
     price: number;
     title: string;
     signPrice: number;
-    capacityPerShift: number;
-    setServiceToSchedule: React.Dispatch<React.SetStateAction<ServiceToSchedule | null>>
+    setServiceToSchedule: React.Dispatch<React.SetStateAction<string | null>>
 }
 
 const ResultCard: React.FC<Props> = ({
-    _id, company, availableAppointments, description, duration, price, title, signPrice, capacityPerShift, scheduledAppointments, setServiceToSchedule
+    _id, company, availableAppointments, description, duration, price, title, signPrice, setServiceToSchedule
 }) => {
+
+    const quantityAvailable = availableAppointments.reduce((acc, appointment) => {
+        return acc + appointment.capacity - appointment.taken;
+    }, 0);
+
+    console.log(availableAppointments)
+    console.log(quantityAvailable)
+
     return (
         <div className="divResultCard">
             <div className="titleResultCardContainer">
@@ -27,7 +33,7 @@ const ResultCard: React.FC<Props> = ({
                 {availableAppointments.length === 0 ?
                     <span className="spanResultCard noAvailables">0 disponibles</span>
                     :
-                    <span className="spanResultCard availables">{availableAppointments.length * capacityPerShift - scheduledAppointments.length} disponibles</span>
+                    <span className="spanResultCard availables">{quantityAvailable} disponibles</span>
                 }
             </div>
             <div className="divDescriptionAndButtonsContainer">
@@ -57,7 +63,7 @@ const ResultCard: React.FC<Props> = ({
                 <div>
                     <Button
                         margin="0"
-                        onSubmit={() => setServiceToSchedule({ _id, availableAppointments, title, companyId: company._id, scheduledAppointments, price, signPrice, capacityPerShift })}
+                        onSubmit={() => setServiceToSchedule(_id)}
                         fontSize='1rem'
                         padding=".8rem"
                     >
