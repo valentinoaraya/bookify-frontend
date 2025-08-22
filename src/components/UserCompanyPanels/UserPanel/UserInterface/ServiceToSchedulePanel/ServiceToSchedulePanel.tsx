@@ -23,7 +23,6 @@ interface Props {
 }
 
 const ServiceToSchedulePanel: React.FC<Props> = ({ serviceToSchedule, setServiceToSchedule }) => {
-
     const [isOpen, setIsOpen] = useState(false)
     const [dateAppointment, setDateAppointment] = useState<Date | null>(null)
     const [isScheduling, setIsScheduling] = useState(false)
@@ -35,9 +34,14 @@ const ServiceToSchedulePanel: React.FC<Props> = ({ serviceToSchedule, setService
         `${BACKEND_API_URL}/services/${serviceToSchedule}`,
         "GET",
     )
+    const { error: errorConfirm, isLoading: isLoadingConfirm, fetchData: fetchDataConfirm } = useFetchData(
+        `${BACKEND_API_URL}/services/contains-sign-price/${serviceToSchedule}`,
+        "GET",
+    )
 
     if (error) notifyError("Error al reservar turno.")
     if (errorData) notifyError("Error al obtener el servicio.")
+    if (errorConfirm) notifyError("Error al obtener el servicio.")
 
     const [serviceToScheduleData, setServiceToScheduleData] = useState<ServiceToSchedule | null>(null)
 
@@ -57,6 +61,8 @@ const ServiceToSchedulePanel: React.FC<Props> = ({ serviceToSchedule, setService
         fetchService()
     }, [])
 
+    console.log(serviceToScheduleData)
+
     if (isLoadingData) return <div className="serviceToScheduleContainer">
         <LoadingSpinner
             text="Cargando servicio..."
@@ -75,50 +81,57 @@ const ServiceToSchedulePanel: React.FC<Props> = ({ serviceToSchedule, setService
 
         const decisionConfirmed = await confirmDelete({
             question: `¿Desea reservar un turno para ${serviceToScheduleData.title} el día ${formattedDate} a las ${time} hs?`,
-            mesasge: serviceToScheduleData.signPrice !== 0 ? `Al aceptar, serás redirigido al Checkout donde realizarás el pago de la seña que requiere la empresa para confirmar el turno. Solo podrás cancelar el turno con más de 24 horas de anticipación y se te devolverá un 50% del dinero abonado.` : "Solo podrás cancelar el turno con más de 24 horas de anticipación.",
+            mesasge: "Solo podrás cancelar el turno con más de 24 horas de anticipación.",
             confirmButtonText: "Aceptar",
             cancelButtonText: "Cancelar",
             cancelButton: true
         })
 
-        if (decisionConfirmed && serviceToScheduleData.signPrice !== 0) {
-            navigate("/checkout", {
-                state: {
-                    date: `${stringDate} ${time}`,
-                    service: {
-                        serviceId: serviceToScheduleData._id,
-                        title: serviceToScheduleData.title,
-                        signPrice: serviceToScheduleData.signPrice,
-                        companyId: serviceToScheduleData.companyId,
-                        totalPrice: serviceToScheduleData.price
-                    },
-                    dataUser
-                }
-            })
-        } else if (decisionConfirmed && serviceToScheduleData.signPrice === 0) {
-            setIsScheduling(true)
-            const response = await fetchData({
-                dataAppointment: {
-                    date: `${stringDate} ${time}`,
-                    serviceId: serviceToScheduleData._id,
-                    companyId: serviceToScheduleData.companyId
-                },
-                dataUser
-            })
-            setIsScheduling(false)
+        if (decisionConfirmed) {
+            const response = await fetchDataConfirm({})
             if (response.data) {
-                const confirm = await confirmDelete({
-                    icon: "success",
-                    question: `Turno confirmado correctamente.`,
-                    confirmButtonText: "Aceptar",
-                    cancelButton: false
-                })
-                if (confirm) {
-                    setServiceToSchedule(null)
-                    window.location.reload()
+                if (response.data.contains) {
+                    navigate("/checkout", {
+                        state: {
+                            date: `${stringDate} ${time}`,
+                            service: {
+                                serviceId: serviceToScheduleData._id,
+                                title: serviceToScheduleData.title,
+                                signPrice: serviceToScheduleData.signPrice,
+                                companyId: serviceToScheduleData.companyId,
+                                totalPrice: serviceToScheduleData.price
+                            },
+                            dataUser
+                        }
+                    })
+                } else {
+                    setIsScheduling(true)
+                    const response = await fetchData({
+                        dataAppointment: {
+                            date: `${stringDate} ${time}`,
+                            serviceId: serviceToScheduleData._id,
+                            companyId: serviceToScheduleData.companyId
+                        },
+                        dataUser
+                    })
+                    setIsScheduling(false)
+                    if (response.data) {
+                        const confirm = await confirmDelete({
+                            icon: "success",
+                            question: `Turno confirmado correctamente.`,
+                            confirmButtonText: "Aceptar",
+                            cancelButton: false
+                        })
+                        if (confirm) {
+                            setServiceToSchedule(null)
+                            window.location.reload()
+                        }
+                    }
+                    if (response.error) notifyError("Error al confirmar turno. Inténtelo de nuevo más tarde.")
+
                 }
             }
-            if (response.error) notifyError("Error al confirmar turno. Inténtelo de nuevo más tarde.")
+            if (response.error) notifyError("Error al verificar el servicio. Inténtelo de nuevo más tarde.")
         }
     }
 
@@ -212,8 +225,8 @@ const ServiceToSchedulePanel: React.FC<Props> = ({ serviceToSchedule, setService
                 disabledButtons={isLoading}
             />
             <LoadingModal
-                text="Agendando turno..."
-                isOpen={isScheduling}
+                text={isLoadingConfirm ? "Verificando servicio..." : "Agendando turno..."}
+                isOpen={isScheduling || isLoadingConfirm}
             />
         </div>
     );

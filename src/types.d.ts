@@ -46,6 +46,7 @@ export interface Appointment extends UserData {
     serviceId: Service
     companyId?: Company
     date: string
+    totalPaidAmount?: number
 }
 
 export interface UserData {

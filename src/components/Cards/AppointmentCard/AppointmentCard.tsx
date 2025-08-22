@@ -15,6 +15,7 @@ interface Props {
     title: string;
     date: string;
     todayAppointment?: boolean;
+    totalPaidAmount?: number;
     client?: string;
     clientEmail?: string;
     clientPhone?: string;
@@ -26,6 +27,7 @@ interface Props {
 const AppointmentCard: React.FC<Props> = ({
     _id,
     todayAppointment,
+    totalPaidAmount,
     title,
     date,
     client,
@@ -78,6 +80,7 @@ const AppointmentCard: React.FC<Props> = ({
             <div className="divTitleAndTodayContainer">
                 <h2 className="titleService">{client}</h2>
                 {todayAppointment && <span className="todayAppointmentSpan">Hoy</span>}
+                {totalPaidAmount && <span className="totalPaidAmountSpan">Seña de ${totalPaidAmount}</span>}
             </div>
             <div className="divDataContainerAppointmentCard">
                 <div>

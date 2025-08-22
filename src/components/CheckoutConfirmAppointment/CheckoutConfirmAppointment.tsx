@@ -40,7 +40,7 @@ const CheckoutConfirmAppointment = () => {
         }
         if (response.error) {
             console.error(response.error)
-            notifyError("Error al generar el pago.")
+            notifyError(response.error)
         }
     }
 

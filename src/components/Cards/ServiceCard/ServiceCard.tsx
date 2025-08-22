@@ -86,7 +86,7 @@ const ServiceCard: React.FC<Props> = ({ id, duration, price, title, description,
                 </div>
                 <p className="parrafService">{description}</p>
                 {signPrice !== 0 ? <p className="parrafService"><span>Precio de la seña: $ {signPrice}</span></p> : <p className="parrafService"><span>Sin seña</span></p>}
-                <p className="parrafService">{capacityPerShift} personas por horario</p>
+                <p className="parrafService">{capacityPerShift} {capacityPerShift > 1 ? "personas" : "persona"} por horario</p>
                 <div className="durationPriceContainer">
                     <div className="divDuration">
                         <ClockIcon
