@@ -37,7 +37,16 @@
 .todayAppointmentSpan {
     background-color: rgb(245, 154, 69);
     color: var(--blanco);
-    font-size: .8rem;
+    font-size: 1rem;
+    font-weight: 600;
+    padding: .2rem .5rem;
+    border-radius: 5px;
+}
+
+.totalPaidAmountSpan {
+    background-color: rgb(161, 27, 194);
+    color: var(--blanco);
+    font-size: 1rem;
     font-weight: 600;
     padding: .2rem .5rem;
     border-radius: 5px;

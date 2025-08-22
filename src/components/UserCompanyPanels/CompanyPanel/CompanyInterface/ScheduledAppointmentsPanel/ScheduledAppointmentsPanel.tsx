@@ -49,6 +49,7 @@ const ScheduledAppointmentsPanel: React.FC<Props> = ({ scheduledAppointments }) 
                                     clientEmail={appointment.email}
                                     clientPhone={appointment.phone}
                                     clientDNI={appointment.dni}
+                                    totalPaidAmount={appointment.totalPaidAmount}
                                     date={appointment.date}
                                 />
                             })

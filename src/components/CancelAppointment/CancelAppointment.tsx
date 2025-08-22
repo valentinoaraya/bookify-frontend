@@ -134,17 +134,17 @@ const CancelAppointment = () => {
                                                 <span className="label">💰 Precio:</span>
                                                 <span className="value">${data?.service.price}</span>
                                             </div>
-                                            {data?.service.signPrice !== 0 && <div className="info-item">
+                                            {data?.totalPaidAmount && <div className="info-item">
                                                 <span className="label">💳 Seña:</span>
-                                                <span className="value">${data?.service.signPrice}</span>
+                                                <span className="value">${data?.totalPaidAmount}</span>
                                             </div>
                                             }
                                         </div>
                                     </div>
 
-                                    {data?.service.signPrice !== 0 && (
+                                    {data?.totalPaidAmount && (
                                         <div className="refund-notice">
-                                            <p>⚠️ <strong>Importante:</strong> Si cancelas este turno y pagaste una seña, se te devolverá el 50% del monto de la seña (${(data?.service.signPrice * 0.5).toFixed(2)}).</p>
+                                            <p>⚠️ <strong>Importante:</strong> Si cancelas este turno y pagaste una seña, se te devolverá el 50% del monto de la seña (${(data?.totalPaidAmount * 0.5).toFixed(2)}).</p>
                                         </div>
                                     )}
 
