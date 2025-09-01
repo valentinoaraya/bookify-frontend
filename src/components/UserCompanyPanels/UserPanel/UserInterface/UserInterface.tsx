@@ -21,6 +21,7 @@ const UserInterface: React.FC<Props> = ({ company }) => {
             <div className="divUserPanel">
                 <DataCompany
                     dataCompany={company}
+                    servicesLenght={company.services.length}
                 />
                 <div className="userPanelContent">
                     {

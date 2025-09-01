@@ -1,41 +1,36 @@
 import "./CompanyInterface.css"
-import { type Company, type View, type Service } from "../../../../types";
+import { type View, type Service } from "../../../../types";
 import { useContext, useState } from "react";
 import ServicesPanel from "./ServicesPanel/ServicesPanel";
 import HistoryPanel from "./HistoryPanel/HistoryPanel";
 import ScheduledAppointmentsPanel from "./ScheduledAppointmentsPanel/ScheduledAppointmentsPanel";
 import CalendarServicePanel from "./CalendarServicePanel/CalendarServicePanel";
 import { CompanyContext } from "../../../../contexts/CompanyContext";
-import { ToastContainer } from "react-toastify";
 import DataCompanyToCompany from "../DataCompanyToCompany/DataCompanyToCompany";
 
-interface Props {
-    company: Company
-}
-
-const CompanyInterface: React.FC<Props> = ({ company }) => {
-
-    const { deleteService, updateAppointments } = useContext(CompanyContext)
+const CompanyInterface = () => {
+    const { state, deleteService, updateAppointments } = useContext(CompanyContext)
     const [activeView, setActiveView] = useState<View>("appointments")
     const [serviceOnCalendar, setServiceOnCalendar] = useState<Service | null>(null)
 
     const onDeleteService = (id: string, scheduledAppointmentsToDelete: string[]) => {
-        deleteService(company.services.filter(service => service._id !== id))
-        updateAppointments(company.scheduledAppointments.filter(appointment => !scheduledAppointmentsToDelete.includes(appointment._id)))
+        deleteService(id)
+        updateAppointments(state.scheduledAppointments.filter(appointment => !scheduledAppointmentsToDelete.includes(appointment._id)))
     }
 
     const handleChangeToCalendar = (id: string, view: View) => {
         setActiveView(view)
-        setServiceOnCalendar(company.services.find(service => service._id === id) || null)
+        setServiceOnCalendar(state.services.find(service => service._id === id) || null)
     }
 
     return (
         <div className="divInterfaceCompanyContainer">
-            <ToastContainer />
             <div className="divCompanyPanelContainer">
                 <div className="divCompanyPanel">
                     <DataCompanyToCompany
-                        dataCompany={company}
+                        dataCompany={state}
+                        scheduledAppointments={state.scheduledAppointments}
+                        servicesLength={state.services.length}
                     />
                     {
                         activeView === "calendar" ?
@@ -69,17 +64,17 @@ const CompanyInterface: React.FC<Props> = ({ company }) => {
                                     {
                                         activeView === "appointments" ?
                                             <ScheduledAppointmentsPanel
-                                                scheduledAppointments={company.scheduledAppointments}
+                                                scheduledAppointments={state.scheduledAppointments}
                                             />
                                             :
                                             <>
                                                 {
                                                     activeView === "history" ?
-                                                        <HistoryPanel company={company} />
+                                                        <HistoryPanel company={state} />
                                                         :
                                                         <ServicesPanel
-                                                            connectedWithMP={company.connectedWithMP}
-                                                            companyServices={company.services}
+                                                            connectedWithMP={state.connectedWithMP}
+                                                            companyServices={state.services}
                                                             onDeleteService={onDeleteService}
                                                             handleChangeToCalendar={handleChangeToCalendar}
                                                         />

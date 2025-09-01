@@ -69,14 +69,17 @@ const CancelAppointment = () => {
         }
     }
 
-    if (error || errorCancel) return (
-        <div className="error-container">
-            <div className="error-content">
-                <h2>⚠️ Error: {error}</h2>
-                <p>No pudimos cargar la información del turno</p>
+    if (error || errorCancel) {
+        console.error(errorCancel)
+        return (
+            <div className="error-container">
+                <div className="error-content">
+                    <h2>⚠️ Error: {error}</h2>
+                    <p>No pudimos cargar la información del turno</p>
+                </div>
             </div>
-        </div>
-    )
+        )
+    }
 
     if (isLoading) return (
         <LoadingSpinner

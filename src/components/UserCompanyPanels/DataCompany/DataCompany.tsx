@@ -6,9 +6,10 @@ interface Props {
     dataCompany: CompanyToUser;
     children?: React.ReactNode;
     scheduledAppointments?: Appointment[];
+    servicesLenght?: number;
 }
 
-const DataCompany: React.FC<Props> = ({ dataCompany, children, scheduledAppointments }) => {
+const DataCompany: React.FC<Props> = ({ dataCompany, children, scheduledAppointments, servicesLenght }) => {
 
     const availableAppointmentsQuantity = dataCompany.services.reduce((acc, service) => {
         return acc + service.availableAppointments.reduce((acc, appointment) => {
@@ -98,7 +99,7 @@ const DataCompany: React.FC<Props> = ({ dataCompany, children, scheduledAppointm
                         fill="#1282A2"
                     />
                     <div>
-                        <h2>{dataCompany.services.length}</h2>
+                        <h2>{servicesLenght}</h2>
                         <h3>Servicios activos</h3>
                     </div>
                 </div>
