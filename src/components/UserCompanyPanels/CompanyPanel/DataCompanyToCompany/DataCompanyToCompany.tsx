@@ -1,6 +1,6 @@
 import DataCompany from "../../DataCompany/DataCompany";
 import { useState } from "react";
-import { type Company } from "../../../../types";
+import { Appointment, type Company } from "../../../../types";
 import { BACKEND_API_URL } from "../../../../config";
 import { useFetchData } from "../../../../hooks/useFetchData";
 import { notifySuccess, notifyError } from "../../../../utils/notifications";
@@ -11,9 +11,11 @@ import ModalForm from "../../../ModalForm/ModalForm";
 
 interface Props {
     dataCompany: Company;
+    servicesLength: number
+    scheduledAppointments: Appointment[]
 }
 
-const DataCompanyToCompany: React.FC<Props> = ({ dataCompany }) => {
+const DataCompanyToCompany: React.FC<Props> = ({ dataCompany, servicesLength, scheduledAppointments }) => {
 
     const token = localStorage.getItem("access_token")
     const [isModalOpen, setIsModalOpen] = useState(false)
@@ -67,7 +69,8 @@ const DataCompanyToCompany: React.FC<Props> = ({ dataCompany }) => {
         <>
             <DataCompany
                 dataCompany={newData}
-                scheduledAppointments={dataCompany.scheduledAppointments}
+                scheduledAppointments={scheduledAppointments}
+                servicesLenght={servicesLength}
             >
                 {
                     !dataCompany.connectedWithMP &&

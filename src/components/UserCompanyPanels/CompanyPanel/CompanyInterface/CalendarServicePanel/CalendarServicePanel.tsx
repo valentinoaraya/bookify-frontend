@@ -4,7 +4,7 @@ import { type View, type Service, AvailableAppointment } from "../../../../../ty
 import Button from "../../../../../common/Button/Button";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid/index.js"
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import ModalForm from "../../../../ModalForm/ModalForm";
 import { useFetchData } from "../../../../../hooks/useFetchData";
 import { BACKEND_API_URL } from "../../../../../config";
@@ -14,6 +14,7 @@ import { CompanyContext } from "../../../../../contexts/CompanyContext";
 import { CalendarCheckIcon } from "../../../../../common/Icons/Icons";
 import { generateAvailableAppointmentsArray, generateScheudledAppointmentArray } from "../../../../../utils/cleanAppointmentsArray";
 import ModalDisponibility from "./ModalDisponibility/ModalDisponibility";
+import LoadingSpinner from "../../../../../common/LoadingSpinner/LoadingSpinner";
 
 interface Props {
     setActiveView: (view: View) => void
@@ -23,25 +24,59 @@ interface Props {
 const CalendarServicePanel: React.FC<Props> = ({ service, setActiveView }) => {
     const token = localStorage.getItem("access_token")
     const { state, updateServices } = useContext(CompanyContext)
-    const [availableAppointments, setAvailableAppointments] = useState<AvailableAppointment[]>(service.availableAppointments)
-    const [scheduledAppointments, setScheduledAppointments] = useState<string[]>(service.scheduledAppointments)
+    const [serviceData, setServiceData] = useState<Service | null>(null)
+    const [availableAppointments, setAvailableAppointments] = useState<AvailableAppointment[]>([])
+    const [scheduledAppointments, setScheduledAppointments] = useState<string[]>([])
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [isModalDisponibilityOpen, setIsModalDisponibilityOpen] = useState(false)
     const [appointment, setAppointment] = useState<AvailableAppointment | undefined>(undefined)
+
+    const { isLoading: isLoadingService, error: errorService, fetchData: fetchDataService } = useFetchData(
+        `${BACKEND_API_URL}/services/${service._id}`,
+        "GET",
+    )
+
     const { isLoading, error, fetchData } = useFetchData(
         `${BACKEND_API_URL}/services/enable-appointments/${service._id}`,
         "POST",
         token
     )
 
-    const arrayEvents = generateAvailableAppointmentsArray(availableAppointments)
+    useEffect(() => {
+        const fetchService = async () => {
+            const response = await fetchDataService({})
+            if (response.data) {
+                setServiceData(response.data)
+                setAvailableAppointments(response.data.availableAppointments)
+                setScheduledAppointments(response.data.scheduledAppointments)
+            } else if (response.error) {
+                notifyError("Error al obtener el servicio. Inténtelo de nuevo más tarde.")
+            }
+        }
+
+        fetchService()
+    }, [])
+
+    if (isLoadingService) return <div className="calendarServicePanel">
+        <LoadingSpinner
+            text="Cargando servicio..."
+            shadow="none"
+        />
+    </div>
+
+    if (!serviceData) return <div className="calendarServicePanel">
+        <h1>Lo sentimos, no encontramos el servicio que buscabas...</h1>
+    </div>
+
+
+    const arrayEvents = generateAvailableAppointmentsArray(availableAppointments, serviceData.pendingAppointments)
     const arrayEventsScheduled = generateScheudledAppointmentArray(scheduledAppointments, availableAppointments)
 
     const onSubmitForm = async (data: { [key: string]: any }) => {
         const response = await fetchData(data)
         setIsModalOpen(false)
         if (response.data) {
-            const serviceUpdated = { ...service, availableAppointments: [...availableAppointments, ...response.data] }
+            const serviceUpdated = { ...serviceData, availableAppointments: [...availableAppointments, ...response.data] }
             setAvailableAppointments(serviceUpdated.availableAppointments)
             updateServices(state.services.map(service => service._id === serviceUpdated._id ? serviceUpdated : service))
             notifySuccess("Turnos habilitados correctamente.")
@@ -61,13 +96,14 @@ const CalendarServicePanel: React.FC<Props> = ({ service, setActiveView }) => {
     }
 
     if (error) notifyError("Error al habilitar los turnos")
+    if (errorService) notifyError("Error al obtener el servicio.")
 
     return (
         <div className="calendarServicePanel">
             <Title
                 fontSize={window.innerWidth <= 930 ? "1.5rem" : ""}
             >
-                Calendario para {service.title}
+                Calendario para {serviceData.title}
             </Title>
             {
                 window.innerWidth <= 1150 &&
@@ -174,7 +210,7 @@ const CalendarServicePanel: React.FC<Props> = ({ service, setActiveView }) => {
                 }}
             />
             <ModalDisponibility
-                serviceId={service._id}
+                serviceId={serviceData._id}
                 isOpen={isModalDisponibilityOpen}
                 setAvailableAppointments={setAvailableAppointments}
                 setScheduledAppointments={setScheduledAppointments}

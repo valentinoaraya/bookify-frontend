@@ -17,6 +17,7 @@ export interface Service extends ServiceBasicInfo {
     companyId: string
     availableAppointments: AvailableAppointment[]
     scheduledAppointments: string[]
+    pendingAppointments: PendingAppointment[]
     signPrice: number
 }
 
@@ -83,4 +84,10 @@ export interface EventFullCalendar {
     start: string
     backgroundColor: string
     borderColor: string
+}
+
+export interface PendingAppointment {
+    datetime: string
+    expiresAt: Date
+    userId: string
 }

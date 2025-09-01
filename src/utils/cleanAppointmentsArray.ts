@@ -1,15 +1,28 @@
-import { AvailableAppointment, EventFullCalendar } from "../types"
+import { AvailableAppointment, EventFullCalendar, PendingAppointment } from "../types"
 
-export const generateAvailableAppointmentsArray = (availableAppointments: AvailableAppointment[]): EventFullCalendar[] => {
-    return availableAppointments.map(availableAppointment => {
-        const disponibility = availableAppointment.capacity - availableAppointment.taken
-        return {
-            title: window.innerWidth <= 1150 ? `${disponibility}` : `${disponibility} ${disponibility === 1 ? "Disponible" : "Disponibles"}`,
-            start: availableAppointment.datetime,
-            backgroundColor: "green",
-            borderColor: "green"
-        }
-    })
+export const generateAvailableAppointmentsArray = (availableAppointments: AvailableAppointment[], pendingAppointments?: PendingAppointment[]): EventFullCalendar[] => {
+    const pendingByDatetime: Record<string, number> = {}
+    if (pendingAppointments && pendingAppointments.length > 0) {
+        pendingAppointments.forEach(p => {
+            const key = new Date((p as unknown as { datetime: string | number | Date }).datetime).toISOString()
+            pendingByDatetime[key] = (pendingByDatetime[key] ?? 0) + 1
+        })
+    }
+
+    return availableAppointments
+        .map(availableAppointment => {
+            const availableKey = new Date(availableAppointment.datetime).toISOString()
+            const pendingCount = pendingByDatetime[availableKey] ?? 0
+            const disponibility = (availableAppointment.capacity - availableAppointment.taken) - pendingCount
+            if (disponibility <= 0) return null
+            return {
+                title: window.innerWidth <= 1150 ? `${disponibility}` : `${disponibility} ${disponibility === 1 ? "Disponible" : "Disponibles"}`,
+                start: availableAppointment.datetime,
+                backgroundColor: "green",
+                borderColor: "green"
+            }
+        })
+        .filter((e): e is EventFullCalendar => e !== null)
 }
 
 export const generateScheudledAppointmentArray = (scheduledAppointments: string[], availableAppointments: AvailableAppointment[]): EventFullCalendar[] => {

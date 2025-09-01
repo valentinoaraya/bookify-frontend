@@ -50,7 +50,6 @@ const ServiceToSchedulePanel: React.FC<Props> = ({ serviceToSchedule, setService
     useEffect(() => {
         const fetchService = async () => {
             const response = await fetchDataService({})
-            console.log(response)
             if (response.data) {
                 setServiceToScheduleData(response.data)
             } else if (response.error) {
@@ -60,8 +59,6 @@ const ServiceToSchedulePanel: React.FC<Props> = ({ serviceToSchedule, setService
 
         fetchService()
     }, [])
-
-    console.log(serviceToScheduleData)
 
     if (isLoadingData) return <div className="serviceToScheduleContainer">
         <LoadingSpinner

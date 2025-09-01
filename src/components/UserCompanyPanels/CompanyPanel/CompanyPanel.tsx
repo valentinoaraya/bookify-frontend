@@ -2,6 +2,8 @@ import { useContext } from "react";
 import "./CompanyPanel.css"
 import CompanyInterface from "./CompanyInterface/CompanyInterface";
 import { CompanyContext } from "../../../contexts/CompanyContext";
+import { ToastContainer } from "react-toastify";
+
 
 const CompanyPanel = () => {
 
@@ -12,13 +14,12 @@ const CompanyPanel = () => {
 
     return (
         <>
+            <ToastContainer />
             {
                 !state._id ?
                     <h2>Empresa no encontrada</h2>
                     :
-                    <CompanyInterface
-                        company={state}
-                    />
+                    <CompanyInterface />
             }
         </>
     );
