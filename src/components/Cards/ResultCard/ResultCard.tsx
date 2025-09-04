@@ -23,9 +23,6 @@ const ResultCard: React.FC<Props> = ({
         return acc + appointment.capacity - appointment.taken;
     }, 0);
 
-    console.log(availableAppointments)
-    console.log(quantityAvailable)
-
     return (
         <div className="divResultCard">
             <div className="titleResultCardContainer">

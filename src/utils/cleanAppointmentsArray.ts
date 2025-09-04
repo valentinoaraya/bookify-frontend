@@ -14,15 +14,20 @@ export const generateAvailableAppointmentsArray = (availableAppointments: Availa
             const availableKey = new Date(availableAppointment.datetime).toISOString()
             const pendingCount = pendingByDatetime[availableKey] ?? 0
             const disponibility = (availableAppointment.capacity - availableAppointment.taken) - pendingCount
-            if (disponibility <= 0) return null
             return {
-                title: window.innerWidth <= 1150 ? `${disponibility}` : `${disponibility} ${disponibility === 1 ? "Disponible" : "Disponibles"}`,
+                title: `${disponibility} ${disponibility === 1 ? "Disponible" : "Disponibles"}`,
                 start: availableAppointment.datetime,
                 backgroundColor: "green",
-                borderColor: "green"
+                borderColor: "green",
+                extendedProps: {
+                    disponibility,
+                    taken: availableAppointment.taken,
+                    capacity: availableAppointment.capacity,
+                    pendingCount
+                }
             }
         })
-        .filter((e): e is EventFullCalendar => e !== null)
+        .filter((e): e is NonNullable<typeof e> => e !== null)
 }
 
 export const generateScheudledAppointmentArray = (scheduledAppointments: string[], availableAppointments: AvailableAppointment[]): EventFullCalendar[] => {
@@ -32,10 +37,13 @@ export const generateScheudledAppointmentArray = (scheduledAppointments: string[
         .map(date => {
             const count = scheduledAppointments.filter(d => d === date).length
             return {
-                title: window.innerWidth <= 1150 ? `${count}` : `${count} ${count === 1 ? "Ocupado" : "Ocupados"} `,
+                title: `${count} ${count === 1 ? "Ocupado" : "Ocupados"}`,
                 start: date,
                 backgroundColor: "red",
-                borderColor: "red"
+                borderColor: "red",
+                extendedProps: {
+                    scheduledCount: count
+                }
             }
         })
 

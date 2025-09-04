@@ -5,7 +5,7 @@ import { confirmDelete } from "../../../utils/alerts";
 import { useFetchData } from "../../../hooks/useFetchData";
 import { BACKEND_API_URL } from "../../../config";
 import { notifyError, notifySuccess } from "../../../utils/notifications";
-import { Service, type Appointment, type Company } from "../../../types";
+import { type Service, type Company } from "../../../types";
 import { formatDate } from "../../../utils/formatDate";
 import LoadingModal from "../../../common/LoadingModal/LoadingModal";
 import { useState } from "react";
@@ -21,7 +21,7 @@ interface Props {
     clientPhone?: string;
     clientDNI?: string;
     state: Company;
-    onCancelAppointment: (appointments: Appointment[], service: Service) => void;
+    onCancelAppointment: (appointment: string, service: Service) => void;
 }
 
 const AppointmentCard: React.FC<Props> = ({
@@ -34,7 +34,6 @@ const AppointmentCard: React.FC<Props> = ({
     clientEmail,
     clientPhone,
     clientDNI,
-    state,
     onCancelAppointment
 }) => {
     const token = localStorage.getItem("access_token")
@@ -63,7 +62,7 @@ const AppointmentCard: React.FC<Props> = ({
             const response = await fetchData({})
             if (response.data) {
                 onCancelAppointment(
-                    state.scheduledAppointments.filter(appointment => appointment._id !== response.data.appointment._id),
+                    response.data.appointment._id,
                     response.data.service
                 )
                 notifySuccess("Turno cancelado con éxito.")

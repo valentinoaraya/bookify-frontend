@@ -12,13 +12,13 @@ interface Props {
 
 const ScheduledAppointmentsPanel: React.FC<Props> = ({ scheduledAppointments }) => {
 
-    const { state, updateAppointments, updateServices } = useContext(CompanyContext)
+    const { state, deleteAppointment, updateServices } = useContext(CompanyContext)
 
     const sortedAppointments = scheduledAppointments.sort((a, b) => moment(a.date, "YYYY-MM-DD HH:mm").valueOf() - moment(b.date, "YYYY-MM-DD HH:mm").valueOf())
 
-    const onCancelAppointment = (appointments: Appointment[], service: Service) => {
-        updateAppointments(appointments)
-        updateServices(state.services.map(s => s._id === service._id ? service : s))
+    const onCancelAppointment = (appointment: string, service: Service) => {
+        deleteAppointment(appointment)
+        updateServices(service)
     }
 
     return (
@@ -43,7 +43,7 @@ const ScheduledAppointmentsPanel: React.FC<Props> = ({ scheduledAppointments }) 
                                     key={appointment._id}
                                     todayAppointment={moment(appointment.date).isSame(moment(), 'day')}
                                     state={state}
-                                    onCancelAppointment={(appointments: Appointment[], service: Service) => onCancelAppointment(appointments, service)}
+                                    onCancelAppointment={(appointment: string, service: Service) => onCancelAppointment(appointment, service)}
                                     title={appointment.serviceId.title}
                                     client={`${appointment.name} ${appointment.lastName}`}
                                     clientEmail={appointment.email}
