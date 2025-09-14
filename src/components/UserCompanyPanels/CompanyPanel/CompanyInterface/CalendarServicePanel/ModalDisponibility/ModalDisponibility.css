@@ -47,6 +47,10 @@ body.disponibility-modal-open {
     transition: all .2s;
 }
 
+.disponibilitySlot.pending {
+    background-color: rgb(253, 184, 35);
+}
+
 .disponibilitySlot.taken {
     background-color: red;
 }

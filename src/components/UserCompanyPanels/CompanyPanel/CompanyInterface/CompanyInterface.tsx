@@ -1,5 +1,5 @@
 import "./CompanyInterface.css"
-import { type View, type Service } from "../../../../types";
+import { type View } from "../../../../types";
 import { useContext, useState } from "react";
 import ServicesPanel from "./ServicesPanel/ServicesPanel";
 import HistoryPanel from "./HistoryPanel/HistoryPanel";
@@ -9,18 +9,18 @@ import { CompanyContext } from "../../../../contexts/CompanyContext";
 import DataCompanyToCompany from "../DataCompanyToCompany/DataCompanyToCompany";
 
 const CompanyInterface = () => {
-    const { state, deleteService, updateAppointments } = useContext(CompanyContext)
+    const { state, deleteService, deleteAppointment } = useContext(CompanyContext)
     const [activeView, setActiveView] = useState<View>("appointments")
-    const [serviceOnCalendar, setServiceOnCalendar] = useState<Service | null>(null)
+    const [serviceOnCalendar, setServiceOnCalendar] = useState<string | null>(null)
 
     const onDeleteService = (id: string, scheduledAppointmentsToDelete: string[]) => {
         deleteService(id)
-        updateAppointments(state.scheduledAppointments.filter(appointment => !scheduledAppointmentsToDelete.includes(appointment._id)))
+        scheduledAppointmentsToDelete.forEach(app => deleteAppointment(app))
     }
 
     const handleChangeToCalendar = (id: string, view: View) => {
         setActiveView(view)
-        setServiceOnCalendar(state.services.find(service => service._id === id) || null)
+        setServiceOnCalendar(id)
     }
 
     return (
@@ -35,7 +35,7 @@ const CompanyInterface = () => {
                     {
                         activeView === "calendar" ?
                             <CalendarServicePanel
-                                service={serviceOnCalendar as Service}
+                                serviceId={serviceOnCalendar as string}
                                 setActiveView={setActiveView}
                             />
                             :

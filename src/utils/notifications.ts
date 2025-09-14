@@ -13,3 +13,10 @@ export const notifyError = (text: string, noClose?: boolean) => toast.error(text
     pauseOnHover: false,
     theme: "colored"
 })
+
+export const notifyWarn = (text: string, noClose?: boolean) => toast.warn(text, {
+    position: "top-right",
+    autoClose: noClose ? false : 6000,
+    pauseOnHover: false,
+    theme: "colored"
+})

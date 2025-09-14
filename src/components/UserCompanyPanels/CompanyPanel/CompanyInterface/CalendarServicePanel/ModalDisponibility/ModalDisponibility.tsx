@@ -1,26 +1,24 @@
 import "./ModalDisponibility.css"
 import { useContext, useEffect } from "react";
 import Button from "../../../../../../common/Button/Button";
-import { AvailableAppointment } from "../../../../../../types";
+import { type AvailableAppointmentWithPendings } from "../../../../../../types";
 import { formatDate } from "../../../../../../utils/formatDate";
 import { useFetchData } from "../../../../../../hooks/useFetchData";
 import { BACKEND_API_URL } from "../../../../../../config";
-import { notifyError } from "../../../../../../utils/notifications";
+import { notifyError, notifyWarn } from "../../../../../../utils/notifications";
 import { CompanyContext } from "../../../../../../contexts/CompanyContext";
 
 interface Props {
     isOpen: boolean,
-    appointment: AvailableAppointment | undefined
+    appointment: AvailableAppointmentWithPendings | undefined
     serviceId: string
-    setAvailableAppointments: React.Dispatch<React.SetStateAction<AvailableAppointment[]>>
-    setScheduledAppointments: React.Dispatch<React.SetStateAction<string[]>>
     setIsOpen: React.Dispatch<React.SetStateAction<boolean>>
-    setAppointment: React.Dispatch<React.SetStateAction<AvailableAppointment | undefined>>
+    setAppointment: React.Dispatch<React.SetStateAction<AvailableAppointmentWithPendings | undefined>>
 }
 
-const ModalDisponibility: React.FC<Props> = ({ isOpen, appointment, serviceId, setAvailableAppointments, setScheduledAppointments, setIsOpen, setAppointment }) => {
+const ModalDisponibility: React.FC<Props> = ({ isOpen, appointment, serviceId, setIsOpen, setAppointment }) => {
     const token = localStorage.getItem("access_token")
-    const { state, updateServices } = useContext(CompanyContext)
+    const { updateServices } = useContext(CompanyContext)
     const { isLoading, error, fetchData } = useFetchData(
         `${BACKEND_API_URL}/services/delete-appointment/${serviceId}`,
         "DELETE",
@@ -49,10 +47,8 @@ const ModalDisponibility: React.FC<Props> = ({ isOpen, appointment, serviceId, s
     const deleteAppointment = async (date: string, all: boolean) => {
         const response = await fetchData({ date, all })
         if (response.data) {
-            setAppointment(response.data.appointment)
-            setAvailableAppointments(response.data.service.availableAppointments)
-            setScheduledAppointments(response.data.service.scheduledAppointments)
-            updateServices(state.services.map(service => service._id === serviceId ? response.data.service : service))
+            setAppointment({ ...response.data.appointment, pendings: pendingCount })
+            updateServices(response.data.service)
         }
         if (response.error) notifyError("Error al eliminar turno")
     }
@@ -60,17 +56,16 @@ const ModalDisponibility: React.FC<Props> = ({ isOpen, appointment, serviceId, s
     const addAppointment = async (date: string) => {
         const response = await fetchDataAddApp({ date })
         if (response.data) {
-            setAppointment(response.data.appointment)
-            setAvailableAppointments(response.data.service.availableAppointments)
-            setScheduledAppointments(response.data.service.scheduledAppointments)
-            updateServices(state.services.map(service => service._id === serviceId ? response.data.service : service))
+            setAppointment({ ...response.data.appointment, pendings: pendingCount })
+            updateServices(response.data.service)
         }
         if (response.error) notifyError("Error al habilitar turno")
     }
 
     const takenCount = appointment?.taken ?? 0
     const capacityCount = appointment?.capacity ?? 0
-    const availableCount = Math.max(capacityCount - takenCount, 0)
+    const pendingCount = appointment?.pendings ?? 0
+    const availableCount = Math.max(capacityCount - takenCount - pendingCount, 0)
 
     return (
         <div className="modalOverlayDisponibility">
@@ -92,6 +87,13 @@ const ModalDisponibility: React.FC<Props> = ({ isOpen, appointment, serviceId, s
                             }}
                         >
                             <h3>Disponible</h3>
+                        </div>
+                    ))}
+                    {Array.from({ length: pendingCount }).map((_, index) => (
+                        <div key={`a-${index}`} className="disponibilitySlot pending"
+                            onClick={() => { notifyWarn("Se está esperando un pago para este turno. Si no se acredita en unos minutos, volverá a estar disponible.") }}
+                        >
+                            <h3>Pendiente de pago</h3>
                         </div>
                     ))}
                     <div className="addAvailable"

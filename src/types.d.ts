@@ -4,6 +4,10 @@ export interface AvailableAppointment {
     taken: number
 }
 
+export interface AvailableAppointmentWithPendings extends AvailableAppointment {
+    pendings: number
+}
+
 export interface ServiceBasicInfo {
     _id: string
     title: string
@@ -84,6 +88,15 @@ export interface EventFullCalendar {
     start: string
     backgroundColor: string
     borderColor: string
+    extendedProps?: ExtendedProps
+}
+
+export interface ExtendedProps {
+    disponibility?: number
+    taken?: number
+    capacity?: number
+    pendingCount?: number
+    scheduledCount?: number
 }
 
 export interface PendingAppointment {

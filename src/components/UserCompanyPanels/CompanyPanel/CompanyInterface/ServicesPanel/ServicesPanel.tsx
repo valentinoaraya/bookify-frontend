@@ -20,7 +20,7 @@ interface Props {
 const ServicesPanel: React.FC<Props> = ({ companyServices, connectedWithMP, onDeleteService, handleChangeToCalendar }) => {
 
     const token = localStorage.getItem("access_token")
-    const { updateServices } = useContext(CompanyContext)
+    const { updateServices, addService } = useContext(CompanyContext)
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
     const { isLoading, error, fetchData } = useFetchData(
         `${BACKEND_API_URL}/services/create-service`,
@@ -36,7 +36,7 @@ const ServicesPanel: React.FC<Props> = ({ companyServices, connectedWithMP, onDe
     const handleAddService = async (data: { [key: string]: any }) => {
         const response = await fetchData(data)
         setIsModalOpen(false)
-        if (response?.data) updateServices([...companyServices, response.data])
+        if (response?.data) addService(response.data)
         if (response?.error) {
             console.error(response.error)
             notifyError("Error al crear el servicio")
@@ -44,7 +44,8 @@ const ServicesPanel: React.FC<Props> = ({ companyServices, connectedWithMP, onDe
     }
 
     const onUpdateService = (data: { [key: string]: any }) => {
-        updateServices(companyServices.map(service => service._id === data._id ? { ...service, ...data } : service))
+        const serviceToUpdate = companyServices.find(s => s._id === data._id)
+        updateServices({ ...serviceToUpdate!, ...data })
     }
 
     return (
