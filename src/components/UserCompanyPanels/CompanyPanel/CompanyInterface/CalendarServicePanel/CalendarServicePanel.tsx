@@ -41,60 +41,6 @@ const CalendarServicePanel: React.FC<Props> = ({ serviceId, setActiveView }) => 
         token
     )
 
-    // const { isLoading: isLoadingService, error: errorService, fetchData: fetchDataService } = useFetchData(
-    //     `${BACKEND_API_URL}/services/${service._id}`,
-    //     "GET",
-    // )
-
-    // useEffect(() => {
-    //     const fetchService = async () => {
-    //         const response = await fetchDataService({})
-    //         if (response.data) {
-    //             setServiceData(response.data)
-    //             setAvailableAppointments(response.data.availableAppointments)
-    //             setScheduledAppointments(response.data.scheduledAppointments)
-    //         } else if (response.error) {
-    //             notifyError("Error al obtener el servicio. Inténtelo de nuevo más tarde.")
-    //         }
-    //     }
-
-    //     const handleUpdate = (data: any) => {
-    //         setAvailableAppointments(data.availableAppointments)
-    //         setScheduledAppointments(data.scheduledAppointments)
-    //     }
-
-    //     const handleNewPending = (data: any) => {
-    //         setServiceData(data)
-    //     }
-
-    //     const handleCancelAppointment = () => {
-
-    //     }
-
-    //     socket.on("updateAvailablesAndScheduleds", handleUpdate)
-    //     socket.on("newPendingAppointment", handleNewPending)
-    //     socket.on("cancelAppointment", handleNewPending)
-
-    //     fetchService()
-
-    //     return () => {
-    //         socket.off("updateAvailablesAndScheduleds")
-    //         socket.off("newPendingAppointment")
-    //         socket.off("cancelAppointment")
-    //     }
-    // }, [])
-
-    // if (isLoadingService) return <div className="calendarServicePanel">
-    //     <LoadingSpinner
-    //         text="Cargando servicio..."
-    //         shadow="none"
-    //     />
-    // </div>
-
-    // if (!serviceData) return <div className="calendarServicePanel">
-    //     <h1>Lo sentimos, no encontramos el servicio que buscabas...</h1>
-    // </div>
-
     const arrayEvents = generateAvailableAppointmentsArray(service.availableAppointments, service.pendingAppointments)
     const arrayEventsScheduled = generateScheudledAppointmentArray(service.scheduledAppointments, service.availableAppointments)
 
