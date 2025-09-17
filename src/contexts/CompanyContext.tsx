@@ -206,7 +206,9 @@ export const CompanyProvider: React.FC<{ children: ReactNode }> = ({ children })
 
         connectSocket(token);
 
-        socket.emit("joinCompany", state._id)
+        const joinRoom = () => {
+            socket.emit("joinCompany", state._id)
+        }
 
         const handleServiceAdded = (service: Service) => {
             dispatch({ type: "ADD_SERVICE", payload: service });
@@ -238,6 +240,7 @@ export const CompanyProvider: React.FC<{ children: ReactNode }> = ({ children })
             dispatch({ type: "UPDATE_SERVICE_AVAILABILITY", payload: { serviceId: data.serviceId, availableAppointments: data.availableAppointments } });
         };
 
+        socket.on("connect", joinRoom)
         socket.on("company:service-added", handleServiceAdded);
         socket.on("company:service-deleted", handleServiceDeleted);
         socket.on("company:service-updated", handleServiceUpdated);
@@ -247,6 +250,7 @@ export const CompanyProvider: React.FC<{ children: ReactNode }> = ({ children })
         socket.on("company:availability-updated", handleAvailabilityUpdated);
 
         return () => {
+            socket.off("connect", joinRoom)
             socket.off("company:service-added", handleServiceAdded);
             socket.off("company:service-deleted", handleServiceDeleted);
             socket.off("company:service-updated", handleServiceUpdated);
