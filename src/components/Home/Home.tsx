@@ -12,6 +12,7 @@ const Home = () => {
             <div className="divButtonsHome">
                 <Link className="linkButton" to={"/login/company"}>
                     <Button
+                        reverse
                         iconSVG={
                             <CompanyIcon
                                 width={window.innerWidth <= 560 ? "24" : "36"}
@@ -19,6 +20,7 @@ const Home = () => {
                                 fill="#FFFF"
                             />
                         }
+                        fontWeight="600"
                     >
                         Ingresar como empresa
                     </Button>

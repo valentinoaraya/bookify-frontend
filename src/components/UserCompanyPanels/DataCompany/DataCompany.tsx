@@ -1,6 +1,7 @@
 import "./DataCompany.css";
-import { ClockIcon, CalendarCheckIcon, UsersIcon } from "../../../common/Icons/Icons";
+import { ClockIcon, CalendarCheckIcon, UsersIcon, SettingsIcon } from "../../../common/Icons/Icons";
 import { Appointment, type CompanyToUser } from "../../../types";
+import Button from "../../../common/Button/Button";
 
 interface Props {
     dataCompany: CompanyToUser;
@@ -104,6 +105,21 @@ const DataCompany: React.FC<Props> = ({ dataCompany, children, scheduledAppointm
                     </div>
                 </div>
             </div>
+            <Button
+                iconSVG={
+                    <SettingsIcon
+                        width="20px"
+                        height="20px"
+                        fill="white"
+                    />
+                }
+                backgroundColor="#1282A2"
+                fontSize="1rem"
+                fontWeight="600"
+                margin="0"
+            >
+                Configuración
+            </Button>
         </div>
     );
 }
