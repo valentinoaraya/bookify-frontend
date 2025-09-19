@@ -14,15 +14,12 @@
     cursor: pointer;
     transition: all .1s ease;
     margin-bottom: .4rem;
+    gap: 1.2rem;
 }
 
 .button:hover {
     transform: translateY(-.2rem);
     box-shadow: 0 .5rem 1rem rgba(0, 0, 0, .2);
-}
-
-.divIcon {
-    margin-left: 1.2rem;
 }
 
 @media (max-width: 560px) {

@@ -29,8 +29,6 @@ const CalendarServicePanel: React.FC<Props> = ({ serviceId, setActiveView }) => 
 
     const service = state.services.find(s => s._id === serviceId)
 
-    console.log(service)
-
     if (!service) return <div className="calendarServicePanel">
         <h1>Lo sentimos, no encontramos el servicio que buscabas...</h1>
     </div>

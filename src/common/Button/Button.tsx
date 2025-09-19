@@ -13,24 +13,25 @@ interface Props {
     fontWeight?: string;
     width?: string;
     margin?: string;
+    reverse?: boolean;
 }
 
-const Button: React.FC<Props> = ({ children, iconSVG, onSubmit, type, disabled, fontSize, padding, fontWeight, width, margin, backgroundColor }) => {
+const Button: React.FC<Props> = ({ children, iconSVG, onSubmit, type, disabled, fontSize, padding, fontWeight, width, margin, backgroundColor, reverse }) => {
     return (
         <button
             className="button"
             onClick={onSubmit}
             type={type}
             disabled={disabled}
-            style={{ fontSize: fontSize, padding: padding, fontWeight: fontWeight, width: width, margin: margin, background: backgroundColor }}
+            style={{ fontSize: fontSize, padding: padding, fontWeight: fontWeight, width: width, margin: margin, background: backgroundColor, flexDirection: reverse ? "row-reverse" : "row" }}
         >
-            <p>{disabled ? "Cargando..." : children}</p>
             {
                 iconSVG &&
                 <div className="divIcon">
                     {iconSVG}
                 </div>
             }
+            <p>{disabled ? "Cargando..." : children}</p>
         </button>
     );
 }
