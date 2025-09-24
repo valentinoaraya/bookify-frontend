@@ -4,7 +4,7 @@ interface Props {
     data: Company
 }
 
-const AnticipationsSettings: React.FC<Props> = ({ data }) => {
+const AnticipationsSettings: React.FC<Props> = () => {
     return (
         <div>
             <h2>Anticipación de reserva y cancelación</h2>
