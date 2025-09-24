@@ -73,7 +73,7 @@ export const CalendarCheckIcon: React.FC<Props> = ({ width, height, fill }) => {
 
 export const ClockIcon: React.FC<Props> = ({ width, height, fill }) => {
     return (
-        <svg xmlns="http://www.w3.org/2000/svg" width={width} height={height} fill={fill} className="bi bi-clock" viewBox="0 0 16 16">
+        <svg xmlns="http://www.w3.org/2000/svg" width={width} height={height} fill={fill} className="bi bi-clock icon-settings" viewBox="0 0 16 16">
             <path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71z" />
             <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16m7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0" />
         </svg>
@@ -92,6 +92,67 @@ export const SettingsIcon: React.FC<Props> = ({ width, height, fill }) => {
     return (
         <svg xmlns="http://www.w3.org/2000/svg" width={width} height={height} fill={fill} className="bi bi-sliders" viewBox="0 0 16 16">
             <path fillRule="evenodd" d="M11.5 2a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3M9.05 3a2.5 2.5 0 0 1 4.9 0H16v1h-2.05a2.5 2.5 0 0 1-4.9 0H0V3zM4.5 7a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3M2.05 8a2.5 2.5 0 0 1 4.9 0H16v1H6.95a2.5 2.5 0 0 1-4.9 0H0V8zm9.45 4a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3m-2.45 1a2.5 2.5 0 0 1 4.9 0H16v1h-2.05a2.5 2.5 0 0 1-4.9 0H0v-1z" />
+        </svg>
+    )
+}
+
+export const CreditCardIcon: React.FC<Props> = ({ width, height, fill }) => {
+    return (
+        <svg xmlns="http://www.w3.org/2000/svg" width={width} height={height} fill={fill} className="bi bi-credit-card-fill icon-settings" viewBox="0 0 16 16">
+            <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v1H0zm0 3v5a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7zm3 2h1a1 1 0 0 1 1 1v1a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1v-1a1 1 0 0 1 1-1" />
+        </svg>
+    )
+}
+
+export const BellIcon: React.FC<Props> = ({ width, height, fill }) => {
+    return (
+        <svg xmlns="http://www.w3.org/2000/svg" width={width} height={height} fill={fill} className="bi bi-bell-fill icon-settings" viewBox="0 0 16 16">
+            <path d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2m.995-14.901a1 1 0 1 0-1.99 0A5 5 0 0 0 3 6c0 1.098-.5 6-2 7h14c-1.5-1-2-5.902-2-7 0-2.42-1.72-4.44-4.005-4.901" />
+        </svg>
+    )
+}
+
+export const UserIcon: React.FC<Props> = ({ width, height, fill }) => {
+    return (
+        <svg xmlns="http://www.w3.org/2000/svg" width={width} height={height} fill={fill} className="bi bi-person-fill icon-settings" viewBox="0 0 16 16">
+            <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6" />
+        </svg>
+    )
+}
+
+export const ClipboardIcon: React.FC<Props> = ({ width, height, fill }) => {
+    return (
+        <svg xmlns="http://www.w3.org/2000/svg" width={width} height={height} fill={fill} className="bi bi-clipboard-check" viewBox="0 0 16 16">
+            <path fillRule="evenodd" d="M10.854 7.146a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 1 1 .708-.708L7.5 9.793l2.646-2.647a.5.5 0 0 1 .708 0" />
+            <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1z" />
+            <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0z" />
+        </svg>
+    )
+}
+
+export const UserXIcon: React.FC<Props> = ({ width, height, fill }) => {
+    return (
+        <svg xmlns="http://www.w3.org/2000/svg" width={width} height={height} fill={fill} className="bi bi-person-fill-x" viewBox="0 0 16 16">
+            <path d="M11 5a3 3 0 1 1-6 0 3 3 0 0 1 6 0m-9 8c0 1 1 1 1 1h5.256A4.5 4.5 0 0 1 8 12.5a4.5 4.5 0 0 1 1.544-3.393Q8.844 9.002 8 9c-5 0-6 3-6 4" />
+            <path d="M12.5 16a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7m-.646-4.854.646.647.646-.647a.5.5 0 0 1 .708.708l-.647.646.647.646a.5.5 0 0 1-.708.708l-.646-.647-.646.647a.5.5 0 0 1-.708-.708l.647-.646-.647-.646a.5.5 0 0 1 .708-.708" />
+        </svg>
+    )
+}
+
+export const MemoryIcon: React.FC<Props> = ({ width, height, fill }) => {
+    return (
+        <svg xmlns="http://www.w3.org/2000/svg" width={width} height={height} fill={fill} className="bi bi-floppy-fill" viewBox="0 0 16 16">
+            <path d="M0 1.5A1.5 1.5 0 0 1 1.5 0H3v5.5A1.5 1.5 0 0 0 4.5 7h7A1.5 1.5 0 0 0 13 5.5V0h.086a1.5 1.5 0 0 1 1.06.44l1.415 1.414A1.5 1.5 0 0 1 16 2.914V14.5a1.5 1.5 0 0 1-1.5 1.5H14v-5.5A1.5 1.5 0 0 0 12.5 9h-9A1.5 1.5 0 0 0 2 10.5V16h-.5A1.5 1.5 0 0 1 0 14.5z" />
+            <path d="M3 16h10v-5.5a.5.5 0 0 0-.5-.5h-9a.5.5 0 0 0-.5.5zm9-16H4v5.5a.5.5 0 0 0 .5.5h7a.5.5 0 0 0 .5-.5zM9 1h2v4H9z" />
+        </svg>
+    )
+}
+
+export const EmailIcon: React.FC<Props> = ({ width, height, fill }) => {
+    return (
+        <svg xmlns="http://www.w3.org/2000/svg" width={width} height={height} fill={fill} className="bi bi-envelope-check" viewBox="0 0 16 16">
+            <path d="M2 2a2 2 0 0 0-2 2v8.01A2 2 0 0 0 2 14h5.5a.5.5 0 0 0 0-1H2a1 1 0 0 1-.966-.741l5.64-3.471L8 9.583l7-4.2V8.5a.5.5 0 0 0 1 0V4a2 2 0 0 0-2-2zm3.708 6.208L1 11.105V5.383zM1 4.217V4a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v.217l-7 4.2z" />
+            <path d="M16 12.5a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0m-1.993-1.679a.5.5 0 0 0-.686.172l-1.17 1.95-.547-.547a.5.5 0 0 0-.708.708l.774.773a.75.75 0 0 0 1.174-.144l1.335-2.226a.5.5 0 0 0-.172-.686" />
         </svg>
     )
 }

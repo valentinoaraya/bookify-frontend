@@ -14,16 +14,17 @@ interface Props {
     width?: string;
     margin?: string;
     reverse?: boolean;
+    cursor?: string;
 }
 
-const Button: React.FC<Props> = ({ children, iconSVG, onSubmit, type, disabled, fontSize, padding, fontWeight, width, margin, backgroundColor, reverse }) => {
+const Button: React.FC<Props> = ({ children, iconSVG, onSubmit, type, disabled, fontSize, padding, fontWeight, width, margin, backgroundColor, reverse, cursor }) => {
     return (
         <button
             className="button"
             onClick={onSubmit}
             type={type}
             disabled={disabled}
-            style={{ fontSize: fontSize, padding: padding, fontWeight: fontWeight, width: width, margin: margin, background: backgroundColor, flexDirection: reverse ? "row-reverse" : "row" }}
+            style={{ fontSize: fontSize, padding: padding, fontWeight: fontWeight, width: width, margin: margin, background: backgroundColor, flexDirection: reverse ? "row-reverse" : "row", cursor: cursor ? cursor : "pointer" }}
         >
             {
                 iconSVG &&
