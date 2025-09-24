@@ -52,7 +52,7 @@ export interface Company extends CompanyBasicInfo {
     }[]
 }
 
-export type CompanyToUser = Omit<Company, "scheduledAppointments" | "connectedWithMP">
+export type CompanyToUser = Omit<Company, "scheduledAppointments" | "connectedWithMP" | "reminders" | "company_id">
 
 export interface Appointment extends UserData {
     _id: string
