@@ -2,6 +2,8 @@ import "./DataCompany.css";
 import { ClockIcon, CalendarCheckIcon, UsersIcon, SettingsIcon } from "../../../common/Icons/Icons";
 import { Appointment, type CompanyToUser } from "../../../types";
 import Button from "../../../common/Button/Button";
+import ModalSettings from "./ModalSettings/ModalSettings";
+import { useState } from "react";
 
 interface Props {
     dataCompany: CompanyToUser;
@@ -11,6 +13,8 @@ interface Props {
 }
 
 const DataCompany: React.FC<Props> = ({ dataCompany, children, scheduledAppointments, servicesLenght }) => {
+
+    const [isModalOpen, setIsModalOpen] = useState(false)
 
     const availableAppointmentsQuantity = dataCompany.services.reduce((acc, service) => {
         return acc + service.availableAppointments.reduce((acc, appointment) => {
@@ -117,9 +121,14 @@ const DataCompany: React.FC<Props> = ({ dataCompany, children, scheduledAppointm
                 fontSize="1rem"
                 fontWeight="600"
                 margin="0"
+                onSubmit={() => setIsModalOpen(true)}
             >
                 Configuración
             </Button>
+            <ModalSettings
+                isOpen={isModalOpen}
+                setIsOpen={setIsModalOpen}
+            />
         </div>
     );
 }

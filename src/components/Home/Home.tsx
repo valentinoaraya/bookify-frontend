@@ -15,8 +15,8 @@ const Home = () => {
                         reverse
                         iconSVG={
                             <CompanyIcon
-                                width={window.innerWidth <= 560 ? "24" : "36"}
-                                height={window.innerWidth <= 560 ? "24" : "36"}
+                                width={"25"}
+                                height={"25"}
                                 fill="#FFFF"
                             />
                         }

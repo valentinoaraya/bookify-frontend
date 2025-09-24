@@ -1,0 +1,105 @@
+.modalAddReminderOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modalAddReminderContent {
+    position: relative;
+    background-color: #fff;
+    padding: 2rem;
+    border-radius: 8px;
+    max-width: 600px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    position: relative;
+}
+
+.modalAddReminderBody {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.formAddReminder {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.formGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: .5rem;
+
+    label {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #333;
+    }
+
+    input {
+        padding: 0.5rem 1rem;
+        font-size: 1rem;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        background-color: #f9f9f9;
+        transition: border-color 0.2s ease;
+    }
+
+    input:focus,
+    select:focus {
+        border-color: #007bff;
+        outline: none;
+        background-color: #fff;
+    }
+}
+
+.checkboxGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-top: .5rem;
+
+    .checkboxItem {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+
+        input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+        }
+
+        label {
+            font-size: 1rem;
+            cursor: pointer;
+            user-select: none;
+        }
+    }
+}
+
+.formActions {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.selectHoursBefore {
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}

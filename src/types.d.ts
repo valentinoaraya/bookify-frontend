@@ -42,6 +42,14 @@ export interface Company extends CompanyBasicInfo {
     services: Service[]
     scheduledAppointments: Appointment[]
     connectedWithMP: boolean
+    company_id: string
+    reminders: {
+        hoursBefore: number
+        services: {
+            _id: string
+            title: string
+        }[]
+    }[]
 }
 
 export type CompanyToUser = Omit<Company, "scheduledAppointments" | "connectedWithMP">

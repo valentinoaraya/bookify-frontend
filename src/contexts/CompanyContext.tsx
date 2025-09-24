@@ -7,6 +7,7 @@ import { notifyError, notifySuccess } from "../utils/notifications";
 
 type Action =
     | { type: "SET_COMPANY_DATA"; payload: Company }
+    | { type: "UPDATE_COMPANY_DATA"; payload: Partial<Company> }
     | { type: "UPDATE_SERVICES"; payload: Service }
     | { type: "ADD_SERVICE"; payload: Service }
     | { type: "DELETE_SERVICE"; payload: string }
@@ -27,7 +28,9 @@ const initialState: Company = {
     number: "",
     email: "",
     phone: "",
+    company_id: "",
     services: [],
+    reminders: [],
     scheduledAppointments: [],
     connectedWithMP: false
 };
@@ -40,6 +43,7 @@ interface CompanyContextState {
 
 interface CompanyContextActions {
     fetchCompanyData: () => Promise<void>;
+    updateCompanyData: (data: Partial<Company>) => void;
     updateServices: (service: Service) => void;
     addService: (service: Service) => void;
     deleteService: (serviceId: string) => void;
@@ -56,6 +60,9 @@ const companyReducer = (state: Company, action: Action): Company => {
     switch (action.type) {
         case "SET_COMPANY_DATA":
             return action.payload;
+
+        case "UPDATE_COMPANY_DATA":
+            return { ...state, ...action.payload };
 
         case "UPDATE_SERVICES":
             return {
@@ -120,6 +127,7 @@ export const CompanyContext = createContext<CompanyContextType>({
     isLoading: false,
     error: null,
     fetchCompanyData: async () => { },
+    updateCompanyData: () => { },
     updateServices: () => { },
     addService: () => { },
     deleteService: () => { },
@@ -165,6 +173,10 @@ export const CompanyProvider: React.FC<{ children: ReactNode }> = ({ children })
             setIsLoading(false);
         }
     }, [fetchData, token]);
+
+    const updateCompanyData = useCallback((data: Partial<Company>) => {
+        dispatch({ type: "UPDATE_COMPANY_DATA", payload: data });
+    }, [])
 
     const updateServices = useCallback((service: Service) => {
         dispatch({ type: "UPDATE_SERVICES", payload: service });
@@ -228,7 +240,6 @@ export const CompanyProvider: React.FC<{ children: ReactNode }> = ({ children })
 
         const handleAppointmentDeleted = (appointmentAndService: { appointment: Appointment, service: Service }) => {
             notifyError(`${appointmentAndService.appointment.name} ${appointmentAndService.appointment.lastName} ha cancelado un turno`, true)
-            console.log(appointmentAndService)
             dispatch({ type: "DELETE_APPOINTMENT_FROM_CANCEL", payload: appointmentAndService });
         };
 
@@ -271,6 +282,7 @@ export const CompanyProvider: React.FC<{ children: ReactNode }> = ({ children })
         isLoading,
         error,
         fetchCompanyData,
+        updateCompanyData,
         updateServices,
         addService,
         deleteService,
