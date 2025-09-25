@@ -18,11 +18,12 @@ import { generateAvailableAppointmentsArray, generateScheudledAppointmentArray }
 import LoadingSpinner from "../../../../../common/LoadingSpinner/LoadingSpinner";
 
 interface Props {
+    bookingAnticipationHours: number;
     serviceToSchedule: string;
     setServiceToSchedule: React.Dispatch<React.SetStateAction<string | null>>;
 }
 
-const ServiceToSchedulePanel: React.FC<Props> = ({ serviceToSchedule, setServiceToSchedule }) => {
+const ServiceToSchedulePanel: React.FC<Props> = ({ serviceToSchedule, setServiceToSchedule, bookingAnticipationHours }) => {
     const [isOpen, setIsOpen] = useState(false)
     const [dateAppointment, setDateAppointment] = useState<Date | null>(null)
     const [isScheduling, setIsScheduling] = useState(false)
@@ -38,10 +39,15 @@ const ServiceToSchedulePanel: React.FC<Props> = ({ serviceToSchedule, setService
         `${BACKEND_API_URL}/services/contains-sign-price/${serviceToSchedule}`,
         "GET",
     )
+    const { error: errorCheckHour, isLoading: isLoadingCheckHour, fetchData: fetchDataCheckHour } = useFetchData(
+        `${BACKEND_API_URL}/appointments/check-booking-hour`,
+        "POST",
+    )
 
     if (error) notifyError("Error al reservar turno.")
     if (errorData) notifyError("Error al obtener el servicio.")
     if (errorConfirm) notifyError("Error al obtener el servicio.")
+    if (errorCheckHour) notifyError("Error al verificar dispoinibilidad del turno")
 
     const [serviceToScheduleData, setServiceToScheduleData] = useState<ServiceToSchedule | null>(null)
 
@@ -71,14 +77,35 @@ const ServiceToSchedulePanel: React.FC<Props> = ({ serviceToSchedule, setService
         <h1>Lo sentimos, no encontramos el servicio que buscabas...</h1>
     </div>
 
+    const checkOrderHour = async (startEvent: Date) => {
+        const response = await fetchDataCheckHour({
+            companyId: serviceToScheduleData.companyId,
+            date: startEvent
+        })
+        if (response.data) {
+            setDateAppointment(startEvent)
+            setIsOpen(true)
+        }
+        if (response.error) {
+            notifyError(response.error, true)
+        }
+    }
+
     const confirmAppointment = async (date: Date, dataUser: UserData) => {
 
         const { stringDate, time } = parseDateToString(date)
         const formattedDate = formatDate(stringDate)
 
+        let messageHours = ""
+        if (bookingAnticipationHours > 24) {
+            messageHours = `${bookingAnticipationHours / 24} ${bookingAnticipationHours / 24 === 1 ? "día" : "días"}`
+        } else {
+            messageHours = `${bookingAnticipationHours} ${bookingAnticipationHours === 1 ? "hora" : "horas"}`
+        }
+
         const decisionConfirmed = await confirmDelete({
             question: `¿Desea reservar un turno para ${serviceToScheduleData.title} el día ${formattedDate} a las ${time} hs?`,
-            mesasge: "Solo podrás cancelar el turno con más de 24 horas de anticipación.",
+            mesasge: `Solo podrás cancelar el turno con más de ${messageHours} de anticipación.`,
             confirmButtonText: "Aceptar",
             cancelButtonText: "Cancelar",
             cancelButton: true
@@ -124,7 +151,7 @@ const ServiceToSchedulePanel: React.FC<Props> = ({ serviceToSchedule, setService
                             window.location.reload()
                         }
                     }
-                    if (response.error) notifyError("Error al confirmar turno. Inténtelo de nuevo más tarde.")
+                    if (response.error) notifyError(response.error, true)
 
                 }
             }
@@ -195,8 +222,7 @@ const ServiceToSchedulePanel: React.FC<Props> = ({ serviceToSchedule, setService
                         if (info.event.backgroundColor === "red") {
                             notifyError("El turno seleccionado ya está ocupado.")
                         } else {
-                            setDateAppointment(info.event.start as Date)
-                            setIsOpen(true)
+                            checkOrderHour(info.event.start as Date)
                         }
                     }}
                 />
@@ -224,6 +250,10 @@ const ServiceToSchedulePanel: React.FC<Props> = ({ serviceToSchedule, setService
             <LoadingModal
                 text={isLoadingConfirm ? "Verificando servicio..." : "Agendando turno..."}
                 isOpen={isScheduling || isLoadingConfirm}
+            />
+            <LoadingModal
+                text={"Verificando horario..."}
+                isOpen={isLoadingCheckHour}
             />
         </div>
     );

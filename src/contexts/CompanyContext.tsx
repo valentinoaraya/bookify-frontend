@@ -31,6 +31,8 @@ const initialState: Company = {
     company_id: "",
     services: [],
     reminders: [],
+    cancellationAnticipationHours: 0,
+    bookingAnticipationHours: 0,
     scheduledAppointments: [],
     connectedWithMP: false
 };

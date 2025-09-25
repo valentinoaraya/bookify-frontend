@@ -50,6 +50,8 @@ export interface Company extends CompanyBasicInfo {
             title: string
         }[]
     }[]
+    cancellationAnticipationHours: number
+    bookingAnticipationHours: number
 }
 
 export type CompanyToUser = Omit<Company, "scheduledAppointments" | "connectedWithMP" | "reminders" | "company_id">
