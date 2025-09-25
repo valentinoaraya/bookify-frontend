@@ -24,6 +24,8 @@ const initialState: CompanyToUser = {
     street: "",
     number: "",
     services: [],
+    cancellationAnticipationHours: 0,
+    bookingAnticipationHours: 0,
 }
 
 const userReducer = (_state: CompanyToUser, action: Action): CompanyToUser => {
