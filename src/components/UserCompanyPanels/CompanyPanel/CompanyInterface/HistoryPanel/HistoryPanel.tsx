@@ -129,8 +129,7 @@ const HistoryPanel: React.FC<HistoryPanelProps> = ({ company }) => {
 
   return (
     <div className="history-list-container">
-      <Title margin="0 0 1rem 0">Historial de Turnos</Title>
-
+      <Title>Historial de Turnos</Title>
       <div className="history-filters-container">
         <div className="history-filters-row">
           <div className="history-filter-item">
@@ -174,7 +173,7 @@ const HistoryPanel: React.FC<HistoryPanelProps> = ({ company }) => {
         <div className="history-statistics-container">
           <div className="history-stats-row">
             <Card className="history-stat-card">
-              <Statistic title="Total de Turnos" value={statistics.totalAppointments} prefix={<CalendarOutlined />} />
+              <Statistic title="Ingresos Totales" value={statistics.totalIncome} prefix={<DollarOutlined />} />
             </Card>
             <Card className="history-stat-card">
               <div className="history-popular-service">
@@ -183,7 +182,7 @@ const HistoryPanel: React.FC<HistoryPanelProps> = ({ company }) => {
               </div>
             </Card>
             <Card className="history-stat-card">
-              <Statistic title="Ingresos Totales" value={statistics.totalIncome} prefix={<DollarOutlined />} />
+              <Statistic title="Total de Turnos" value={statistics.totalAppointments} prefix={<CalendarOutlined />} />
             </Card>
           </div>
         </div>
@@ -211,7 +210,7 @@ const HistoryPanel: React.FC<HistoryPanelProps> = ({ company }) => {
   );
 };
 
-const HistoryAppointmentItem = ({ appointment }: { appointment: Appointment }) => {
+export const HistoryAppointmentItem = ({ appointment }: { appointment: Appointment }) => {
   const time = dayjs(appointment.date).format("HH:mm");
 
   return (

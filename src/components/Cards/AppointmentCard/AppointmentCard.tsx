@@ -5,49 +5,37 @@ import { confirmDelete } from "../../../utils/alerts";
 import { useFetchData } from "../../../hooks/useFetchData";
 import { BACKEND_API_URL } from "../../../config";
 import { notifyError, notifySuccess } from "../../../utils/notifications";
-import { type Service, type Company } from "../../../types";
 import { formatDate } from "../../../utils/formatDate";
 import LoadingModal from "../../../common/LoadingModal/LoadingModal";
-import { useState } from "react";
+import { Appointment, Service } from "../../../types";
+import { CalendarOutlined } from "@ant-design/icons";
+import moment from "moment";
+import { useCompany } from "../../../hooks/useCompany";
 
 interface Props {
-    _id: string;
-    title: string;
-    date: string;
-    todayAppointment?: boolean;
-    totalPaidAmount?: number;
-    client?: string;
-    clientEmail?: string;
-    clientPhone?: string;
-    clientDNI?: string;
-    state: Company;
-    onCancelAppointment: (appointment: string, service: Service) => void;
+    appointment: Appointment
+    onCancelAppointment: (appointment: string, service: Service) => void
 }
 
-const AppointmentCard: React.FC<Props> = ({
-    _id,
-    todayAppointment,
-    totalPaidAmount,
-    title,
-    date,
-    client,
-    clientEmail,
-    clientPhone,
-    clientDNI,
-    onCancelAppointment
-}) => {
+const AppointmentCard: React.FC<Props> = ({ appointment, onCancelAppointment }) => {
     const token = localStorage.getItem("access_token")
-    const { error, fetchData } = useFetchData(
-        `${BACKEND_API_URL}/appointments/delete-appointment/${_id}`,
+    const { deleteAppointment } = useCompany()
+    const { error, isLoading, fetchData } = useFetchData(
+        `${BACKEND_API_URL}/appointments/delete-appointment/${appointment._id}`,
         "DELETE",
         token
     )
-    const [isOpen, setIsOpen] = useState(false)
-
+    const { error: errorFinishAppointment, isLoading: isLoadingFinish, fetchData: fetchDataFinishAppointment } = useFetchData(
+        `${BACKEND_API_URL}/appointments/finish-appointment/${appointment._id}`,
+        "PUT",
+        token
+    )
     if (error) notifyError("Error al cancelar turno. Inténtalo de nuevo más tarde.")
+    if (errorFinishAppointment) notifyError("Error al finalizar turno. Inténtalo de nuevo más tarde.")
 
-    const { stringDate, time } = parseDateToString(date)
+    const { stringDate, time } = parseDateToString(appointment.date)
     const formattedDate = formatDate(stringDate)
+
     const handleCancelAppointment = async () => {
         const confirm = await confirmDelete({
             question: "¿Seguro que desea cancelar el turno?",
@@ -58,7 +46,6 @@ const AppointmentCard: React.FC<Props> = ({
             confirmButtonText: "Aceptar"
         })
         if (confirm) {
-            setIsOpen(true)
             const response = await fetchData({})
             if (response.data) {
                 onCancelAppointment(
@@ -70,53 +57,77 @@ const AppointmentCard: React.FC<Props> = ({
             if (response.error) {
                 notifyError(response.error)
             }
-            setIsOpen(false)
+        }
+    }
+    const handleFinishAppointment = async () => {
+        const response = await fetchDataFinishAppointment({})
+        if (response.data) {
+            deleteAppointment(appointment._id)
+            notifySuccess("Turno finalizado.")
+        }
+        if (response.error) {
+            notifyError(response.error)
         }
     }
 
     return (
-        <div className="appointmentCard">
-            <div className="divTitleAndTodayContainer">
-                <h2 className="titleService">{client}</h2>
-                {todayAppointment && <span className="todayAppointmentSpan">Hoy</span>}
-                {totalPaidAmount && <span className="totalPaidAmountSpan">Seña de ${totalPaidAmount}</span>}
-            </div>
-            <div className="divDataContainerAppointmentCard">
-                <div>
-                    <p className="parrafAppointment"><span>Teléfono:</span> {clientPhone}</p>
-                    <p className="parrafAppointment"><span>Email:</span> {clientEmail}</p>
-                    <p className="parrafAppointment"><span>DNI:</span> {clientDNI}</p>
-                </div>
-                <div>
-                    <p className="parrafAppointment"><span>Servicio:</span> {title}</p>
-                    <p className="parrafAppointment"><span>Fecha:</span> {formattedDate}</p>
-                    <p className="parrafAppointment"><span>Horario:</span> {time} hs</p>
-                </div>
-                <div className="divButtonsContainerAppointmentCard">
-                    <Button
-                        backgroundColor="green"
-                        fontSize={window.innerWidth <= 930 ? "1rem" : "1.2rem"}
-                        padding=".8rem"
-                        margin="0 0 0 0"
-                    >
-                        Finalizar
-                    </Button>
-                    <Button
-                        backgroundColor="red"
-                        onSubmit={handleCancelAppointment}
-                        fontSize={window.innerWidth <= 930 ? "1rem" : "1.2rem"}
-                        padding=".8rem"
-                        margin="0 0 0 0"
-                    >
-                        Cancelar
-                    </Button>
+        <>
+            <div className="card-appointment-container">
+                <div className="card-appointment-item">
+                    <div className="card-appointment-header">
+                        <div className="card-client-info">
+                            <div className="divTitleAndTodayContainer">
+                                <h3 className="card-client-name">{`${appointment.name} ${appointment.lastName}`}</h3>
+                                {moment(appointment.date).isSame(moment(), 'day') && <span className="todayAppointmentSpan">Hoy</span>}
+                                {appointment.totalPaidAmount && <span className="totalPaidAmountSpan">Seña de ${appointment.totalPaidAmount}</span>}
+                            </div>
+                            <p className="card-client-email">{appointment.email}</p>
+                            {appointment.phone && <p className="card-client-phone">{appointment.phone}</p>}
+                            <p className="card-client-phone">DNI: {appointment.dni}</p>
+                        </div>
+                        <div className="card-appointment-details">
+                            <div className="card-service-info">
+                                <h4 className="card-service-title">{appointment.serviceId.title}</h4>
+                                <p className="card-service-duration">Duración: {appointment.serviceId.duration} min</p>
+                                <p className="card-service-price">Precio: ${appointment.serviceId.price}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="divButtonsAndDateContainer">
+                        <div className="card-date-time-info">
+                            <p className="card-appointment-date">
+                                <CalendarOutlined /> {formattedDate} {time}
+                            </p>
+                        </div>
+                        <Button
+                            backgroundColor="green"
+                            fontSize={window.innerWidth <= 930 ? "1rem" : "1.2rem"}
+                            onSubmit={handleFinishAppointment}
+                            fontWeight="600"
+                            padding=".8rem"
+                            margin="0 0 0 0"
+                        >
+                            Finalizar
+                        </Button>
+                        <Button
+                            backgroundColor="red"
+                            fontWeight="600"
+                            onSubmit={handleCancelAppointment}
+                            fontSize={window.innerWidth <= 930 ? "1rem" : "1.2rem"}
+                            padding=".8rem"
+                            margin="0 0 0 0"
+                        >
+                            Cancelar
+                        </Button>
+                    </div>
                 </div>
             </div>
             <LoadingModal
-                text="Cancelando..."
-                isOpen={isOpen}
+                text={isLoading ? "Cancelando..." : "Finalizando..."}
+                isOpen={isLoading || isLoadingFinish}
             />
-        </div>
+        </>
+
     );
 }
 

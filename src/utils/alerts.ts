@@ -17,7 +17,7 @@ export const confirmDelete = async (alert: Alert) => {
         text: alert.mesasge,
         icon: alert.icon,
         showCancelButton: alert.cancelButton,
-        confirmButtonColor: "#457B9D",
+        confirmButtonColor: "#1282A2",
         cancelButtonColor: "grey",
         confirmButtonText: alert.confirmButtonText,
         cancelButtonText: alert.cancelButtonText

@@ -71,7 +71,8 @@
 }
 
 .noActive:hover {
-    background-color: #eeeeee;
+    color: var(--azul-oscuro);
+    background-color: #fafafa;
 }
 
 .divSectionContainer {

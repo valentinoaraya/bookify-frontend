@@ -1,30 +1,162 @@
-.appointmentCard {
+.card-appointment-container {
+    width: 100%;
     padding: 1rem;
-    border-radius: 10px;
+    border-bottom: 1px solid #f0f0f0;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+    box-shadow: 0 0 5px 0 rgb(202, 202, 202);
+    border-radius: 8px;
+}
+
+.card-appointment-item {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+}
+
+.card-appointment-container:hover {
+    background-color: #fafafa;
+    transform: translateX(4px);
+}
+
+.card-appointment-container:last-child {
+    border-bottom: none;
+}
+
+.card-appointment-container::before {
+    border-radius: 8px 0 0 8px;
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: linear-gradient(135deg, var(--azul-clarito), var(--azul-oscuro));
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.card-appointment-container:hover::before {
+    opacity: 1;
+}
+
+@keyframes appointment-slide-in {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.card-appointment-item {
+    animation: appointment-slide-in 0.3s ease-out;
+}
+
+.card-appointment-header {
+    display: flex;
+    align-items: flex-start;
+    flex-direction: column;
+}
+
+.divButtonsAndDateContainer {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    box-shadow: 0px 0px 5px 0px grey;
+    gap: 1rem;
 }
 
-.parrafAppointment {
-    margin: .5rem 0;
+.card-client-info {
+    flex: 1;
+    margin-bottom: .5rem;
 }
 
-.parrafAppointment span {
-    font-weight: bold;
+.card-client-name {
+    font-size: 18px;
+    font-weight: 600;
+    color: #262626;
+    line-height: 1.3;
 }
 
-.divDataContainerAppointmentCard {
-    margin: .8rem 0;
+.card-client-email,
+.card-client-phone {
+    margin: 0 0 4px 0;
+    font-size: 14px;
+    color: #5e5c5c;
+    line-height: 1.4;
+}
+
+.card-client-phone {
+    font-weight: 500;
+    color: #595959;
+}
+
+.card-appointment-details {
     display: flex;
     justify-content: space-between;
+    align-items: flex-start;
+    gap: 24px;
+}
+
+.card-service-info {
+    flex: 1;
+}
+
+.card-service-title {
+    margin: 0 0 8px 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--azul-clarito);
+    line-height: 1.3;
+}
+
+.card-service-duration,
+.card-service-price {
+    margin: 0 0 4px 0;
+    font-size: 14px;
+    color: #737171;
+    line-height: 1.4;
+}
+
+.card-service-price {
+    font-weight: 600;
+    color: #3f9f0f;
+    font-size: 15px;
+}
+
+.card-date-time-info {
+    text-align: right;
+    min-width: 120px;
+    background: #f8f9fa;
+    padding: 12px 16px;
+    border-radius: 8px;
+    border: 1px solid #f0f0f0;
+}
+
+.card-appointment-date {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: #262626;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 6px;
+}
+
+.card-appointment-date .anticon {
+    color: var(--azul-clarito);
 }
 
 .divButtonsContainerAppointmentCard {
     display: flex;
+    flex-direction: column;
     justify-content: space-between;
-    align-items: center;
     gap: 1rem;
 }
 
@@ -32,12 +164,13 @@
     display: flex;
     align-items: center;
     gap: 1rem;
+    margin-bottom: 8px;
 }
 
 .todayAppointmentSpan {
     background-color: rgb(245, 154, 69);
     color: var(--blanco);
-    font-size: 1rem;
+    font-size: .9rem;
     font-weight: 600;
     padding: .2rem .5rem;
     border-radius: 5px;
@@ -46,40 +179,8 @@
 .totalPaidAmountSpan {
     background-color: rgb(161, 27, 194);
     color: var(--blanco);
-    font-size: 1rem;
+    font-size: .9rem;
     font-weight: 600;
     padding: .2rem .5rem;
     border-radius: 5px;
-}
-
-@media (max-width: 930px) {
-    .appointmentCard {
-        padding: .8rem;
-    }
-
-    .titleService {
-        font-size: 1.2rem;
-    }
-
-    .parrafAppointment {
-        font-size: .9rem;
-    }
-
-    .divDataContainer {
-        margin: .2rem 0;
-    }
-}
-
-@media (max-width: 530px) {
-    .appointmentCard {
-        padding: .7rem;
-    }
-
-    .titleService {
-        font-size: 1rem;
-    }
-
-    .parrafAppointment {
-        font-size: .8rem;
-    }
 }
