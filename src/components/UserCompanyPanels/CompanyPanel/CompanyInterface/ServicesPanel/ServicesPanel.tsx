@@ -49,7 +49,7 @@ const ServicesPanel: React.FC<Props> = ({ companyServices, connectedWithMP, onDe
     }
 
     return (
-        <>
+        <div className="animation-section divSectionContainer">
             <div className="servicesPanelHeader">
                 <Title
                     margin="0 0 1rem 0"
@@ -111,7 +111,7 @@ const ServicesPanel: React.FC<Props> = ({ companyServices, connectedWithMP, onDe
                 onSubmitForm={(data) => handleAddService(data)}
                 disabledButtons={isLoading}
             />
-        </>
+        </div>
     );
 }
 

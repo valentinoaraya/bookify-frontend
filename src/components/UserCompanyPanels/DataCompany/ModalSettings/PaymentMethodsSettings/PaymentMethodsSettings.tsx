@@ -84,7 +84,7 @@ const PaymentMethodsSettings: React.FC<Props> = ({ data }) => {
     }
 
     return (
-        <div className="paymentMethodsSettings">
+        <div className="paymentMethodsSettings animation-section">
             <div>
                 <div className="header-settings">
                     <h2 className="titleSetting">Vincúlate para poder cobrar señas</h2>
