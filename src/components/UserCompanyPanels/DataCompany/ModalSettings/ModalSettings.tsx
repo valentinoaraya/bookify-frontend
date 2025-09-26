@@ -15,22 +15,32 @@ interface Props {
 const ModalSettings: React.FC<Props> = ({ isOpen, setIsOpen }) => {
 
     const [active, setActive] = useState("profile")
+    const [shouldRender, setShouldRender] = useState(isOpen);
+    const [closing, setClosing] = useState(false);
     const { state } = useCompany()
 
     useEffect(() => {
         if (isOpen) {
-            document.body.classList.add("settings-modal-open")
+            setShouldRender(true);
+            setClosing(false);
+            document.body.classList.add("settings-modal-open");
         } else {
-            document.body.classList.remove("settings-modal-open")
+            setClosing(true);
+            document.body.classList.remove("settings-modal-open");
+
+            const timeout = setTimeout(() => {
+                setShouldRender(false);
+                setClosing(false);
+            }, 300);
+
+            return () => clearTimeout(timeout);
         }
+    }, [isOpen]);
 
-        return () => document.body.classList.remove("settings-modal-open")
-    }, [isOpen])
-
-    if (!isOpen) return null
+    if (!shouldRender) return null
 
     return (
-        <div className="modalOverlaySettings">
+        <div className={`modalOverlaySettings ${closing ? "closing" : "opening"}`}>
             <div className="modalSettingsContent">
                 <button className="modalCloseButton" onClick={() => setIsOpen(false)} >X</button>
                 <div className="modalSettingsBody">

@@ -22,7 +22,7 @@ const ScheduledAppointmentsPanel: React.FC<Props> = ({ scheduledAppointments }) 
     }
 
     return (
-        <>
+        <div className="animation-section divSectionContainer">
             <Title
                 fontSize={window.innerWidth <= 530 ? "1.8rem" : ""}
                 margin="0 0 2rem 0"
@@ -47,7 +47,7 @@ const ScheduledAppointmentsPanel: React.FC<Props> = ({ scheduledAppointments }) 
                         }
                     </div>
             }
-        </>
+        </div>
     );
 }
 

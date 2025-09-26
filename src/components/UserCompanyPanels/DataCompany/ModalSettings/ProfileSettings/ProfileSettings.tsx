@@ -108,7 +108,7 @@ const ProfileSettings: React.FC<Props> = ({ data }) => {
     }
 
     return (
-        <div>
+        <div className="animation-section">
             <div className="header-settings">
                 <h2 className="titleSetting">Perfil de tu empresa</h2>
                 <p>Edita los datos de contacto y ubicación de tu empresa.</p>

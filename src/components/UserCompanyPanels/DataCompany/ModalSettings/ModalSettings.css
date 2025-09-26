@@ -1,3 +1,27 @@
+@keyframes settings-slide-in {
+    from {
+        opacity: 0;
+        transform: translateX(-30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes settings-slide-out {
+    from {
+        opacity: 1;
+        transform: translateX(0);
+    }
+
+    to {
+        opacity: 0;
+        transform: translateX(-30px);
+    }
+}
+
 .modalOverlaySettings {
     position: fixed;
     top: 0;
@@ -11,11 +35,20 @@
     z-index: 1000;
 }
 
+.modalOverlaySettings.opening .modalSettingsContent {
+    animation: settings-slide-in 0.3s ease forwards;
+}
+
+.modalOverlaySettings.closing .modalSettingsContent {
+    animation: settings-slide-out 0.3s ease forwards;
+}
+
 body.settings-modal-open {
     overflow: hidden;
 }
 
 .modalSettingsContent {
+    animation: settings-slide-in .3s ease-in;
     position: relative;
     width: 100%;
     max-width: 70vw;

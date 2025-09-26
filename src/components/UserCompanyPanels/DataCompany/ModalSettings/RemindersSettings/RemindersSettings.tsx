@@ -65,7 +65,7 @@ const RemindersSettings: React.FC<Props> = ({ data }) => {
     if (error) notifyError("Error en el servidor. Inténtalo de nuevo más tarde.")
 
     return (
-        <div>
+        <div className="animation-section">
             <div className="header-settings">
                 <h2 className="titleSetting">Configura los recordatorios para tus clientes</h2>
                 <p>Puedes enviar recordatorios de los turnos X horas antes de los mismos.</p>

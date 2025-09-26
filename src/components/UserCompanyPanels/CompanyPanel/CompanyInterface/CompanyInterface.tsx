@@ -60,7 +60,7 @@ const CompanyInterface = () => {
                                         Servicios
                                     </button>
                                 </div>
-                                <div className="divSectionContainer">
+                                <>
                                     {
                                         activeView === "appointments" ?
                                             <ScheduledAppointmentsPanel
@@ -81,7 +81,7 @@ const CompanyInterface = () => {
                                                 }
                                             </>
                                     }
-                                </div>
+                                </>
                             </div>
                     }
                 </div>

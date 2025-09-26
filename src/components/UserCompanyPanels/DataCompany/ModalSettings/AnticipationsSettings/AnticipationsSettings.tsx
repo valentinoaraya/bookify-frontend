@@ -60,7 +60,7 @@ const AnticipationsSettings: React.FC<Props> = ({ data }) => {
     if (error) notifyError("Error en el servidor. Inténtalo de nuevo más tarde.")
 
     return (
-        <div className="anticipationsSettings">
+        <div className="anticipationsSettings animation-section">
             <div className="header-settings">
                 <h2 className="titleSetting">Anticipación de reserva y cancelación</h2>
                 <p>Puedes configurar el tiempo de anticipación de cancelación y reservas de turnos.</p>

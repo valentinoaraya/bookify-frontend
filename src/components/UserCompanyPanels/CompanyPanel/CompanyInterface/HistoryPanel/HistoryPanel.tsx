@@ -128,7 +128,7 @@ const HistoryPanel: React.FC<HistoryPanelProps> = ({ company }) => {
   }, [filteredAppointments, historyData, searchTerm, selectedService, dateRange]);
 
   return (
-    <div className="history-list-container">
+    <div className="history-list-container animation-section divSectionContainer">
       <Title>Historial de Turnos</Title>
       <div className="history-filters-container">
         <div className="history-filters-row">
