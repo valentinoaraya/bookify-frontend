@@ -101,8 +101,10 @@ ant-input-search :where(.css-dev-only-do-not-override-19lec04).ant-input-group .
 }
 
 .history-stat-card {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   flex: 1;
-  min-width: 200px;
   text-align: center;
   border-radius: 10px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
@@ -127,10 +129,6 @@ ant-input-search :where(.css-dev-only-do-not-override-19lec04).ant-input-group .
   font-size: 24px;
   font-weight: 700;
   color: var(--azul-clarito);
-}
-
-.history-popular-service {
-  padding: 20px 16px;
 }
 
 .history-stat-title {
@@ -309,15 +307,15 @@ ant-input-search :where(.css-dev-only-do-not-override-19lec04).ant-input-group .
 }
 
 .history-appointment-date .anticon {
-  color: #1890ff;
+  color: var(--azul-clarito);
 }
 
 .history-loading-container .ant-spin {
-  color: #1890ff;
+  color: var(--azul-clarito);
 }
 
 .history-loading-container .ant-spin .ant-spin-dot-item {
-  background-color: #1890ff;
+  background-color: var(--azul-clarito);
 }
 
 .history-no-services-appointments .ant-empty-description {
@@ -432,7 +430,7 @@ ant-input-search :where(.css-dev-only-do-not-override-19lec04).ant-input-group .
 }
 
 .history-appointment-item:focus {
-  outline: 2px solid #1890ff;
+  outline: 2px solid var(--azul-clarito);
   outline-offset: 2px;
   background-color: #f6ffed;
 }
