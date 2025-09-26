@@ -51,6 +51,11 @@
     border: 2px solid rgb(21, 187, 21);
 }
 
+.divMethod.connected:hover {
+    background-color: #effde8;
+    border-color: rgb(21, 187, 21);
+}
+
 .connectedText {
     color: rgb(21, 187, 21);
     font-weight: 600;

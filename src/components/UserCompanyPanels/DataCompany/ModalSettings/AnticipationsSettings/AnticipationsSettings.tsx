@@ -35,7 +35,7 @@ const AnticipationsSettings: React.FC<Props> = ({ data }) => {
         })
     }, [data.cancellationAnticipationHours, data.bookingAnticipationHours])
 
-    const hoursOptions = [1, 2, 4, 6, 12, 24, 48, 72, 96]
+    const hoursOptions = [0, 1, 2, 4, 6, 12, 24, 48, 72, 96]
 
     const handleSave = async () => {
         const payload = {
@@ -77,11 +77,18 @@ const AnticipationsSettings: React.FC<Props> = ({ data }) => {
                         value={form.cancellationAnticipationHours}
                         onChange={(e) => setForm({ ...form, cancellationAnticipationHours: parseInt(e.target.value) })}
                     >
-                        {hoursOptions.map(h => (
-                            <option key={`cancel-${h}`} value={h}>
-                                {h >= 24 ? `${h / 24} ${h / 24 === 1 ? "día" : "días"} antes` : `${h} ${h === 1 ? "hora" : "horas"} antes`}
-                            </option>
-                        ))}
+                        {hoursOptions.map(h => {
+                            if (h === 0) {
+                                return <option key={`cancel-${h}`} value={h}>
+                                    {h === 0 && "Sin anticipación"}
+                                </option>
+                            }
+                            return (
+                                <option key={`cancel-${h}`} value={h}>
+                                    {h >= 24 ? `${h / 24} ${h / 24 === 1 ? "día" : "días"} antes` : `${h} ${h === 1 ? "hora" : "horas"} antes`}
+                                </option>
+                            )
+                        })}
                     </select>
                 </div>
 
@@ -95,11 +102,18 @@ const AnticipationsSettings: React.FC<Props> = ({ data }) => {
                         value={form.bookingAnticipationHours}
                         onChange={(e) => setForm({ ...form, bookingAnticipationHours: parseInt(e.target.value) })}
                     >
-                        {hoursOptions.map(h => (
-                            <option key={`book-${h}`} value={h}>
-                                {h >= 24 ? `${h / 24} ${h / 24 === 1 ? "día" : "días"} antes` : `${h} ${h === 1 ? "hora" : "horas"} antes`}
-                            </option>
-                        ))}
+                        {hoursOptions.map(h => {
+                            if (h === 0) {
+                                return <option key={`cancel-${h}`} value={h}>
+                                    {h === 0 && "Sin anticipación"}
+                                </option>
+                            }
+                            return (
+                                <option key={`cancel-${h}`} value={h}>
+                                    {h >= 24 ? `${h / 24} ${h / 24 === 1 ? "día" : "días"} antes` : `${h} ${h === 1 ? "hora" : "horas"} antes`}
+                                </option>
+                            )
+                        })}
                     </select>
                 </div>
             </div>
