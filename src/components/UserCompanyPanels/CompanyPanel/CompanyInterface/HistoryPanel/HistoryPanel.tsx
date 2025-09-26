@@ -172,39 +172,42 @@ const HistoryPanel: React.FC<HistoryPanelProps> = ({ company }) => {
       {statistics && (
         <div className="history-statistics-container">
           <div className="history-stats-row">
-            <Card className="history-stat-card">
+            <Card className="history-stat-card animation-section">
               <Statistic title="Ingresos Totales" value={statistics.totalIncome} prefix={<DollarOutlined />} />
             </Card>
-            <Card className="history-stat-card">
+            <Card className="history-stat-card animation-section">
               <div className="history-popular-service">
                 <div className="history-stat-title">Servicio Más Popular</div>
                 <div className="history-stat-value">{statistics.mostPopularService}</div>
               </div>
             </Card>
-            <Card className="history-stat-card">
+            <Card className="history-stat-card animation-section">
               <Statistic title="Total de Turnos" value={statistics.totalAppointments} prefix={<CalendarOutlined />} />
             </Card>
           </div>
         </div>
       )}
 
-      <div className="history-appointments-container">
-        {loading ? (
-          <LoadingSpinner
-            text="Cargando historial..."
-            shadow="none"
-          />
-        ) : filteredAppointments.length === 0 ? (
-          <div className="history-no-services-appointments">
-            <Empty description="No se encontraron turnos en el historial" />
-          </div>
-        ) : (
-          <div className="history-appointments-list">
-            {filteredAppointments.map((appointment) => (
-              <HistoryAppointmentItem key={appointment._id} appointment={appointment} />
-            ))}
-          </div>
-        )}
+      <div>
+        {filteredAppointments.length > 0 && <h3 className="latestAppointmentsTitle">Tus últimos turnos</h3>}
+        <div className="history-appointments-container animation-section">
+          {loading ? (
+            <LoadingSpinner
+              text="Cargando historial..."
+              shadow="none"
+            />
+          ) : filteredAppointments.length === 0 ? (
+            <div className="history-no-services-appointments animation-section">
+              <Empty description="No se encontraron turnos en el historial" />
+            </div>
+          ) : (
+            <div className="history-appointments-list">
+              {filteredAppointments.map((appointment) => (
+                <HistoryAppointmentItem key={appointment._id} appointment={appointment} />
+              ))}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
@@ -214,7 +217,7 @@ export const HistoryAppointmentItem = ({ appointment }: { appointment: Appointme
   const time = dayjs(appointment.date).format("HH:mm");
 
   return (
-    <div className="history-appointment-item">
+    <div className={`history-appointment-item ${appointment.status}`}>
       <div className="history-appointment-header">
         <div className="history-client-info">
           <h3 className="history-client-name">{`${appointment.name} ${appointment.lastName}`}</h3>
@@ -227,6 +230,13 @@ export const HistoryAppointmentItem = ({ appointment }: { appointment: Appointme
           <h4 className="history-service-title">{appointment.serviceId.title}</h4>
           <p className="history-service-duration">Duración: {appointment.serviceId.duration} min</p>
           <p className="history-service-price">Precio: ${appointment.serviceId.price}</p>
+        </div>
+      </div>
+      <div className="divStatusAndDate">
+        <div className={`divStatusAppointment ${appointment.status}`}>
+          {appointment.status === "finished" && "Finalizado"}
+          {appointment.status === "cancelled" && `Cancelado por ${appointment.cancelledBy === "company" ? "ti" : appointment.name}`}
+          {appointment.status === "pending_action" && "Pendiente de acción"}
         </div>
         <div className="history-date-time-info">
           <p className="history-appointment-date">

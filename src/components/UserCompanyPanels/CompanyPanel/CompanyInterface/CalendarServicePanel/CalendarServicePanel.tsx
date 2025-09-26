@@ -163,7 +163,7 @@ const CalendarServicePanel: React.FC<Props> = ({ serviceId, setActiveView }) => 
             </div>
             <div className="divButtonsCalendar">
                 <Button margin="0" padding=".8rem 0" fontSize="1.4rem" onSubmit={() => setIsModalOpen(true)}
-                    backgroundColor="green"
+                    backgroundColor="#3f9f0f"
                     iconSVG={
                         <CalendarCheckIcon
                             width="20px"

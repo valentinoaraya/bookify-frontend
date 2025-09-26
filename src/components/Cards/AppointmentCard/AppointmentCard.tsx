@@ -100,7 +100,7 @@ const AppointmentCard: React.FC<Props> = ({ appointment, onCancelAppointment }) 
                             </p>
                         </div>
                         <Button
-                            backgroundColor="green"
+                            backgroundColor="#3f9f0f"
                             fontSize={window.innerWidth <= 930 ? "1rem" : "1.2rem"}
                             onSubmit={handleFinishAppointment}
                             fontWeight="600"

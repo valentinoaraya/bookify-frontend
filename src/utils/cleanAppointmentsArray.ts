@@ -17,8 +17,8 @@ export const generateAvailableAppointmentsArray = (availableAppointments: Availa
             return {
                 title: `${disponibility} ${disponibility === 1 ? "Disponible" : "Disponibles"}`,
                 start: availableAppointment.datetime,
-                backgroundColor: `${pendingCount > 0 && disponibility === 0 ? "orange" : "green"}`,
-                borderColor: `${pendingCount > 0 && disponibility === 0 ? "orange" : "green"}`,
+                backgroundColor: `${pendingCount > 0 && disponibility === 0 ? "orange" : "#3f9f0f"}`,
+                borderColor: `${pendingCount > 0 && disponibility === 0 ? "orange" : "#3f9f0f"}`,
                 extendedProps: {
                     disponibility,
                     taken: availableAppointment.taken,

@@ -222,7 +222,7 @@ const ProfileSettings: React.FC<Props> = ({ data }) => {
                     Cerrar sesión
                 </Button>
                 <Button
-                    backgroundColor={isDisabled ? "grey" : "green"}
+                    backgroundColor={isDisabled ? "grey" : "#3f9f0f"}
                     width="auto"
                     margin="0"
                     fontSize="1rem"
