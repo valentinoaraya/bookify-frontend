@@ -68,7 +68,7 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    gap: 1rem;
+    gap: .5rem;
 }
 
 .card-client-info {
@@ -98,6 +98,7 @@
 
 .card-appointment-details {
     display: flex;
+    align-self: center;
     justify-content: space-between;
     align-items: flex-start;
     gap: 24px;
@@ -116,7 +117,8 @@
 }
 
 .card-service-duration,
-.card-service-price {
+.card-service-price,
+.card-service-sign-price {
     margin: 0 0 4px 0;
     font-size: 14px;
     color: #737171;
@@ -126,6 +128,12 @@
 .card-service-price {
     font-weight: 600;
     color: #3f9f0f;
+    font-size: 15px;
+}
+
+.card-service-sign-price {
+    font-weight: 600;
+    color: rgb(161, 27, 194);
     font-size: 15px;
 }
 

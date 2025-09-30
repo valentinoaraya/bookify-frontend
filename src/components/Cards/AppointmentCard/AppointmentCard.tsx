@@ -79,18 +79,18 @@ const AppointmentCard: React.FC<Props> = ({ appointment, onCancelAppointment }) 
                             <div className="divTitleAndTodayContainer">
                                 <h3 className="card-client-name">{`${appointment.name} ${appointment.lastName}`}</h3>
                                 {moment(appointment.date).isSame(moment(), 'day') && <span className="todayAppointmentSpan">Hoy</span>}
-                                {appointment.totalPaidAmount && <span className="totalPaidAmountSpan">Seña de ${appointment.totalPaidAmount}</span>}
                             </div>
                             <p className="card-client-email">{appointment.email}</p>
                             {appointment.phone && <p className="card-client-phone">{appointment.phone}</p>}
                             <p className="card-client-phone">DNI: {appointment.dni}</p>
                         </div>
-                        <div className="card-appointment-details">
-                            <div className="card-service-info">
-                                <h4 className="card-service-title">{appointment.serviceId.title}</h4>
-                                <p className="card-service-duration">Duración: {appointment.serviceId.duration} min</p>
-                                <p className="card-service-price">Precio: ${appointment.serviceId.price}</p>
-                            </div>
+                    </div>
+                    <div className="card-appointment-details">
+                        <div className="card-service-info">
+                            <h4 className="card-service-title">{appointment.serviceId.title}</h4>
+                            <p className="card-service-duration">Duración: {appointment.serviceId.duration} min</p>
+                            <p className="card-service-price">Precio: ${appointment.serviceId.price}</p>
+                            {appointment.totalPaidAmount && <p className="card-service-sign-price">Seña: ${appointment.totalPaidAmount}</p>}
                         </div>
                     </div>
                     <div className="divButtonsAndDateContainer">
@@ -101,10 +101,10 @@ const AppointmentCard: React.FC<Props> = ({ appointment, onCancelAppointment }) 
                         </div>
                         <Button
                             backgroundColor="#3f9f0f"
-                            fontSize={window.innerWidth <= 930 ? "1rem" : "1.2rem"}
+                            fontSize={"1rem"}
                             onSubmit={handleFinishAppointment}
                             fontWeight="600"
-                            padding=".8rem"
+                            padding=".5rem"
                             margin="0 0 0 0"
                         >
                             Finalizar
@@ -113,8 +113,8 @@ const AppointmentCard: React.FC<Props> = ({ appointment, onCancelAppointment }) 
                             backgroundColor="red"
                             fontWeight="600"
                             onSubmit={handleCancelAppointment}
-                            fontSize={window.innerWidth <= 930 ? "1rem" : "1.2rem"}
-                            padding=".8rem"
+                            fontSize={"1rem"}
+                            padding=".5rem"
                             margin="0 0 0 0"
                         >
                             Cancelar
