@@ -8,6 +8,8 @@ import { type Company, type Appointment } from "../../../../../types";
 import { BACKEND_API_URL } from "../../../../../config";
 import "./HistoryPanel.css";
 import LoadingSpinner from "../../../../../common/LoadingSpinner/LoadingSpinner";
+import HistoryAppointmentItem from "./HistoryAppointmentItem";
+import { ArrowReturnIcon } from "../../../../../common/Icons/Icons";
 
 dayjs.extend(isBetween);
 
@@ -24,8 +26,9 @@ const HistoryPanel: React.FC<HistoryPanelProps> = ({ company }) => {
   const [selectedService, setSelectedService] = useState<string>("all");
   const [dateRange, setDateRange] = useState<[Dayjs | null, Dayjs | null] | null>(null);
   const [filteredAppointments, setFilteredAppointments] = useState<Appointment[]>([]);
+  const [pendingAppointments, setPendingAppointments] = useState<Appointment[]>([])
+  const [isFilterPendingAppointments, setIsFilterPendingAppointments] = useState(false)
   const [loading, setLoading] = useState(true);
-
   const [backendAppointments, setBackendAppointments] = useState<Appointment[]>([]);
 
   const fetchHistoryFromBackend = async () => {
@@ -46,6 +49,7 @@ const HistoryPanel: React.FC<HistoryPanelProps> = ({ company }) => {
       if (response.ok) {
         const result = await response.json();
         setBackendAppointments(result.data || []);
+        setPendingAppointments(result.data.filter((apt: Appointment) => apt.status === "pending_action"))
       } else {
         setBackendAppointments([]);
       }
@@ -60,18 +64,17 @@ const HistoryPanel: React.FC<HistoryPanelProps> = ({ company }) => {
     fetchHistoryFromBackend();
   }, [company._id]);
 
-  const historyData = useMemo(() => backendAppointments, [backendAppointments]);
-
   const processedAppointments = useMemo(() => {
-    if (!historyData.length) return [];
+    if (!backendAppointments.length) return [];
 
-    const filtered = historyData.filter((appointment) => {
+    const filtered = backendAppointments.filter((appointment) => {
       if (searchTerm) {
         const searchLower = searchTerm.toLowerCase();
+        const fullName = `${appointment.name.trim()} ${appointment.lastName.trim()}`
         const matchesClient =
-          appointment.name.toLowerCase().includes(searchLower) ||
-          appointment.lastName.toLowerCase().includes(searchLower) ||
-          appointment.email.toLowerCase().includes(searchLower);
+          fullName.toLowerCase().includes(searchLower) ||
+          appointment.email.toLowerCase().includes(searchLower) ||
+          appointment.dni.toString().includes(searchLower);
         if (!matchesClient) return false;
       }
 
@@ -90,7 +93,7 @@ const HistoryPanel: React.FC<HistoryPanelProps> = ({ company }) => {
     filtered.sort((a, b) => dayjs(b.date).valueOf() - dayjs(a.date).valueOf());
 
     return filtered;
-  }, [historyData, searchTerm, selectedService, dateRange]);
+  }, [backendAppointments, searchTerm, selectedService, dateRange]);
 
   useEffect(() => {
     setFilteredAppointments(processedAppointments);
@@ -108,24 +111,19 @@ const HistoryPanel: React.FC<HistoryPanelProps> = ({ company }) => {
 
     const mostPopularService = Object.entries(serviceStats).sort(([, a], [, b]) => b - a)[0]?.[0] || "N/A";
 
-    const isFiltered = searchTerm !== "" || selectedService !== "all" || dateRange !== null;
-
     let totalIncome;
-    if (isFiltered) {
-      totalIncome = filteredAppointments.reduce((acc, apt) => acc + apt.serviceId.price, 0);
-    } else {
-      const currentMonthStart = dayjs().startOf('month');
-      const currentMonthEnd = dayjs().endOf('month');
-      const currentMonthAppointments = historyData.filter(apt => dayjs(apt.date).isBetween(currentMonthStart, currentMonthEnd, 'day', '[]'));
-      totalIncome = currentMonthAppointments.reduce((acc, apt) => acc + apt.serviceId.price, 0);
-    }
-
+    totalIncome = filteredAppointments.reduce((acc, apt) => {
+      if (apt.status === "finished") {
+        return acc + apt.serviceId.price
+      }
+      return acc
+    }, 0);
     return {
       totalAppointments,
       mostPopularService,
       totalIncome,
     };
-  }, [filteredAppointments, historyData, searchTerm, selectedService, dateRange]);
+  }, [filteredAppointments, searchTerm, selectedService, dateRange]);
 
   return (
     <div className="history-list-container animation-section divSectionContainer">
@@ -189,7 +187,42 @@ const HistoryPanel: React.FC<HistoryPanelProps> = ({ company }) => {
       )}
 
       <div>
-        {filteredAppointments.length > 0 && <h3 className="latestAppointmentsTitle">Tus últimos turnos</h3>}
+        {
+          filteredAppointments.length > 0 &&
+          <div className="divInfoAppointments">
+            {
+              (searchTerm !== "" || selectedService !== "all" || (dateRange && (dateRange[0] !== null || dateRange[1] !== null)) || isFilterPendingAppointments) ?
+                <div
+                  className="showAll"
+                  onClick={() => {
+                    setSearchTerm("")
+                    setSelectedService("all")
+                    setDateRange(null)
+                    setIsFilterPendingAppointments(false)
+                    setFilteredAppointments(backendAppointments)
+                  }}
+                >
+                  <ArrowReturnIcon
+                    width="1rem"
+                    height="1rem"
+                    fill="#1282A2"
+                  />
+                  <h3 className="showAllText">Ver todos</h3>
+                </div>
+                :
+                <h3 className="latestAppointmentsTitle">Tus últimos turnos</h3>
+            }
+            {
+              pendingAppointments.length > 0 &&
+              <h3 className="pendingsAppointmentsTitle" onClick={() => {
+                setFilteredAppointments(pendingAppointments)
+                setIsFilterPendingAppointments(true)
+              }}>
+                Tienes {pendingAppointments.length} {pendingAppointments.length === 1 ? "turno" : "turnos"} {pendingAppointments.length === 1 ? "pendiente" : "pendientes"}
+              </h3>
+            }
+          </div>
+        }
         <div className="history-appointments-container animation-section">
           {loading ? (
             <LoadingSpinner
@@ -203,45 +236,16 @@ const HistoryPanel: React.FC<HistoryPanelProps> = ({ company }) => {
           ) : (
             <div className="history-appointments-list">
               {filteredAppointments.map((appointment) => (
-                <HistoryAppointmentItem key={appointment._id} appointment={appointment} />
+                <HistoryAppointmentItem
+                  key={appointment._id}
+                  appointment={appointment}
+                  setFilteredAppointments={setFilteredAppointments}
+                  setCopyOfFilteredAppointments={setBackendAppointments}
+                  setPendingAppointments={setPendingAppointments}
+                />
               ))}
             </div>
           )}
-        </div>
-      </div>
-    </div>
-  );
-};
-
-export const HistoryAppointmentItem = ({ appointment }: { appointment: Appointment }) => {
-  const time = dayjs(appointment.date).format("HH:mm");
-
-  return (
-    <div className={`history-appointment-item ${appointment.status}`}>
-      <div className="history-appointment-header">
-        <div className="history-client-info">
-          <h3 className="history-client-name">{`${appointment.name} ${appointment.lastName}`}</h3>
-          <p className="history-client-email">{appointment.email}</p>
-          {appointment.phone && <p className="history-client-phone">{appointment.phone}</p>}
-        </div>
-      </div>
-      <div className="history-appointment-details">
-        <div className="history-service-info">
-          <h4 className="history-service-title">{appointment.serviceId.title}</h4>
-          <p className="history-service-duration">Duración: {appointment.serviceId.duration} min</p>
-          <p className="history-service-price">Precio: ${appointment.serviceId.price}</p>
-        </div>
-      </div>
-      <div className="divStatusAndDate">
-        <div className={`divStatusAppointment ${appointment.status}`}>
-          {appointment.status === "finished" && "Finalizado"}
-          {appointment.status === "cancelled" && `Cancelado por ${appointment.cancelledBy === "company" ? "ti" : appointment.name}`}
-          {appointment.status === "pending_action" && "Pendiente de acción"}
-        </div>
-        <div className="history-date-time-info">
-          <p className="history-appointment-date">
-            <CalendarOutlined /> {dayjs(appointment.date).format("DD/MM/YYYY")} {time}
-          </p>
         </div>
       </div>
     </div>
