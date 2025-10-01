@@ -9,6 +9,7 @@
   gap: 20px;
   box-sizing: border-box;
   max-width: none;
+  margin-bottom: 2rem;
 }
 
 .ant-input-search>.ant-input-group>.ant-input-group-addon:last-child .ant-input-search-button {

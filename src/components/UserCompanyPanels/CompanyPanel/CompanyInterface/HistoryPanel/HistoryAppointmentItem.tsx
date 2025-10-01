@@ -14,9 +14,10 @@ interface Props {
     setFilteredAppointments: React.Dispatch<SetStateAction<Appointment[]>>
     setPendingAppointments: React.Dispatch<SetStateAction<Appointment[]>>
     setCopyOfFilteredAppointments: React.Dispatch<SetStateAction<Appointment[]>>
+    setIsFilteredPendingAppointments: React.Dispatch<SetStateAction<boolean>>
 }
 
-const HistoryAppointmentItem: React.FC<Props> = ({ appointment, setFilteredAppointments, setPendingAppointments, setCopyOfFilteredAppointments }) => {
+const HistoryAppointmentItem: React.FC<Props> = ({ appointment, setFilteredAppointments, setPendingAppointments, setCopyOfFilteredAppointments, setIsFilteredPendingAppointments }) => {
 
     const token = localStorage.getItem("access_token")
     const time = dayjs(appointment.date).format("HH:mm");
@@ -62,6 +63,7 @@ const HistoryAppointmentItem: React.FC<Props> = ({ appointment, setFilteredAppoi
             })
             )
             setPendingAppointments(prev => prev.filter(apt => apt._id !== response.data._id))
+            setIsFilteredPendingAppointments(false)
             notifySuccess("Cambio confirmado.")
         }
         if (response.error) {
