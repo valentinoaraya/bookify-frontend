@@ -10,6 +10,7 @@ import "./HistoryPanel.css";
 import LoadingSpinner from "../../../../../common/LoadingSpinner/LoadingSpinner";
 import HistoryAppointmentItem from "./HistoryAppointmentItem";
 import { ArrowReturnIcon } from "../../../../../common/Icons/Icons";
+import Button from "../../../../../common/Button/Button";
 
 dayjs.extend(isBetween);
 
@@ -30,13 +31,22 @@ const HistoryPanel: React.FC<HistoryPanelProps> = ({ company }) => {
   const [isFilterPendingAppointments, setIsFilterPendingAppointments] = useState(false)
   const [loading, setLoading] = useState(true);
   const [backendAppointments, setBackendAppointments] = useState<Appointment[]>([]);
+  const [page, setPage] = useState(1)
+  const [hasMore, setHasMore] = useState(false)
 
   const fetchHistoryFromBackend = async () => {
     try {
       setLoading(true);
       const token = localStorage.getItem("access_token");
 
-      const url = `${BACKEND_API_URL}/appointments/company-history/${company._id}`;
+      const queryParams = new URLSearchParams({
+        page: "1",
+        limit: "20",
+        ...(dateRange?.[0] ? { from: dateRange?.[0].format("YYYY-MM-DD") } : {}),
+        ...(dateRange?.[1] ? { to: dateRange?.[1].format("YYYY-MM-DD") } : {}),
+      })
+
+      const url = `${BACKEND_API_URL}/appointments/company-history/${company._id}?${queryParams.toString()}`;
 
       const response = await fetch(url, {
         method: "GET",
@@ -49,7 +59,8 @@ const HistoryPanel: React.FC<HistoryPanelProps> = ({ company }) => {
       if (response.ok) {
         const result = await response.json();
         setBackendAppointments(result.data || []);
-        setPendingAppointments(result.data.filter((apt: Appointment) => apt.status === "pending_action"))
+        setPendingAppointments(result.pendingAppointments)
+        setHasMore(result.hasMore)
       } else {
         setBackendAppointments([]);
       }
@@ -62,7 +73,42 @@ const HistoryPanel: React.FC<HistoryPanelProps> = ({ company }) => {
 
   useEffect(() => {
     fetchHistoryFromBackend();
-  }, [company._id]);
+  }, [company._id, dateRange]);
+
+  const handleLoadMore = async () => {
+    try {
+      setLoading(true);
+      const token = localStorage.getItem("access_token");
+
+      const queryParams = new URLSearchParams({
+        page: (page + 1).toString(),
+        limit: "20",
+        ...(dateRange?.[0] ? { from: dateRange?.[0].format("YYYY-MM-DD") } : {}),
+        ...(dateRange?.[1] ? { to: dateRange?.[1].format("YYYY-MM-DD") } : {}),
+      })
+
+      const url = `${BACKEND_API_URL}/appointments/company-history/${company._id}?${queryParams.toString()}`;
+
+      const response = await fetch(url, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      })
+
+      if (response.ok) {
+        const result = await response.json();
+        setBackendAppointments(prev => [...prev, ...(result.data || [])])
+        setPage(prev => prev + 1)
+        setHasMore(result.hasMore)
+      }
+    } catch (error) {
+      console.error("Error al cargar más turnos:", error);
+    } finally {
+      setLoading(false);
+    }
+  }
 
   const processedAppointments = useMemo(() => {
     if (!backendAppointments.length) return [];
@@ -80,20 +126,13 @@ const HistoryPanel: React.FC<HistoryPanelProps> = ({ company }) => {
 
       if (selectedService !== "all" && appointment.serviceId._id !== selectedService) return false;
 
-      if (dateRange && dateRange[0] && dateRange[1]) {
-        const aptDate = dayjs(appointment.date);
-        if (!aptDate.isBetween(dateRange[0], dateRange[1], 'day', '[]')) {
-          return false;
-        }
-      }
-
       return true;
     });
 
     filtered.sort((a, b) => dayjs(b.date).valueOf() - dayjs(a.date).valueOf());
 
     return filtered;
-  }, [backendAppointments, searchTerm, selectedService, dateRange]);
+  }, [backendAppointments, searchTerm, selectedService]);
 
   useEffect(() => {
     setFilteredAppointments(processedAppointments);
@@ -114,7 +153,7 @@ const HistoryPanel: React.FC<HistoryPanelProps> = ({ company }) => {
     let totalIncome;
     totalIncome = filteredAppointments.reduce((acc, apt) => {
       if (apt.status === "finished") {
-        return acc + apt.serviceId.price
+        return acc + apt.serviceId.price + (apt.totalPaidAmount || 0)
       }
       return acc
     }, 0);
@@ -123,7 +162,7 @@ const HistoryPanel: React.FC<HistoryPanelProps> = ({ company }) => {
       mostPopularService,
       totalIncome,
     };
-  }, [filteredAppointments, searchTerm, selectedService, dateRange]);
+  }, [filteredAppointments, searchTerm, selectedService]);
 
   return (
     <div className="history-list-container animation-section divSectionContainer">
@@ -210,7 +249,7 @@ const HistoryPanel: React.FC<HistoryPanelProps> = ({ company }) => {
                   <h3 className="showAllText">Ver todos</h3>
                 </div>
                 :
-                <h3 className="latestAppointmentsTitle">Tus últimos turnos</h3>
+                <h3 className="latestAppointmentsTitle">{backendAppointments.length === 1 ? "Último" : "Últimos"} {backendAppointments.length === 1 ? "" : backendAppointments.length} {backendAppointments.length === 1 ? "turno" : "turnos"}</h3>
             }
             {
               pendingAppointments.length > 0 &&
@@ -242,11 +281,29 @@ const HistoryPanel: React.FC<HistoryPanelProps> = ({ company }) => {
                   setFilteredAppointments={setFilteredAppointments}
                   setCopyOfFilteredAppointments={setBackendAppointments}
                   setPendingAppointments={setPendingAppointments}
+                  setIsFilteredPendingAppointments={setIsFilterPendingAppointments}
                 />
               ))}
             </div>
           )}
         </div>
+        {hasMore &&
+          <div className="animation-section">
+            <Button
+              onSubmit={handleLoadMore}
+              padding=".2rem .5rem"
+              width="auto"
+              margin="1rem 0 0 0"
+              fontSize=".8rem"
+              fontWeight="500"
+              backgroundColor="#1282A2"
+              disabled={loading}
+            >
+              Ver más
+            </Button>
+          </div>
+
+        }
       </div>
     </div>
   );
