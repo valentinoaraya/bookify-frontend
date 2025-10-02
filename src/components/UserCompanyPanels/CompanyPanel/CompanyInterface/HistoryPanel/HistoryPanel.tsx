@@ -11,8 +11,12 @@ import LoadingSpinner from "../../../../../common/LoadingSpinner/LoadingSpinner"
 import HistoryAppointmentItem from "./HistoryAppointmentItem";
 import { ArrowReturnIcon } from "../../../../../common/Icons/Icons";
 import Button from "../../../../../common/Button/Button";
+import "dayjs/locale/es";
+import localizedFormat from "dayjs/plugin/localizedFormat";
 
 dayjs.extend(isBetween);
+dayjs.extend(localizedFormat);
+dayjs.locale("es");
 
 const { RangePicker } = DatePicker;
 const { Option } = Select;
@@ -33,6 +37,15 @@ const HistoryPanel: React.FC<HistoryPanelProps> = ({ company }) => {
   const [backendAppointments, setBackendAppointments] = useState<Appointment[]>([]);
   const [page, setPage] = useState(1)
   const [hasMore, setHasMore] = useState(false)
+  const [statistics, setStatistics] = useState<{
+    totalAppointments: number;
+    mostPopularService: string;
+    totalIncome: number;
+  }>({
+    totalAppointments: 0,
+    mostPopularService: "N/A",
+    totalIncome: 0,
+  });
 
   const fetchHistoryFromBackend = async () => {
     try {
@@ -61,6 +74,11 @@ const HistoryPanel: React.FC<HistoryPanelProps> = ({ company }) => {
         setBackendAppointments(result.data || []);
         setPendingAppointments(result.pendingAppointments)
         setHasMore(result.hasMore)
+        setStatistics(result.stats || {
+          totalAppointments: 0,
+          mostPopularService: "N/A",
+          totalIncome: 0,
+        });
       } else {
         setBackendAppointments([]);
       }
@@ -102,6 +120,11 @@ const HistoryPanel: React.FC<HistoryPanelProps> = ({ company }) => {
         setBackendAppointments(prev => [...prev, ...(result.data || [])])
         setPage(prev => prev + 1)
         setHasMore(result.hasMore)
+        setStatistics(result.stats || {
+          totalAppointments: 0,
+          mostPopularService: "N/A",
+          totalIncome: 0,
+        });
       }
     } catch (error) {
       console.error("Error al cargar más turnos:", error);
@@ -137,32 +160,6 @@ const HistoryPanel: React.FC<HistoryPanelProps> = ({ company }) => {
   useEffect(() => {
     setFilteredAppointments(processedAppointments);
   }, [processedAppointments]);
-
-  const statistics = useMemo(() => {
-    if (!filteredAppointments.length) return null;
-
-    const totalAppointments = filteredAppointments.length;
-    const serviceStats = filteredAppointments.reduce((acc, apt) => {
-      const serviceTitle = apt.serviceId.title;
-      acc[serviceTitle] = (acc[serviceTitle] || 0) + 1;
-      return acc;
-    }, {} as Record<string, number>);
-
-    const mostPopularService = Object.entries(serviceStats).sort(([, a], [, b]) => b - a)[0]?.[0] || "N/A";
-
-    let totalIncome;
-    totalIncome = filteredAppointments.reduce((acc, apt) => {
-      if (apt.status === "finished") {
-        return acc + apt.serviceId.price + (apt.totalPaidAmount || 0)
-      }
-      return acc
-    }, 0);
-    return {
-      totalAppointments,
-      mostPopularService,
-      totalIncome,
-    };
-  }, [filteredAppointments, searchTerm, selectedService]);
 
   return (
     <div className="history-list-container animation-section divSectionContainer">
@@ -210,7 +207,11 @@ const HistoryPanel: React.FC<HistoryPanelProps> = ({ company }) => {
         <div className="history-statistics-container">
           <div className="history-stats-row">
             <Card className="history-stat-card animation-section">
-              <Statistic title="Ingresos Totales" value={statistics.totalIncome} prefix={<DollarOutlined />} />
+              <Statistic
+                title={`Ingresos totales en ${dayjs().locale("es").format("MMMM")[0].toUpperCase() + dayjs().locale("es").format("MMMM").slice(1)}`}
+                value={statistics.totalIncome}
+                prefix={<DollarOutlined />}
+              />
             </Card>
             <Card className="history-stat-card animation-section">
               <div className="history-popular-service">
@@ -219,7 +220,11 @@ const HistoryPanel: React.FC<HistoryPanelProps> = ({ company }) => {
               </div>
             </Card>
             <Card className="history-stat-card animation-section">
-              <Statistic title="Total de Turnos" value={statistics.totalAppointments} prefix={<CalendarOutlined />} />
+              <Statistic
+                title={`Total de turnos en ${dayjs().locale("es").format("MMMM")[0].toUpperCase() + dayjs().locale("es").format("MMMM").slice(1)}`}
+                value={statistics.totalAppointments}
+                prefix={<CalendarOutlined />}
+              />
             </Card>
           </div>
         </div>
