@@ -28,15 +28,25 @@ const ModalForm: React.FC<Props> = ({ title, inputs, isOpen, onClose, onSubmitFo
 
     const { dataForm, handleChange, deleteData } = useDataForm(initialData)
     const [selectedDays, setSelectedDays] = useState<Date[] | undefined>()
+    const [shouldRender, setShouldRender] = useState(isOpen);
+    const [closing, setClosing] = useState(false);
 
     useEffect(() => {
         if (isOpen) {
-            document.body.classList.add("modal-open")
+            setShouldRender(true);
+            setClosing(false);
+            document.body.classList.add("settings-modal-open");
         } else {
-            document.body.classList.remove("modal-open")
-        }
+            setClosing(true);
+            document.body.classList.remove("settings-modal-open");
 
-        return () => document.body.classList.remove("modal-open")
+            const timeout = setTimeout(() => {
+                setShouldRender(false);
+                setClosing(false);
+            }, 300);
+
+            return () => clearTimeout(timeout);
+        }
     }, [isOpen])
 
     const handleCloseForm = () => {
@@ -44,10 +54,10 @@ const ModalForm: React.FC<Props> = ({ title, inputs, isOpen, onClose, onSubmitFo
         onClose()
     }
 
-    if (!isOpen) return null
+    if (!shouldRender) return null
 
     return (
-        <div className="modalOverlay">
+        <div className={`modalOverlay ${closing ? "closing" : "opening"}`}>
             <div className="modalContent">
                 <Title
                     fontSize={window.innerWidth <= 930 ? "1.8rem" : "2.2rem"}
@@ -114,6 +124,8 @@ const ModalForm: React.FC<Props> = ({ title, inputs, isOpen, onClose, onSubmitFo
                             Aceptar
                         </Button>
                         <Button
+                            type="button"
+                            backgroundColor="#f44336"
                             onSubmit={handleCloseForm}
                             disabled={disabledButtons}
                         >

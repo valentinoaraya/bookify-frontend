@@ -77,53 +77,76 @@ const ServiceCard: React.FC<Props> = ({ id, duration, price, title, description,
     }
 
     return (
-        <div className="serviceCard">
-            <h2 className="titleService">{title}</h2>
-            <div className="dataService">
-                <div className="spanServiceCardContainer">
-                    <span className="spanServiceCard availables">{availableAppointmentsLenght} disponibles</span>
-                    <span className="spanServiceCard noAvailables">{scheduledAppointmentsLenght} agendados</span>
-                </div>
-                <p className="parrafService">{description}</p>
-                {signPrice !== 0 ? <p className="parrafService"><span>Precio de la seña: $ {signPrice}</span></p> : <p className="parrafService"><span>Sin seña</span></p>}
-                <p className="parrafService">{capacityPerShift} {capacityPerShift > 1 ? "personas" : "persona"} por horario</p>
-                <div className="durationPriceContainer">
-                    <div className="divDuration">
-                        <ClockIcon
-                            width="18px"
-                            height="18px"
-                            fill="grey"
-                        />
-                        <p className="parrafDuration">{duration} min</p>
+        <>
+            <div className="service-card-container">
+                <div className="service-card-item">
+                    <div className="service-card-header">
+                        <div className="service-base-info">
+                            <h3 className="service-title">{title}</h3>
+                            <p className="service-description">{description}</p>
+                        </div>
+                        <div className="service-card-details">
+                            <div className="service-info">
+                                <div className="service-stats-container">
+                                    <span className="service-stat available">{availableAppointmentsLenght} disponibles</span>
+                                    <span className="service-stat scheduled">{scheduledAppointmentsLenght} agendados</span>
+                                </div>
+                                <div className="service-capacity-info">
+                                    <p className="service-capacity">{capacityPerShift} {capacityPerShift > 1 ? "personas" : "persona"} por horario</p>
+                                    {signPrice !== 0 ? (
+                                        <p className="service-sign-price"><span>Precio de la seña: $ {signPrice}</span></p>
+                                    ) : (
+                                        <p className="service-sign-price"><span>Sin seña</span></p>
+                                    )}
+                                </div>
+                            </div>
+                            <div className="service-duration-price-info">
+                                <div className="service-duration">
+                                    <ClockIcon
+                                        width="18px"
+                                        height="18px"
+                                        fill="grey"
+                                    />
+                                    <p className="service-duration-text">{duration} min</p>
+                                </div>
+                                <p className="service-price"><span className="price-symbol">$</span> {price}</p>
+                            </div>
+                        </div>
                     </div>
-                    <p className="parrafPrice"><span className="spanPrice">$</span> {price}</p>
+                    <div className="service-card-actions">
+                        <Button
+                            fontSize={window.innerWidth <= 930 ? "1rem" : "1.2rem"}
+                            padding=".5rem 1rem"
+                            fontWeight="600"
+                            margin="0"
+                            disabled={isLoading || isLoadingUpdate}
+                            onSubmit={() => onRedirectToCalendar(id, "calendar")}
+                        >
+                            Habilitar turnos
+                        </Button>
+                        <Button
+                            fontSize={window.innerWidth <= 930 ? "1rem" : "1.2rem"}
+                            padding=".5rem 1rem"
+                            fontWeight="600"
+                            margin="0"
+                            disabled={isLoading || isLoadingUpdate}
+                            onSubmit={() => setIsModalOpen(true)}
+                        >
+                            Editar
+                        </Button>
+                        <Button
+                            fontSize={window.innerWidth <= 930 ? "1rem" : "1.2rem"}
+                            padding=".5rem 1rem"
+                            fontWeight="600"
+                            backgroundColor="rgb(231, 76, 60)"
+                            margin="0"
+                            onSubmit={deleteService}
+                            disabled={isLoading || isLoadingUpdate}
+                        >
+                            Eliminar
+                        </Button>
+                    </div>
                 </div>
-            </div>
-            <div className="divButtons">
-                <Button
-                    fontSize={window.innerWidth <= 930 ? "1rem" : "1.2rem"}
-                    padding=".8rem"
-                    disabled={isLoading || isLoadingUpdate}
-                    onSubmit={() => onRedirectToCalendar(id, "calendar")}
-                >
-                    Habilitar turnos
-                </Button>
-                <Button
-                    fontSize={window.innerWidth <= 930 ? "1rem" : "1.2rem"}
-                    padding=".8rem"
-                    disabled={isLoading || isLoadingUpdate}
-                    onSubmit={() => setIsModalOpen(true)}
-                >
-                    Editar
-                </Button>
-                <Button
-                    fontSize={window.innerWidth <= 930 ? "1rem" : "1.2rem"}
-                    padding=".8rem"
-                    onSubmit={deleteService}
-                    disabled={isLoading || isLoadingUpdate}
-                >
-                    Eliminar
-                </Button>
             </div>
             <ModalForm
                 title="Editar servicio"
@@ -144,7 +167,7 @@ const ServiceCard: React.FC<Props> = ({ id, duration, price, title, description,
                 onSubmitForm={(data) => updateService(data)}
                 disabledButtons={isLoading}
             />
-        </div>
+        </>
     );
 }
 

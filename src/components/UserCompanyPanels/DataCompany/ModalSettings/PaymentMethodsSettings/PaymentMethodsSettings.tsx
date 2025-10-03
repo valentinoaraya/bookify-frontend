@@ -1,7 +1,7 @@
 import "./PaymentMethodsSettings.css"
 import { Company } from "../../../../../types";
-import MercadoPagoLogo from "../../../../../assets/images/mp-logo.png"
-import PayPalLogo from "../../../../../assets/images/pp-logo.png"
+import MercadoPagoLogo from "../../../../../assets/images/mp-logo.webp"
+import PayPalLogo from "../../../../../assets/images/pp-logo.webp"
 import { confirmDelete } from "../../../../../utils/alerts";
 import { notifyError } from "../../../../../utils/notifications";
 import { BACKEND_API_URL } from "../../../../../config";

@@ -1,7 +1,7 @@
 import "./RemindersSettings.css"
 import { Company } from "../../../../../types";
 import { EmailIcon } from "../../../../../common/Icons/Icons";
-import WhatsAppLogo from "../../../../../assets/images/wsp-logo.png"
+import WhatsAppLogo from "../../../../../assets/images/wsp-logo.webp"
 import ModalAddReminder from "./ModalAddReminder/ModalAddReminder";
 import { useState } from "react";
 import { useFetchData } from "../../../../../hooks/useFetchData";

@@ -58,7 +58,7 @@ const ServicesPanel: React.FC<Props> = ({ companyServices, connectedWithMP, onDe
                     Servicios activos
                 </Title>
                 <Button onSubmit={() => setIsModalOpen(true)} width="fit-content" padding="0.5rem 1rem" fontSize="1.1rem" margin="0 0 1rem 0" backgroundColor="#3f9f0f">
-                    <span className="plusButton">+</span>
+                    <span className="plusButton">+ </span>
                     Agregar servicio
                 </Button>
             </div>
@@ -68,7 +68,7 @@ const ServicesPanel: React.FC<Props> = ({ companyServices, connectedWithMP, onDe
                         <h3>No tienes servicios activos</h3>
                     </div>
                     :
-                    <div className="divListContainer">
+                    <div className="divListContainerServicePanel">
                         {
                             companyServices.map(service => {
                                 return <ServiceCard
