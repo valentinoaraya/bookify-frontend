@@ -1,28 +1,70 @@
 .divInput {
     display: flex;
     flex-direction: column;
-    margin: 2.5rem 0;
 }
 
 .divInput label {
-    font-size: 1.5rem;
-    font-weight: bold;
-    background: -webkit-linear-gradient(left, var(--azul-clarito), var(--azul-oscuro));
-    background-clip: text;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--azul-oscuro);
+    margin-bottom: 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
 }
 
-.divInput input {
-    margin-top: .5rem;
-    padding: .5rem;
-    border-radius: 10px;
-    border: 1px solid grey;
-    background-color: var(--blanco);
+.divInput label::before {
+    content: "";
+    width: 4px;
+    height: 20px;
+    background: linear-gradient(135deg, var(--azul-clarito), var(--azul-oscuro));
+    border-radius: 2px;
+}
+
+.divInput input,
+.divInput select {
+    margin-top: 0;
+    padding: 1rem 1.2rem;
+    border-radius: 12px;
+    border: 2px solid #e9ecef;
+    background-color: #ffffff;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.divInput input:focus,
+.divInput select:focus {
+    outline: none;
+    border-color: var(--azul-clarito);
+    box-shadow: 0 4px 16px rgba(69, 123, 157, 0.15);
+    transform: translateY(-2px);
+}
+
+.divInput input:hover,
+.divInput select:hover {
+    border-color: var(--azul-clarito);
+    transform: translateY(-1px);
 }
 
 .timePickerContainer {
-    margin-top: .5rem;
+    margin-top: 0;
+}
+
+.timePickerContainer .ant-picker {
+    border-radius: 12px;
+    border: 2px solid #e9ecef;
+    transition: all 0.3s ease;
+}
+
+.timePickerContainer .ant-picker:hover {
+    border-color: var(--azul-clarito);
+    transform: translateY(-1px);
+}
+
+.timePickerContainer .ant-picker:focus {
+    border-color: var(--azul-clarito);
+    box-shadow: 0 4px 16px rgba(69, 123, 157, 0.15);
 }
 
 .ant-picker {
@@ -31,12 +73,48 @@
 
 @media (max-width: 930px) {
     .divInput {
-        margin: 2rem 0;
+        margin: 1.2rem 0;
+    }
+
+    .divInput label {
+        font-size: 1.1rem;
+    }
+
+    .divInput input,
+    .divInput select {
+        padding: 0.9rem 1rem;
+        font-size: 0.95rem;
     }
 }
 
 @media (max-width: 630px) {
     .divInput {
         margin: 1rem 0;
+    }
+
+    .divInput label {
+        font-size: 1rem;
+    }
+
+    .divInput input,
+    .divInput select {
+        padding: 0.8rem 0.9rem;
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 360px) {
+    .divInput {
+        margin: 0.8rem 0;
+    }
+
+    .divInput label {
+        font-size: 0.95rem;
+    }
+
+    .divInput input,
+    .divInput select {
+        padding: 0.7rem 0.8rem;
+        font-size: 0.85rem;
     }
 }

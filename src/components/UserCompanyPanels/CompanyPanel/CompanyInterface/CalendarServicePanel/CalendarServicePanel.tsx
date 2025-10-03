@@ -68,7 +68,7 @@ const CalendarServicePanel: React.FC<Props> = ({ serviceId, setActiveView }) => 
     if (error) notifyError("Error al habilitar los turnos")
 
     return (
-        <div className="calendarServicePanel">
+        <div className="calendarServicePanel animation-section">
             <Title
                 fontSize={window.innerWidth <= 930 ? "1.5rem" : ""}
             >
@@ -93,7 +93,7 @@ const CalendarServicePanel: React.FC<Props> = ({ serviceId, setActiveView }) => 
                     initialView="dayGridWeek"
                     contentHeight={"71vh"}
                     locale={"es"}
-                    eventClassNames={"event"}
+                    eventClassNames={"event animation-section"}
                     eventDisplay="block"
                     eventTimeFormat={{
                         hour: "numeric",
@@ -161,7 +161,7 @@ const CalendarServicePanel: React.FC<Props> = ({ serviceId, setActiveView }) => 
                     }}
                 />
             </div>
-            <div className="divButtonsCalendar">
+            <div className="divButtonsCalendar animation-section">
                 <Button margin="0" padding=".8rem 0" fontSize="1.4rem" onSubmit={() => setIsModalOpen(true)}
                     backgroundColor="#3f9f0f"
                     iconSVG={
