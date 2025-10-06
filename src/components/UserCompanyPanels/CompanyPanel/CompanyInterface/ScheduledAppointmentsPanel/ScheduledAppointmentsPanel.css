@@ -22,6 +22,37 @@
     grid-template-columns: repeat(4, 1fr);
 }
 
+.titleAndFilterContainer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.divFilter {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+}
+
+.buttonFilter {
+    background-color: grey;
+    color: white;
+    border: none;
+    cursor: pointer;
+    padding: .2rem .5rem;
+    border-radius: 5px;
+    transition: all .3s ease;
+}
+
+.activeButtonFilter {
+    background-color: var(--azul-clarito);
+}
+
+.buttonFilter:hover {
+    background-color: var(--azul-clarito);
+}
+
 @media (max-width: 1200px) {
 
     .oneCard {

@@ -90,7 +90,7 @@ const HistoryAppointmentItem: React.FC<Props> = ({ appointment, setFilteredAppoi
                 <div className="history-service-info">
                     <h4 className="history-service-title">{appointment.serviceId.title}</h4>
                     <p className="history-service-duration">Duración: {appointment.serviceId.duration} min</p>
-                    <p className="history-service-price">Precio: ${appointment.serviceId.price}</p>
+                    <p className="history-service-price">Precio: ${appointment.price}</p>
                     {appointment.totalPaidAmount && <p className="history-service-sign-price">Seña: ${appointment.totalPaidAmount}</p>}
                 </div>
             </div>

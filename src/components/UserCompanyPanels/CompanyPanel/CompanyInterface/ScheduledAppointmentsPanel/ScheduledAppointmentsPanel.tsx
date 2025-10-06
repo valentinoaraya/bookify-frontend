@@ -2,7 +2,7 @@ import "./ScheduledAppointmentsPanel.css"
 import Title from "../../../../../common/Title/Title";
 import { Service, type Appointment } from "../../../../../types";
 import AppointmentCard from "../../../../Cards/AppointmentCard/AppointmentCard";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { CompanyContext } from "../../../../../contexts/CompanyContext";
 import moment from "moment";
 
@@ -13,8 +13,9 @@ interface Props {
 const ScheduledAppointmentsPanel: React.FC<Props> = ({ scheduledAppointments }) => {
 
     const { deleteAppointment, updateServices } = useContext(CompanyContext)
-
     const sortedAppointments = scheduledAppointments.sort((a, b) => moment(a.date, "YYYY-MM-DD HH:mm").valueOf() - moment(b.date, "YYYY-MM-DD HH:mm").valueOf())
+    const [appointments, setAppointments] = useState(sortedAppointments)
+    const [filter, setFilter] = useState<"today" | "week" | "month" | "all">("all")
 
     const onCancelAppointment = (appointment: string, service: Service) => {
         deleteAppointment(appointment)
@@ -23,12 +24,53 @@ const ScheduledAppointmentsPanel: React.FC<Props> = ({ scheduledAppointments }) 
 
     return (
         <div className="animation-section divSectionContainer">
-            <Title
-                fontSize={window.innerWidth <= 530 ? "1.8rem" : ""}
-                margin="0 0 2rem 0"
-            >
-                Turnos pendientes
-            </Title>
+            <div className="titleAndFilterContainer">
+                <Title
+                    fontSize={window.innerWidth <= 530 ? "1.8rem" : ""}
+                    margin="0 0 0 0"
+                >
+                    Turnos pendientes
+                </Title>
+                <div className="divFilter">
+                    <button
+                        className={`buttonFilter ${filter === "today" ? "activeButtonFilter" : ""}`}
+                        onClick={() => {
+                            setAppointments(sortedAppointments.filter(appointment => moment(appointment.date).isSame(moment(), 'day')))
+                            setFilter("today")
+                        }}
+                    >
+                        Hoy
+                    </button>
+                    <button
+                        className={`buttonFilter ${filter === "week" ? "activeButtonFilter" : ""}`}
+                        onClick={() => {
+                            setAppointments(sortedAppointments.filter(appointment => moment(appointment.date).isSame(moment(), 'week')))
+                            setFilter("week")
+                        }}
+                    >
+                        Esta semana
+                    </button>
+                    <button
+                        className={`buttonFilter ${filter === "month" ? "activeButtonFilter" : ""}`}
+                        onClick={() => {
+                            setAppointments(sortedAppointments.filter(appointment => moment(appointment.date).isSame(moment(), 'month')))
+                            setFilter("month")
+                        }}
+                    >
+                        Este mes
+                    </button>
+                    <button
+                        className={`buttonFilter ${filter === "all" ? "activeButtonFilter" : ""}`}
+                        onClick={() => {
+                            setAppointments(sortedAppointments)
+                            setFilter("all")
+                        }}
+                    >
+                        Todos
+                    </button>
+                </div>
+            </div>
+
             {
                 sortedAppointments.length === 0 ?
                     <div className="noServicesAppointments">
@@ -37,7 +79,7 @@ const ScheduledAppointmentsPanel: React.FC<Props> = ({ scheduledAppointments }) 
                     :
                     <div className="divListContainerScheduledAppointments">
                         {
-                            sortedAppointments.map((appointment) => {
+                            appointments.map((appointment) => {
                                 return <AppointmentCard
                                     key={appointment._id}
                                     appointment={appointment}

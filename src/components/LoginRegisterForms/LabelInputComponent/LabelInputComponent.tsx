@@ -18,7 +18,6 @@ interface LabelInputComponentProps {
 
 const LabelInputComponent: React.FC<LabelInputComponentProps> = ({ label, type, name, required, value, selectOptions, mainSelectOption, placeholder, onChange }) => {
 
-
     const [visible, setVisible] = useState(false)
     const [valueButtonPicker, setValueButtonPicker] = useState<string>("Selecciona hora...")
 
