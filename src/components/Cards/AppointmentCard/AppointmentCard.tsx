@@ -89,7 +89,7 @@ const AppointmentCard: React.FC<Props> = ({ appointment, onCancelAppointment }) 
                         <div className="card-service-info">
                             <h4 className="card-service-title">{appointment.serviceId.title}</h4>
                             <p className="card-service-duration">Duración: {appointment.serviceId.duration} min</p>
-                            <p className="card-service-price">Precio: ${appointment.serviceId.price}</p>
+                            <p className="card-service-price">Precio: ${appointment.price}</p>
                             {appointment.totalPaidAmount && <p className="card-service-sign-price">Seña: ${appointment.totalPaidAmount}</p>}
                         </div>
                     </div>

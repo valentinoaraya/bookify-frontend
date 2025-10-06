@@ -1,9 +1,19 @@
 .divFormLogin {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    justify-content: space-between;
     background-color: #F5F5F5;
     border-radius: 20px;
-    padding: 6.5rem 3.5rem;
+    padding: 4rem 3.5rem;
     margin: 2rem;
     box-shadow: 0 0 10px #333333;
+}
+
+.formLogin {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
 }
 
 .divLinkForm {

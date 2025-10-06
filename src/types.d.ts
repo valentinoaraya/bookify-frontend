@@ -61,6 +61,7 @@ export interface Appointment extends UserData {
     serviceId: Service
     companyId?: Company
     date: string
+    price: number
     totalPaidAmount?: number
     status: "scheduled" | "finished" | "cancelled" | "pending_action" | "did_not_attend"
     cancelledBy: "company" | "client"
