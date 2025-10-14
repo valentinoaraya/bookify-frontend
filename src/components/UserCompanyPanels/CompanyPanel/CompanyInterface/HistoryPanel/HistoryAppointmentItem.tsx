@@ -4,9 +4,9 @@ import Button from "../../../../../common/Button/Button";
 import { CalendarOutlined } from "@ant-design/icons";
 import isBetween from "dayjs/plugin/isBetween";
 import dayjs from "dayjs";
-import { useFetchData } from "../../../../../hooks/useFetchData";
 import { BACKEND_API_URL } from "../../../../../config";
 import { notifyError, notifySuccess } from "../../../../../utils/notifications";
+import { useAuthenticatedPut } from "../../../../../hooks/useAuthenticatedFetch";
 dayjs.extend(isBetween);
 
 interface Props {
@@ -15,21 +15,24 @@ interface Props {
     setPendingAppointments: React.Dispatch<SetStateAction<Appointment[]>>
     setCopyOfFilteredAppointments: React.Dispatch<SetStateAction<Appointment[]>>
     setIsFilteredPendingAppointments: React.Dispatch<SetStateAction<boolean>>
+    setStatistics: React.Dispatch<SetStateAction<{
+        totalAppointments: number;
+        mostPopularService: string;
+        totalIncome: number;
+    }>>
 }
 
-const HistoryAppointmentItem: React.FC<Props> = ({ appointment, setFilteredAppointments, setPendingAppointments, setCopyOfFilteredAppointments, setIsFilteredPendingAppointments }) => {
+const HistoryAppointmentItem: React.FC<Props> = ({ appointment, setFilteredAppointments, setPendingAppointments, setCopyOfFilteredAppointments, setIsFilteredPendingAppointments, setStatistics }) => {
 
-    const token = localStorage.getItem("access_token")
     const time = dayjs(appointment.date).format("HH:mm");
     const [menuOpen, setMenuOpen] = useState(false);
     const [menuPosition, setMenuPosition] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
     const headerRef = useRef<HTMLDivElement>(null);
     const isPendingAction = appointment.status === "pending_action";
-    const { error, isLoading, fetchData } = useFetchData(
-        `${BACKEND_API_URL}/appointments/change-status`,
-        "PUT",
-        token
-    )
+
+    const { isLoading, error, put } = useAuthenticatedPut()
+    const urlChangeStatus = `${BACKEND_API_URL}/appointments/change-status`
+
     if (error) notifyError("Error en el servidor. Intente más tarde.")
 
     const handleItemClick = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -43,27 +46,33 @@ const HistoryAppointmentItem: React.FC<Props> = ({ appointment, setFilteredAppoi
     };
 
     const handleChangeStatus = async (status: "finished" | "did_not_attend") => {
-        const response = await fetchData({
+        const response = await put(urlChangeStatus, {
             appointmentId: appointment._id,
             status
         })
         if (response.data) {
             setFilteredAppointments(prev => prev.map(app => {
-                if (app._id === response.data._id) {
-                    return { ...app, status: response.data.status }
+                if (app._id === response.data.data._id) {
+                    return { ...app, status: response.data.data.status }
                 }
                 return app
             })
             )
             setCopyOfFilteredAppointments(prev => prev.map(app => {
-                if (app._id === response.data._id) {
-                    return { ...app, status: response.data.status }
+                if (app._id === response.data.data._id) {
+                    return { ...app, status: response.data.data.status }
                 }
                 return app
             })
             )
-            setPendingAppointments(prev => prev.filter(apt => apt._id !== response.data._id))
+            setPendingAppointments(prev => prev.filter(apt => apt._id !== response.data.data._id))
             setIsFilteredPendingAppointments(false)
+            if (dayjs(appointment.date).isBetween(dayjs().startOf('month'), dayjs().endOf('month'), null, '[]') && status === "finished") {
+                setStatistics(prev => ({
+                    ...prev,
+                    totalIncome: prev.totalIncome + appointment.price + (appointment.totalPaidAmount || 0)
+                }))
+            }
             notifySuccess("Cambio confirmado.")
         }
         if (response.error) {

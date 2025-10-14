@@ -1,8 +1,8 @@
 import { createContext, ReactNode, useEffect, useReducer } from "react";
 import { type CompanyToUser } from "../types";
-import { useFetchData } from "../hooks/useFetchData";
 import { BACKEND_API_URL } from "../config";
 import { useParams } from "react-router-dom";
+import { useAuthenticatedGet } from "../hooks/useAuthenticatedFetch";
 
 interface ContextProps {
     state: CompanyToUser;
@@ -45,17 +45,18 @@ export const UserContext = createContext<ContextProps>({
 export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     const { company_id } = useParams();
     const [state, dispatch] = useReducer(userReducer, initialState)
-    const { isLoading, error, fetchData } = useFetchData(`${BACKEND_API_URL}/companies/company/${company_id}`, "GET")
+    const { isLoading, error, get } = useAuthenticatedGet()
+    const urlGetCompany = `${BACKEND_API_URL}/companies/company/${company_id}`
 
     const fetchUserData = async () => {
         try {
-            const response = await fetchData({});
+            const response = await get(urlGetCompany, { skipAuth: true });
             if (response.error) {
                 dispatch({ type: "SET_COMPANY_DATA", payload: initialState });
                 console.error("Error fetching company data:", response.error);
                 return
             }
-            dispatch({ type: "SET_COMPANY_DATA", payload: response.data });
+            dispatch({ type: "SET_COMPANY_DATA", payload: response.data.data });
         } catch (error) {
             console.error("Error fetching company data:", error);
         }

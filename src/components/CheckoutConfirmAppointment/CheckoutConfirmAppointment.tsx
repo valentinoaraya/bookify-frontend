@@ -2,12 +2,12 @@ import "./CheckoutConfirmAppointment.css"
 import { useLocation } from "react-router-dom";
 import Title from "../../common/Title/Title";
 import { BACKEND_API_URL, PUBLIC_KEY_MP } from "../../config";
-import { useFetchData } from "../../hooks/useFetchData";
 import { notifyError } from "../../utils/notifications";
 import { ToastContainer } from "react-toastify";
 import Button from "../../common/Button/Button";
 import { initMercadoPago } from "@mercadopago/sdk-react";
 import { formatDate } from "../../utils/formatDate";
+import { useAuthenticatedPost } from "../../hooks/useAuthenticatedFetch";
 
 const CheckoutConfirmAppointment = () => {
 
@@ -15,9 +15,9 @@ const CheckoutConfirmAppointment = () => {
 
     const location = useLocation()
     const { date, service, dataUser } = location.state
-    const { isLoading, error, fetchData } = useFetchData(`${BACKEND_API_URL}/mercadopago/create-preference/${service.companyId}`,
-        "POST",
-    )
+
+    const { isLoading, error, post } = useAuthenticatedPost()
+    const urlCreatePreference = `${BACKEND_API_URL}/mercadopago/create-preference/${service.companyId}`
 
     if (!date || !service || !dataUser) return <h2>Checkout no disponible.</h2>
     const hour = date.split(" ")[1]
@@ -26,17 +26,17 @@ const CheckoutConfirmAppointment = () => {
     if (error) notifyError("Error del servidor. Inténtelo de nuevo más tarde.")
 
     const handleBuy = async () => {
-        const response = await fetchData({
+        const response = await post(urlCreatePreference, {
             serviceId: service.serviceId,
             title: `Seña de turno para ${service.title}`,
             price: service.signPrice,
             date: date,
             dataUser
-        })
+        }, { skipAuth: true })
 
-        if (response.init_point) {
+        if (response.data.init_point) {
             sessionStorage.setItem("paymentInProcess", "true")
-            window.location.href = response.init_point
+            window.location.href = response.data.init_point
         }
         if (response.error) {
             console.error(response.error)

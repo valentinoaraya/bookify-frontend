@@ -1,12 +1,12 @@
 import "./AnticipationsSettings.css"
 import { Company } from "../../../../../types";
 import { useEffect, useState } from "react";
-import { useFetchData } from "../../../../../hooks/useFetchData";
 import { BACKEND_API_URL } from "../../../../../config";
 import Button from "../../../../../common/Button/Button";
 import { notifyError, notifySuccess } from "../../../../../utils/notifications";
 import { useCompany } from "../../../../../hooks/useCompany";
 import { MemoryIcon } from "../../../../../common/Icons/Icons";
+import { useAuthenticatedPut } from "../../../../../hooks/useAuthenticatedFetch";
 
 interface Props {
     data: Company
@@ -14,19 +14,13 @@ interface Props {
 
 const AnticipationsSettings: React.FC<Props> = ({ data }) => {
 
-    const token = localStorage.getItem("access_token")
     const { updateCompanyData } = useCompany()
-
     const [form, setForm] = useState({
         cancellationAnticipationHours: data.cancellationAnticipationHours ?? 24,
         bookingAnticipationHours: data.bookingAnticipationHours ?? 1,
     })
-
-    const { isLoading, error, fetchData } = useFetchData(
-        `${BACKEND_API_URL}/companies/update-company`,
-        "PUT",
-        token
-    )
+    const { isLoading, error, put } = useAuthenticatedPut()
+    const urlUpdateCompany = `${BACKEND_API_URL}/companies/update-company`
 
     useEffect(() => {
         setForm({
@@ -49,9 +43,9 @@ const AnticipationsSettings: React.FC<Props> = ({ data }) => {
             return
         }
 
-        const response = await fetchData(payload)
+        const response = await put(urlUpdateCompany, payload)
         if (response.data) {
-            updateCompanyData(response.data)
+            updateCompanyData(response.data.data)
             notifySuccess("Cambios guardados correctamente.")
         }
         if (response.error) notifyError("No se pudieron guardar los cambios. Inténtalo más tarde.")

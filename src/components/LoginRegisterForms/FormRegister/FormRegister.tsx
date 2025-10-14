@@ -6,10 +6,11 @@ import LabelInputComponent from "../LabelInputComponent/LabelInputComponent.tsx"
 import LabelSelectComponent from "../LabelSelectComponent/LabelSelectComponent.tsx";
 import { Link } from "react-router-dom";
 import Button from "../../../common/Button/Button.tsx";
-import { useFetchData } from "../../../hooks/useFetchData.ts";
+import { useAuthenticatedPost } from "../../../hooks/useAuthenticatedFetch.ts";
 import { notifyError } from "../../../utils/notifications.ts";
 import { ToastContainer } from "react-toastify";
 import { BACKEND_API_URL } from "../../../config.ts";
+import { setTokens } from "../../../utils/tokenManager.ts";
 
 const FormRegister = () => {
 
@@ -27,10 +28,7 @@ const FormRegister = () => {
         password: "",
         confirmPassword: ""
     })
-    const { isLoading, error, fetchData } = useFetchData(
-        `${BACKEND_API_URL}/${registerTo === "user" ? "users" : "companies"}/register`,
-        "POST"
-    )
+    const { isLoading, error, post } = useAuthenticatedPost()
 
     if (error) {
         console.error(error)
@@ -40,11 +38,25 @@ const FormRegister = () => {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (dataForm.password !== dataForm.confirmPassword) return notifyError("Las contraseñas no coinciden")
-        const response = await fetchData(dataForm);
+
+        const url = `${BACKEND_API_URL}/${registerTo === "user" ? "users" : "companies"}/register`;
+        const response = await post(url, dataForm, { skipAuth: true });
+
         if (response.data) {
-            localStorage.setItem("access_token", response.data.access_token)
+            // Para empresas, guardar ambos tokens
+            if (registerTo === "company" && response.data.access_token && response.data.refresh_token) {
+                setTokens({
+                    access_token: response.data.access_token,
+                    refresh_token: response.data.refresh_token
+                });
+            } else {
+                // Para usuarios, mantener el comportamiento actual
+                localStorage.setItem("access_token", response.data.access_token);
+            }
+
             navigate(registerTo === "user" ? "/user-panel" : "/company-panel")
         }
+
         if (response.error) {
             if (response.error === "Ya existe una cuenta con este email.") {
                 notifyError('Ya existe una cuenta con este email.')

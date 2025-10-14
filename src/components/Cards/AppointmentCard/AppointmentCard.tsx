@@ -2,7 +2,6 @@ import "./AppointmentCard.css";
 import Button from "../../../common/Button/Button";
 import { parseDateToString } from "../../../utils/parseDateToString";
 import { confirmDelete } from "../../../utils/alerts";
-import { useFetchData } from "../../../hooks/useFetchData";
 import { BACKEND_API_URL } from "../../../config";
 import { notifyError, notifySuccess } from "../../../utils/notifications";
 import { formatDate } from "../../../utils/formatDate";
@@ -11,6 +10,7 @@ import { Appointment, Service } from "../../../types";
 import { CalendarOutlined } from "@ant-design/icons";
 import moment from "moment";
 import { useCompany } from "../../../hooks/useCompany";
+import { useAuthenticatedDelete, useAuthenticatedPut } from "../../../hooks/useAuthenticatedFetch";
 
 interface Props {
     appointment: Appointment
@@ -18,18 +18,12 @@ interface Props {
 }
 
 const AppointmentCard: React.FC<Props> = ({ appointment, onCancelAppointment }) => {
-    const token = localStorage.getItem("access_token")
     const { deleteAppointment } = useCompany()
-    const { error, isLoading, fetchData } = useFetchData(
-        `${BACKEND_API_URL}/appointments/delete-appointment/${appointment._id}`,
-        "DELETE",
-        token
-    )
-    const { error: errorFinishAppointment, isLoading: isLoadingFinish, fetchData: fetchDataFinishAppointment } = useFetchData(
-        `${BACKEND_API_URL}/appointments/finish-appointment/${appointment._id}`,
-        "PUT",
-        token
-    )
+    const { error, isLoading, delete: del } = useAuthenticatedDelete()
+    const { error: errorFinishAppointment, isLoading: isLoadingFinish, put } = useAuthenticatedPut()
+    const urlDeleteAppointment = `${BACKEND_API_URL}/appointments/delete-appointment/${appointment._id}`
+    const urlFinishAppointment = `${BACKEND_API_URL}/appointments/finish-appointment/${appointment._id}`
+
     if (error) notifyError("Error al cancelar turno. Inténtalo de nuevo más tarde.")
     if (errorFinishAppointment) notifyError("Error al finalizar turno. Inténtalo de nuevo más tarde.")
 
@@ -46,11 +40,11 @@ const AppointmentCard: React.FC<Props> = ({ appointment, onCancelAppointment }) 
             confirmButtonText: "Aceptar"
         })
         if (confirm) {
-            const response = await fetchData({})
+            const response = await del(urlDeleteAppointment, {})
             if (response.data) {
                 onCancelAppointment(
-                    response.data.appointment._id,
-                    response.data.service
+                    response.data.data.appointment._id,
+                    response.data.data.service
                 )
                 notifySuccess("Turno cancelado con éxito.")
             }
@@ -60,7 +54,7 @@ const AppointmentCard: React.FC<Props> = ({ appointment, onCancelAppointment }) 
         }
     }
     const handleFinishAppointment = async () => {
-        const response = await fetchDataFinishAppointment({})
+        const response = await put(urlFinishAppointment, {})
         if (response.data) {
             deleteAppointment(appointment._id)
             notifySuccess("Turno finalizado.")
