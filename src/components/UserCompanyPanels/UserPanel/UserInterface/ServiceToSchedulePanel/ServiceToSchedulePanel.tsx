@@ -9,13 +9,13 @@ import { confirmDelete } from "../../../../../utils/alerts";
 import { parseDateToString } from "../../../../../utils/parseDateToString";
 import { useNavigate } from "react-router-dom";
 import { BACKEND_API_URL } from "../../../../../config";
-import { useFetchData } from "../../../../../hooks/useFetchData";
 import { formatDate } from "../../../../../utils/formatDate";
 import ModalForm from "../../../../ModalForm/ModalForm";
 import { useEffect, useState } from "react";
 import LoadingModal from "../../../../../common/LoadingModal/LoadingModal";
 import { generateAvailableAppointmentsArray, generateScheudledAppointmentArray } from "../../../../../utils/cleanAppointmentsArray";
 import LoadingSpinner from "../../../../../common/LoadingSpinner/LoadingSpinner";
+import { useAuthenticatedGet, useAuthenticatedPost } from "../../../../../hooks/useAuthenticatedFetch";
 
 interface Props {
     bookingAnticipationHours: number;
@@ -27,22 +27,14 @@ const ServiceToSchedulePanel: React.FC<Props> = ({ serviceToSchedule, setService
     const [isOpen, setIsOpen] = useState(false)
     const [dateAppointment, setDateAppointment] = useState<Date | null>(null)
     const [isScheduling, setIsScheduling] = useState(false)
-    const { error, isLoading, fetchData } = useFetchData(
-        `${BACKEND_API_URL}/appointments/add-appointment`,
-        "POST",
-    )
-    const { error: errorData, isLoading: isLoadingData, fetchData: fetchDataService } = useFetchData(
-        `${BACKEND_API_URL}/services/${serviceToSchedule}`,
-        "GET",
-    )
-    const { error: errorConfirm, isLoading: isLoadingConfirm, fetchData: fetchDataConfirm } = useFetchData(
-        `${BACKEND_API_URL}/services/contains-sign-price/${serviceToSchedule}`,
-        "GET",
-    )
-    const { error: errorCheckHour, isLoading: isLoadingCheckHour, fetchData: fetchDataCheckHour } = useFetchData(
-        `${BACKEND_API_URL}/appointments/check-booking-hour`,
-        "POST",
-    )
+    const { error, isLoading, post } = useAuthenticatedPost()
+    const urlAddAppointment = `${BACKEND_API_URL}/appointments/add-appointment`
+    const { error: errorData, isLoading: isLoadingData, get } = useAuthenticatedGet()
+    const urlGetService = `${BACKEND_API_URL}/services/${serviceToSchedule}`
+    const { error: errorConfirm, isLoading: isLoadingConfirm, get: getSignPrice } = useAuthenticatedGet()
+    const urlGetSignPrice = `${BACKEND_API_URL}/services/contains-sign-price/${serviceToSchedule}`
+    const { error: errorCheckHour, isLoading: isLoadingCheckHour, post: postCheckBookingHour } = useAuthenticatedPost()
+    const urlCheckBookingHour = `${BACKEND_API_URL}/appointments/check-booking-hour`
 
     if (error) notifyError("Error al reservar turno.")
     if (errorData) notifyError("Error al obtener el servicio.")
@@ -55,9 +47,9 @@ const ServiceToSchedulePanel: React.FC<Props> = ({ serviceToSchedule, setService
 
     useEffect(() => {
         const fetchService = async () => {
-            const response = await fetchDataService({})
+            const response = await get(urlGetService, { skipAuth: true })
             if (response.data) {
-                setServiceToScheduleData(response.data)
+                setServiceToScheduleData(response.data.data)
             } else if (response.error) {
                 notifyError("Error al obtener el servicio. Inténtelo de nuevo más tarde.")
             }
@@ -78,10 +70,10 @@ const ServiceToSchedulePanel: React.FC<Props> = ({ serviceToSchedule, setService
     </div>
 
     const checkOrderHour = async (startEvent: Date) => {
-        const response = await fetchDataCheckHour({
+        const response = await postCheckBookingHour(urlCheckBookingHour, {
             companyId: serviceToScheduleData.companyId,
             date: startEvent
-        })
+        }, { skipAuth: true })
         if (response.data) {
             setDateAppointment(startEvent)
             setIsOpen(true)
@@ -112,9 +104,9 @@ const ServiceToSchedulePanel: React.FC<Props> = ({ serviceToSchedule, setService
         })
 
         if (decisionConfirmed) {
-            const response = await fetchDataConfirm({})
+            const response = await getSignPrice(urlGetSignPrice, { skipAuth: true })
             if (response.data) {
-                if (response.data.contains) {
+                if (response.data.data.contains) {
                     navigate("/checkout", {
                         state: {
                             date: `${stringDate} ${time}`,
@@ -130,14 +122,14 @@ const ServiceToSchedulePanel: React.FC<Props> = ({ serviceToSchedule, setService
                     })
                 } else {
                     setIsScheduling(true)
-                    const response = await fetchData({
+                    const response = await post(urlAddAppointment, {
                         dataAppointment: {
                             date: `${stringDate} ${time}`,
                             serviceId: serviceToScheduleData._id,
                             companyId: serviceToScheduleData.companyId
                         },
                         dataUser
-                    })
+                    }, { skipAuth: true })
                     setIsScheduling(false)
                     if (response.data) {
                         const confirm = await confirmDelete({

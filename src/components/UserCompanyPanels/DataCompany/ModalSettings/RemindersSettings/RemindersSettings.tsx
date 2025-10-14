@@ -4,10 +4,10 @@ import { EmailIcon } from "../../../../../common/Icons/Icons";
 import WhatsAppLogo from "../../../../../assets/images/wsp-logo.webp"
 import ModalAddReminder from "./ModalAddReminder/ModalAddReminder";
 import { useState } from "react";
-import { useFetchData } from "../../../../../hooks/useFetchData";
 import { BACKEND_API_URL } from "../../../../../config";
 import { notifyError } from "../../../../../utils/notifications";
 import { useCompany } from "../../../../../hooks/useCompany";
+import { useAuthenticatedPut } from "../../../../../hooks/useAuthenticatedFetch";
 
 interface Props {
     data: Company
@@ -15,12 +15,8 @@ interface Props {
 
 const RemindersSettings: React.FC<Props> = ({ data }) => {
     const [isOpen, setIsOpen] = useState(false)
-    const token = localStorage.getItem("access_token")
-    const { isLoading, error, fetchData } = useFetchData(
-        `${BACKEND_API_URL}/companies/update-company`,
-        "PUT",
-        token
-    )
+    const { isLoading, error, put } = useAuthenticatedPut()
+    const urlUpdateCompany = `${BACKEND_API_URL}/companies/update-company`
     const { updateCompanyData } = useCompany()
 
     const handleSubmit = async (reminder: {
@@ -52,9 +48,9 @@ const RemindersSettings: React.FC<Props> = ({ data }) => {
             ...data,
             reminders: [...data.reminders, reminder]
         }
-        const response = await fetchData(updatedCompany)
+        const response = await put(urlUpdateCompany, updatedCompany)
         if (response.data) {
-            updateCompanyData(response.data)
+            updateCompanyData(response.data.data)
             setIsOpen(false)
         }
         if (response.error) {
@@ -116,9 +112,9 @@ const RemindersSettings: React.FC<Props> = ({ data }) => {
                                                                 ...data,
                                                                 reminders: data.reminders.filter((_, i) => i !== index)
                                                             }
-                                                            const response = await fetchData(updatedCompany)
+                                                            const response = await put(urlUpdateCompany, updatedCompany)
                                                             if (response.data) {
-                                                                updateCompanyData(response.data)
+                                                                updateCompanyData(response.data.data)
                                                             }
                                                             if (response.error) {
                                                                 notifyError("No se pudo eliminar el recordatorio. Inténtalo de nuevo más tarde.")

@@ -5,20 +5,18 @@ import { useDataForm } from "../../../hooks/useDataForm.ts";
 import Title from "../../../common/Title/Title.tsx";
 import { Link } from "react-router-dom";
 import LabelInputComponent from "../LabelInputComponent/LabelInputComponent.tsx";
-import { useFetchData } from "../../../hooks/useFetchData.ts";
+import { useAuthenticatedPost } from "../../../hooks/useAuthenticatedFetch.ts";
 import { BACKEND_API_URL } from "../../../config.ts";
 import { ToastContainer } from "react-toastify";
 import { notifyError } from "../../../utils/notifications.ts";
+import { setTokens } from "../../../utils/tokenManager.ts";
 
 const FormLogin = () => {
 
     const { loginTo } = useParams();
     const navigate = useNavigate();
     const { dataForm, handleChange } = useDataForm({ email: "", password: "" });
-    const { isLoading, error, fetchData } = useFetchData(
-        `${BACKEND_API_URL}/${loginTo === "user" ? "users" : "companies"}/login`,
-        "POST"
-    );
+    const { isLoading, error, post } = useAuthenticatedPost();
 
     if (error) {
         console.error(error)
@@ -27,14 +25,28 @@ const FormLogin = () => {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        const response = await fetchData(dataForm);
+
+        const url = `${BACKEND_API_URL}/${loginTo === "user" ? "users" : "companies"}/login`;
+        const response = await post(url, dataForm, { skipAuth: true });
+
         if (response.data) {
-            localStorage.setItem("access_token", response.data.access_token)
+            // Para empresas, guardar ambos tokens
+            if (response.data.data.access_token && response.data.data.refresh_token) {
+                setTokens({
+                    access_token: response.data.data.access_token,
+                    refresh_token: response.data.data.refresh_token
+                });
+            } else {
+                // Para usuarios, mantener el comportamiento actual
+                localStorage.setItem("access_token", response.data.data.access_token);
+            }
+
             navigate(loginTo === "user" ? "/user-panel" : "/company-panel");
         }
+
         if (response.error) {
-            console.error(response.error)
-            notifyError(`Error: ${response.error}`)
+            console.error(response.error);
+            notifyError(`Error: ${response.error}`);
         }
     }
 

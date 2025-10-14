@@ -5,9 +5,9 @@ import { notifyError, notifySuccess } from "../../../../../utils/notifications";
 import { ClipboardIcon, MemoryIcon, UserXIcon } from "../../../../../common/Icons/Icons";
 import Button from "../../../../../common/Button/Button";
 import { BACKEND_API_URL } from "../../../../../config";
-import { useFetchData } from "../../../../../hooks/useFetchData";
 import { useCompany } from "../../../../../hooks/useCompany";
 import { useEffect, useState } from "react";
+import { useAuthenticatedPut } from "../../../../../hooks/useAuthenticatedFetch";
 
 interface Props {
     data: Company
@@ -15,7 +15,6 @@ interface Props {
 
 const ProfileSettings: React.FC<Props> = ({ data }) => {
     const { updateCompanyData } = useCompany()
-    const token = localStorage.getItem("access_token")
     const [isDisabled, setIsDisabled] = useState(true)
     const { dataForm, handleChange } = useDataForm({
         name: data.name,
@@ -26,12 +25,8 @@ const ProfileSettings: React.FC<Props> = ({ data }) => {
         number: data.number,
         company_id: data.company_id
     })
-
-    const { isLoading, error, fetchData } = useFetchData(
-        `${BACKEND_API_URL}/companies/update-company`,
-        "PUT",
-        token
-    )
+    const { isLoading, error, put } = useAuthenticatedPut()
+    const urlUpdateCompany = `${BACKEND_API_URL}/companies/update-company`
 
     if (error) notifyError("Error al actualizar los datos. Inténtalo de nuevo más tarde.")
 
@@ -89,12 +84,12 @@ const ProfileSettings: React.FC<Props> = ({ data }) => {
             return
         }
 
-        const response = await fetchData(dataForm)
+        const response = await put(urlUpdateCompany, dataForm)
         if (response?.data) {
-            updateCompanyData(response.data)
+            updateCompanyData(response.data.data)
             notifySuccess("Datos actualizados")
         }
-        if (response?.error) notifySuccess("Error al actualizar los datos")
+        if (response?.error) notifySuccess(response.error)
     }
 
     const handleLogout = async () => {

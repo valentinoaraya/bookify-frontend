@@ -5,9 +5,9 @@ import PayPalLogo from "../../../../../assets/images/pp-logo.webp"
 import { confirmDelete } from "../../../../../utils/alerts";
 import { notifyError } from "../../../../../utils/notifications";
 import { BACKEND_API_URL } from "../../../../../config";
-import { useFetchData } from "../../../../../hooks/useFetchData";
 import Button from "../../../../../common/Button/Button";
 import { useState } from "react";
+import { useAuthenticatedGet } from "../../../../../hooks/useAuthenticatedFetch";
 
 interface Props {
     data: Company
@@ -15,13 +15,9 @@ interface Props {
 
 const PaymentMethodsSettings: React.FC<Props> = ({ data }) => {
 
-    const token = localStorage.getItem("access_token")
     const [activeIndex, setActiveIndex] = useState<number | null>(null);
-    const { isLoading, error, fetchData } = useFetchData(
-        `${BACKEND_API_URL}/mercadopago/oauth/generate-url/${data._id}`,
-        "GET",
-        token
-    )
+    const { isLoading, error, get } = useAuthenticatedGet()
+    const urlGenerateURL = `${BACKEND_API_URL}/mercadopago/oauth/generate-url/${data._id}`
 
     const toggle = (index: number) => {
         setActiveIndex((prev) => (prev === index ? null : index));
@@ -77,8 +73,8 @@ const PaymentMethodsSettings: React.FC<Props> = ({ data }) => {
         })
 
         if (confirm) {
-            const response = await fetchData(null)
-            if (response.url) window.location.href = response.url
+            const response = await get(urlGenerateURL)
+            if (response.data.url) window.location.href = response.data.url
             if (response.error) notifyError("Error al obtener URL.")
         }
     }

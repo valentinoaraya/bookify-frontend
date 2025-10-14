@@ -6,7 +6,6 @@ import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid/index.js"
 import { useContext, useState } from "react";
 import ModalForm from "../../../../ModalForm/ModalForm";
-import { useFetchData } from "../../../../../hooks/useFetchData";
 import { BACKEND_API_URL } from "../../../../../config";
 import { notifyError, notifySuccess } from "../../../../../utils/notifications";
 import { parseDateToString } from "../../../../../utils/parseDateToString";
@@ -14,6 +13,7 @@ import { CompanyContext } from "../../../../../contexts/CompanyContext";
 import { CalendarCheckIcon } from "../../../../../common/Icons/Icons";
 import { generateAvailableAppointmentsArray, generateScheudledAppointmentArray } from "../../../../../utils/cleanAppointmentsArray";
 import ModalDisponibility from "./ModalDisponibility/ModalDisponibility";
+import { useAuthenticatedPost } from "../../../../../hooks/useAuthenticatedFetch";
 
 interface Props {
     setActiveView: (view: View) => void
@@ -21,7 +21,6 @@ interface Props {
 }
 
 const CalendarServicePanel: React.FC<Props> = ({ serviceId, setActiveView }) => {
-    const token = localStorage.getItem("access_token")
     const { state, updateServices } = useContext(CompanyContext)
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [isModalDisponibilityOpen, setIsModalDisponibilityOpen] = useState(false)
@@ -33,20 +32,17 @@ const CalendarServicePanel: React.FC<Props> = ({ serviceId, setActiveView }) => 
         <h1>Lo sentimos, no encontramos el servicio que buscabas...</h1>
     </div>
 
-    const { isLoading, error, fetchData } = useFetchData(
-        `${BACKEND_API_URL}/services/enable-appointments/${serviceId}`,
-        "POST",
-        token
-    )
+    const { isLoading, error, post } = useAuthenticatedPost()
+    const urlEnableAppointments = `${BACKEND_API_URL}/services/enable-appointments/${serviceId}`
 
     const arrayEvents = generateAvailableAppointmentsArray(service.availableAppointments, service.pendingAppointments)
     const arrayEventsScheduled = generateScheudledAppointmentArray(service.scheduledAppointments, service.availableAppointments)
 
     const onSubmitForm = async (data: { [key: string]: any }) => {
-        const response = await fetchData(data)
+        const response = await post(urlEnableAppointments, data)
         setIsModalOpen(false)
         if (response.data) {
-            const serviceUpdated = { ...service, availableAppointments: [...service.availableAppointments, ...response.data] }
+            const serviceUpdated = { ...service, availableAppointments: [...service.availableAppointments, ...response.data.data] }
             updateServices(serviceUpdated)
             notifySuccess("Turnos habilitados correctamente.")
         }

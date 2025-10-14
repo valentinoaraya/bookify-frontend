@@ -13,6 +13,7 @@ import { ArrowReturnIcon } from "../../../../../common/Icons/Icons";
 import Button from "../../../../../common/Button/Button";
 import "dayjs/locale/es";
 import localizedFormat from "dayjs/plugin/localizedFormat";
+import { useAuthenticatedFetch } from "../../../../../hooks/useAuthenticatedFetch";
 
 dayjs.extend(isBetween);
 dayjs.extend(localizedFormat);
@@ -28,6 +29,7 @@ interface HistoryPanelProps {
 
 const HistoryPanel: React.FC<HistoryPanelProps> = ({ company }) => {
   const [searchTerm, setSearchTerm] = useState("");
+  const { fetchWithAuth } = useAuthenticatedFetch();
   const [selectedService, setSelectedService] = useState<string>("all");
   const [dateRange, setDateRange] = useState<[Dayjs | null, Dayjs | null] | null>(null);
   const [filteredAppointments, setFilteredAppointments] = useState<Appointment[]>([]);
@@ -50,35 +52,30 @@ const HistoryPanel: React.FC<HistoryPanelProps> = ({ company }) => {
   const fetchHistoryFromBackend = async () => {
     try {
       setLoading(true);
-      const token = localStorage.getItem("access_token");
 
       const queryParams = new URLSearchParams({
         page: "1",
-        limit: "20",
+        limit: "10",
         ...(dateRange?.[0] ? { from: dateRange?.[0].format("YYYY-MM-DD") } : {}),
         ...(dateRange?.[1] ? { to: dateRange?.[1].format("YYYY-MM-DD") } : {}),
       })
 
       const url = `${BACKEND_API_URL}/appointments/company-history/${company._id}?${queryParams.toString()}`;
 
-      const response = await fetch(url, {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      });
+      const response = await fetchWithAuth(url, { method: "GET" });
 
-      if (response.ok) {
-        const result = await response.json();
-        setBackendAppointments(result.data || []);
-        setPendingAppointments(result.pendingAppointments)
-        setHasMore(result.hasMore)
-        setStatistics(result.stats || {
+      if (response.data) {
+        setBackendAppointments(response.data.data || []);
+        setPendingAppointments(response.data.pendingAppointments)
+        setHasMore(response.data.hasMore)
+        setStatistics(response.data.stats || {
           totalAppointments: 0,
           mostPopularService: "N/A",
           totalIncome: 0,
         });
+      } else if (response.code === "SESSION_EXPIRED") {
+        // Si la sesión expiró, redirigir al login
+        window.location.href = "/login/company";
       } else {
         setBackendAppointments([]);
       }
@@ -96,31 +93,23 @@ const HistoryPanel: React.FC<HistoryPanelProps> = ({ company }) => {
   const handleLoadMore = async () => {
     try {
       setLoading(true);
-      const token = localStorage.getItem("access_token");
 
       const queryParams = new URLSearchParams({
         page: (page + 1).toString(),
-        limit: "20",
+        limit: "10",
         ...(dateRange?.[0] ? { from: dateRange?.[0].format("YYYY-MM-DD") } : {}),
         ...(dateRange?.[1] ? { to: dateRange?.[1].format("YYYY-MM-DD") } : {}),
       })
 
       const url = `${BACKEND_API_URL}/appointments/company-history/${company._id}?${queryParams.toString()}`;
 
-      const response = await fetch(url, {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      })
+      const response = await fetchWithAuth(url, { method: "GET" });
 
-      if (response.ok) {
-        const result = await response.json();
-        setBackendAppointments(prev => [...prev, ...(result.data || [])])
+      if (response.data) {
+        setBackendAppointments(prev => [...prev, ...(response.data.data || [])])
         setPage(prev => prev + 1)
-        setHasMore(result.hasMore)
-        setStatistics(result.stats || {
+        setHasMore(response.data.hasMore)
+        setStatistics(response.data.stats || {
           totalAppointments: 0,
           mostPopularService: "N/A",
           totalIncome: 0,
@@ -236,23 +225,26 @@ const HistoryPanel: React.FC<HistoryPanelProps> = ({ company }) => {
           <div className="divInfoAppointments">
             {
               (searchTerm !== "" || selectedService !== "all" || (dateRange && (dateRange[0] !== null || dateRange[1] !== null)) || isFilterPendingAppointments) ?
-                <div
-                  className="showAll"
-                  onClick={() => {
-                    setSearchTerm("")
-                    setSelectedService("all")
-                    setDateRange(null)
-                    setIsFilterPendingAppointments(false)
-                    setFilteredAppointments(backendAppointments)
-                  }}
-                >
-                  <ArrowReturnIcon
-                    width="1rem"
-                    height="1rem"
-                    fill="#1282A2"
-                  />
-                  <h3 className="showAllText">Ver todos</h3>
-                </div>
+                <>
+                  <div
+                    className="showAll"
+                    onClick={() => {
+                      setSearchTerm("")
+                      setSelectedService("all")
+                      setDateRange(null)
+                      setIsFilterPendingAppointments(false)
+                      setFilteredAppointments(backendAppointments)
+                    }}
+                  >
+                    <ArrowReturnIcon
+                      width="1rem"
+                      height="1rem"
+                      fill="#1282A2"
+                    />
+                    <h3 className="showAllText">Ver todos</h3>
+                    <h3 className="latestAppointmentsTitle">{filteredAppointments.length === 1 ? "" : filteredAppointments.length} {filteredAppointments.length === 1 ? "turno" : "turnos"} {filteredAppointments.length === 1 ? "filtrado" : "filtrados"}</h3>
+                  </div>
+                </>
                 :
                 <h3 className="latestAppointmentsTitle">{backendAppointments.length === 1 ? "Último" : "Últimos"} {backendAppointments.length === 1 ? "" : backendAppointments.length} {backendAppointments.length === 1 ? "turno" : "turnos"}</h3>
             }
@@ -283,6 +275,7 @@ const HistoryPanel: React.FC<HistoryPanelProps> = ({ company }) => {
                 <HistoryAppointmentItem
                   key={appointment._id}
                   appointment={appointment}
+                  setStatistics={setStatistics}
                   setFilteredAppointments={setFilteredAppointments}
                   setCopyOfFilteredAppointments={setBackendAppointments}
                   setPendingAppointments={setPendingAppointments}

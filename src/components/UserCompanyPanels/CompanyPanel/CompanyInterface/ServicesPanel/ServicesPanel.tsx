@@ -3,12 +3,12 @@ import Title from "../../../../../common/Title/Title";
 import { type Service, type View } from "../../../../../types";
 import ServiceCard from "../../../../Cards/ServiceCard/ServiceCard";
 import { useContext, useState } from "react";
-import { useFetchData } from "../../../../../hooks/useFetchData";
 import { BACKEND_API_URL } from "../../../../../config";
 import { notifyError } from "../../../../../utils/notifications";
 import ModalForm from "../../../../ModalForm/ModalForm";
 import { CompanyContext } from "../../../../../contexts/CompanyContext";
 import Button from "../../../../../common/Button/Button";
+import { useAuthenticatedPost } from "../../../../../hooks/useAuthenticatedFetch";
 
 interface Props {
     companyServices: Service[]
@@ -19,14 +19,11 @@ interface Props {
 
 const ServicesPanel: React.FC<Props> = ({ companyServices, connectedWithMP, onDeleteService, handleChangeToCalendar }) => {
 
-    const token = localStorage.getItem("access_token")
     const { updateServices, addService } = useContext(CompanyContext)
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
-    const { isLoading, error, fetchData } = useFetchData(
-        `${BACKEND_API_URL}/services/create-service`,
-        "POST",
-        token
-    )
+
+    const { isLoading, error, post } = useAuthenticatedPost()
+    const urlCreateService = `${BACKEND_API_URL}/services/create-service`
 
     if (error) {
         console.error(error)
@@ -34,9 +31,9 @@ const ServicesPanel: React.FC<Props> = ({ companyServices, connectedWithMP, onDe
     }
 
     const handleAddService = async (data: { [key: string]: any }) => {
-        const response = await fetchData(data)
+        const response = await post(urlCreateService, data)
         setIsModalOpen(false)
-        if (response?.data) addService(response.data)
+        if (response?.data) addService(response.data.data)
         if (response?.error) {
             console.error(response.error)
             notifyError("Error al crear el servicio")

@@ -3,10 +3,10 @@ import { useContext, useEffect } from "react";
 import Button from "../../../../../../common/Button/Button";
 import { type AvailableAppointmentWithPendings } from "../../../../../../types";
 import { formatDate } from "../../../../../../utils/formatDate";
-import { useFetchData } from "../../../../../../hooks/useFetchData";
 import { BACKEND_API_URL } from "../../../../../../config";
 import { notifyError, notifyWarn } from "../../../../../../utils/notifications";
 import { CompanyContext } from "../../../../../../contexts/CompanyContext";
+import { useAuthenticatedDelete, useAuthenticatedPost } from "../../../../../../hooks/useAuthenticatedFetch";
 
 interface Props {
     isOpen: boolean,
@@ -17,18 +17,12 @@ interface Props {
 }
 
 const ModalDisponibility: React.FC<Props> = ({ isOpen, appointment, serviceId, setIsOpen, setAppointment }) => {
-    const token = localStorage.getItem("access_token")
     const { updateServices } = useContext(CompanyContext)
-    const { isLoading, error, fetchData } = useFetchData(
-        `${BACKEND_API_URL}/services/delete-appointment/${serviceId}`,
-        "DELETE",
-        token
-    )
-    const { isLoading: isLoadingAddApp, error: errorAddApp, fetchData: fetchDataAddApp } = useFetchData(
-        `${BACKEND_API_URL}/services/add-enable-appointment/${serviceId}`,
-        "POST",
-        token
-    )
+
+    const { isLoading, error, delete: del } = useAuthenticatedDelete()
+    const { isLoading: isLoadingAddApp, error: errorAddApp, post } = useAuthenticatedPost()
+    const urlDeleteAppointment = `${BACKEND_API_URL}/services/delete-appointment/${serviceId}`
+    const urlAddEnableAppointment = `${BACKEND_API_URL}/services/add-enable-appointment/${serviceId}`
 
     if (error || errorAddApp) notifyError("Error al modificar los turnos")
 
@@ -45,19 +39,19 @@ const ModalDisponibility: React.FC<Props> = ({ isOpen, appointment, serviceId, s
     if (!isOpen) return null
 
     const deleteAppointment = async (date: string, all: boolean) => {
-        const response = await fetchData({ date, all })
+        const response = await del(urlDeleteAppointment, { date, all })
         if (response.data) {
-            setAppointment({ ...response.data.appointment, pendings: pendingCount })
-            updateServices(response.data.service)
+            setAppointment({ ...response.data.data.appointment, pendings: pendingCount })
+            updateServices(response.data.data.service)
         }
         if (response.error) notifyError("Error al eliminar turno")
     }
 
     const addAppointment = async (date: string) => {
-        const response = await fetchDataAddApp({ date })
+        const response = await post(urlAddEnableAppointment, { date })
         if (response.data) {
-            setAppointment({ ...response.data.appointment, pendings: pendingCount })
-            updateServices(response.data.service)
+            setAppointment({ ...response.data.data.appointment, pendings: pendingCount })
+            updateServices(response.data.data.service)
         }
         if (response.error) notifyError("Error al habilitar turno")
     }

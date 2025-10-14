@@ -1,9 +1,10 @@
 import { createContext, useReducer, useEffect, ReactNode, useCallback, useState } from "react";
 import { type Appointment, type Service, type Company } from "../types";
-import { useFetchData } from "../hooks/useFetchData";
+import { useAuthenticatedGet } from "../hooks/useAuthenticatedFetch";
 import { BACKEND_API_URL } from "../config";
 import { socket, connectSocket, disconnectSocket } from "../socket";
 import { notifyError, notifySuccess } from "../utils/notifications";
+import { getAccessToken, hasValidTokens, logout } from "../utils/tokenManager";
 
 type Action =
     | { type: "SET_COMPANY_DATA"; payload: Company }
@@ -141,15 +142,15 @@ export const CompanyContext = createContext<CompanyContextType>({
 });
 
 export const CompanyProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-    const token = localStorage.getItem("access_token");
     const [state, dispatch] = useReducer(companyReducer, initialState);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
-    const { fetchData } = useFetchData(`${BACKEND_API_URL}/companies/get-company`, "GET", token);
+    const { get } = useAuthenticatedGet();
+    const token = getAccessToken();
 
     const fetchCompanyData = useCallback(async () => {
-        if (!token) {
+        if (!hasValidTokens()) {
             setError("No hay token de autenticación");
             return;
         }
@@ -158,15 +159,20 @@ export const CompanyProvider: React.FC<{ children: ReactNode }> = ({ children })
         setError(null);
 
         try {
-            const response = await fetchData({});
+            const response = await get(`${BACKEND_API_URL}/companies/get-company`);
 
             if (response.error) {
+                if (response.code === "SESSION_EXPIRED") {
+                    await logout();
+                    window.location.href = "/login/company";
+                    return;
+                }
                 setError(response.error);
                 dispatch({ type: "SET_COMPANY_DATA", payload: initialState });
                 return;
             }
 
-            dispatch({ type: "SET_COMPANY_DATA", payload: response.data });
+            dispatch({ type: "SET_COMPANY_DATA", payload: response.data.data });
         } catch (error) {
             const errorMessage = error instanceof Error ? error.message : "Error desconocido";
             setError(errorMessage);
@@ -174,7 +180,7 @@ export const CompanyProvider: React.FC<{ children: ReactNode }> = ({ children })
         } finally {
             setIsLoading(false);
         }
-    }, [fetchData, token]);
+    }, [get]);
 
     const updateCompanyData = useCallback((data: Partial<Company>) => {
         dispatch({ type: "UPDATE_COMPANY_DATA", payload: data });

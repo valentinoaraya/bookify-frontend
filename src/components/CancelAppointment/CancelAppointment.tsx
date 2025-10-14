@@ -1,6 +1,5 @@
 import "./CancelAppointment.css"
 import { useParams } from "react-router-dom";
-import { useFetchData } from "../../hooks/useFetchData";
 import { BACKEND_API_URL } from "../../config";
 import { useEffect, useState } from "react";
 import { formatDate } from "../../utils/formatDate";
@@ -8,6 +7,7 @@ import { confirmDelete } from "../../utils/alerts";
 import { notifySuccess, notifyError } from "../../utils/notifications";
 import { ToastContainer } from "react-toastify";
 import LoadingSpinner from "../../common/LoadingSpinner/LoadingSpinner";
+import { useAuthenticatedDelete, useAuthenticatedGet } from "../../hooks/useAuthenticatedFetch";
 
 const isAppointmentDatePassed = (appointmentDate: string): boolean => {
     const appointmentDateTime = new Date(appointmentDate);
@@ -18,22 +18,19 @@ const isAppointmentDatePassed = (appointmentDate: string): boolean => {
 const CancelAppointment = () => {
 
     const { appointmentId } = useParams()
-    const { fetchData, isLoading, error } = useFetchData(
-        `${BACKEND_API_URL}/appointments/get-appointment/${appointmentId}`,
-        "GET",
-    )
-    const { fetchData: fetchDataCancel, isLoading: isCancelling, error: errorCancel } = useFetchData(
-        `${BACKEND_API_URL}/appointments/cancel-appointment/${appointmentId}`,
-        "DELETE"
-    )
+    const { error, isLoading, get } = useAuthenticatedGet()
+    const { error: errorCancel, isLoading: isCancelling, delete: del } = useAuthenticatedDelete()
+    const urlGetAppointment = `${BACKEND_API_URL}/appointments/get-appointment/${appointmentId}`
+    const urlDeleteAppointment = `${BACKEND_API_URL}/appointments/cancel-appointment/${appointmentId}`
+
     const [data, setData] = useState<any>(null)
     const [finalized, setFinalized] = useState(false)
 
     useEffect(() => {
         const fetchAppointment = async () => {
-            const response = await fetchData({})
+            const response = await get(urlGetAppointment, { skipAuth: true })
             if (response.data) {
-                setData(response.data)
+                setData(response.data.data)
             }
         }
 
@@ -50,7 +47,7 @@ const CancelAppointment = () => {
             confirmButtonText: "Aceptar"
         })
         if (confirm) {
-            const response = await fetchDataCancel({
+            const response = await del(urlDeleteAppointment, {
                 dataUser: {
                     name: data.name,
                     lastName: data.lastName,
@@ -58,7 +55,8 @@ const CancelAppointment = () => {
                     email: data.email,
                     phone: data.phone,
                 }
-            })
+            }, { skipAuth: true })
+
             if (response?.data) {
                 notifySuccess("Turno cancelado con éxito.")
                 setFinalized(true)

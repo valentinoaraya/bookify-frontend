@@ -2,7 +2,7 @@ import "./ScheduledAppointmentsPanel.css"
 import Title from "../../../../../common/Title/Title";
 import { Service, type Appointment } from "../../../../../types";
 import AppointmentCard from "../../../../Cards/AppointmentCard/AppointmentCard";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { CompanyContext } from "../../../../../contexts/CompanyContext";
 import moment from "moment";
 
@@ -13,9 +13,12 @@ interface Props {
 const ScheduledAppointmentsPanel: React.FC<Props> = ({ scheduledAppointments }) => {
 
     const { deleteAppointment, updateServices } = useContext(CompanyContext)
-    const sortedAppointments = scheduledAppointments.sort((a, b) => moment(a.date, "YYYY-MM-DD HH:mm").valueOf() - moment(b.date, "YYYY-MM-DD HH:mm").valueOf())
-    const [appointments, setAppointments] = useState(sortedAppointments)
+    const [appointments, setAppointments] = useState(scheduledAppointments.sort((a, b) => moment(a.date, "YYYY-MM-DD HH:mm").valueOf() - moment(b.date, "YYYY-MM-DD HH:mm").valueOf()))
     const [filter, setFilter] = useState<"today" | "week" | "month" | "all">("all")
+
+    useEffect(() => {
+        setAppointments(scheduledAppointments.sort((a, b) => moment(a.date, "YYYY-MM-DD HH:mm").valueOf() - moment(b.date, "YYYY-MM-DD HH:mm").valueOf()))
+    }, [scheduledAppointments])
 
     const onCancelAppointment = (appointment: string, service: Service) => {
         deleteAppointment(appointment)
@@ -35,7 +38,7 @@ const ScheduledAppointmentsPanel: React.FC<Props> = ({ scheduledAppointments }) 
                     <button
                         className={`buttonFilter ${filter === "today" ? "activeButtonFilter" : ""}`}
                         onClick={() => {
-                            setAppointments(sortedAppointments.filter(appointment => moment(appointment.date).isSame(moment(), 'day')))
+                            setAppointments(scheduledAppointments.sort((a, b) => moment(a.date, "YYYY-MM-DD HH:mm").valueOf() - moment(b.date, "YYYY-MM-DD HH:mm").valueOf()).filter(appointment => moment(appointment.date).isSame(moment(), 'day')))
                             setFilter("today")
                         }}
                     >
@@ -44,7 +47,7 @@ const ScheduledAppointmentsPanel: React.FC<Props> = ({ scheduledAppointments }) 
                     <button
                         className={`buttonFilter ${filter === "week" ? "activeButtonFilter" : ""}`}
                         onClick={() => {
-                            setAppointments(sortedAppointments.filter(appointment => moment(appointment.date).isSame(moment(), 'week')))
+                            setAppointments(scheduledAppointments.sort((a, b) => moment(a.date, "YYYY-MM-DD HH:mm").valueOf() - moment(b.date, "YYYY-MM-DD HH:mm").valueOf()).filter(appointment => moment(appointment.date).isSame(moment(), 'week')))
                             setFilter("week")
                         }}
                     >
@@ -53,7 +56,7 @@ const ScheduledAppointmentsPanel: React.FC<Props> = ({ scheduledAppointments }) 
                     <button
                         className={`buttonFilter ${filter === "month" ? "activeButtonFilter" : ""}`}
                         onClick={() => {
-                            setAppointments(sortedAppointments.filter(appointment => moment(appointment.date).isSame(moment(), 'month')))
+                            setAppointments(scheduledAppointments.sort((a, b) => moment(a.date, "YYYY-MM-DD HH:mm").valueOf() - moment(b.date, "YYYY-MM-DD HH:mm").valueOf()).filter(appointment => moment(appointment.date).isSame(moment(), 'month')))
                             setFilter("month")
                         }}
                     >
@@ -62,7 +65,7 @@ const ScheduledAppointmentsPanel: React.FC<Props> = ({ scheduledAppointments }) 
                     <button
                         className={`buttonFilter ${filter === "all" ? "activeButtonFilter" : ""}`}
                         onClick={() => {
-                            setAppointments(sortedAppointments)
+                            setAppointments(scheduledAppointments.sort((a, b) => moment(a.date, "YYYY-MM-DD HH:mm").valueOf() - moment(b.date, "YYYY-MM-DD HH:mm").valueOf()))
                             setFilter("all")
                         }}
                     >
@@ -72,9 +75,9 @@ const ScheduledAppointmentsPanel: React.FC<Props> = ({ scheduledAppointments }) 
             </div>
 
             {
-                sortedAppointments.length === 0 ?
+                appointments.length === 0 ?
                     <div className="noServicesAppointments">
-                        <h3>No tienes turnos agendados</h3>
+                        <h3>No tienes turnos agendados {filter === "all" ? "" : filter === "month" ? "para este mes" : filter === "week" ? "esta semana" : "hoy"}</h3>
                     </div>
                     :
                     <div className="divListContainerScheduledAppointments">
