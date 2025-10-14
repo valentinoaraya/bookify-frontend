@@ -24,6 +24,10 @@ ant-input-search :where(.css-dev-only-do-not-override-19lec04).ant-input-group .
   height: 42px;
 }
 
+:where(.css-l9pxc0).ant-input-search .ant-input-affix-wrapper {
+  height: 42px;
+}
+
 .ant-input-search :where(.css-dev-only-do-not-override-l9pxc0).ant-input-group .ant-input-affix-wrapper:not(:last-child) {
   height: 42px;
 }
