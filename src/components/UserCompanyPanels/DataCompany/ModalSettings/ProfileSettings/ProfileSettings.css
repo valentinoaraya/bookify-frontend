@@ -43,7 +43,6 @@
         border-radius: 0 8px 8px 0;
         font-size: 1.1rem;
         transition: all .2s ease;
-        margin: .5rem 0;
 
         &:focus {
             outline: none;
@@ -74,6 +73,7 @@
 }
 
 .link-copy-container {
+    margin: .5rem 0;
     display: flex;
     align-items: center;
 }
@@ -111,4 +111,28 @@
     justify-content: flex-end;
     gap: 1rem;
     margin-top: 1rem;
+}
+
+@media (max-width: 1000px) {
+
+    .link-copy-container {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: .5rem;
+    }
+
+
+    .label-link {
+        font-size: 1rem;
+    }
+
+    .link-for-clients {
+        .input-link {
+            font-size: 1rem;
+        }
+
+        .button-copy {
+            margin: 0;
+        }
+    }
 }

@@ -113,9 +113,62 @@
     background-color: #0e6b85;
 }
 
-@media (max-width: 530px) {
-    .parrafVinculate {
-        width: 50%;
-        font-size: .8rem;
+.divButtonSettingsMobile {
+    display: none;
+}
+
+@media (max-width: 1200px) {
+    .dataCompanyPanel {
+        left: 1rem;
+        width: 300px;
+    }
+
+    .dataContent,
+    .divQuantityAppointments {
+        padding: 1.5rem;
+    }
+}
+
+@media (max-width: 1000px) {
+    .dataContent {
+        display: none;
+    }
+
+    .dataCompanyPanel {
+        position: static;
+        width: 100%;
+        height: auto;
+        padding: 0;
+    }
+
+    .divQuantityAppointmentsContainer {
+        margin-bottom: 0;
+        justify-content: space-between;
+        flex-direction: row;
+        height: auto;
+        gap: 1rem;
+    }
+
+    .divQuantityAppointments {
+        flex: 1;
+        justify-content: center;
+        text-align: center;
+        padding: 1rem;
+    }
+
+    .dataCompanyPanel .divButtonSettings {
+        display: none;
+    }
+
+    .divButtonSettingsMobile {
+        display: block;
+        display: flex;
+    }
+
+}
+
+@media (max-width: 850px) {
+    .divQuantityAppointments {
+        gap: .8rem;
     }
 }

@@ -48,6 +48,7 @@ body.settings-modal-open {
 }
 
 .modalSettingsContent {
+    overflow-y: auto;
     animation: settings-slide-in .3s ease-in;
     position: relative;
     width: 100%;
@@ -57,7 +58,7 @@ body.settings-modal-open {
     background-color: var(--blanco);
     padding: 2rem 1rem;
     border-radius: 10px;
-    min-height: 80vh;
+    height: 80vh;
 }
 
 .modalSettingsBody {
@@ -80,7 +81,7 @@ body.settings-modal-open {
     gap: 1rem;
     border-right: 2px solid var(--gris-claro);
     padding-right: 1rem;
-    min-height: 80vh;
+    height: 80vh;
 
     ul {
         display: flex;
@@ -138,4 +139,10 @@ body.settings-modal-open {
 
 .modalCloseButton:hover {
     color: #000;
+}
+
+@media (max-width: 1300px) {
+    .modalSettingsContent {
+        max-width: 90vw;
+    }
 }

@@ -112,15 +112,17 @@ const ProfileSettings: React.FC<Props> = ({ data }) => {
                 <div className="link-for-clients">
                     <h3>Link para tus clientes:</h3>
                     <div className="link-copy-container">
-                        <label className="label-link">https://bookify-aedes.vercel.app/company/</label>
-                        <input
-                            className="input-link"
-                            name="company_id"
-                            required
-                            type="text"
-                            value={dataForm["company_id"]}
-                            onChange={handleChange}
-                        />
+                        <div className="link-copy">
+                            <label className="label-link">bookify.aedestec.com/company/</label>
+                            <input
+                                className="input-link"
+                                name="company_id"
+                                required
+                                type="text"
+                                value={dataForm["company_id"]}
+                                onChange={handleChange}
+                            />
+                        </div>
                         <button
                             className="button-copy"
                             onClick={copyToClipboard}
