@@ -108,23 +108,43 @@ const DataCompany: React.FC<Props> = ({ dataCompany, children, scheduledAppointm
                         <h3>Servicios activos</h3>
                     </div>
                 </div>
+                <div className="divButtonSettingsMobile">
+                    <Button
+                        iconSVG={
+                            <SettingsIcon
+                                width="30px"
+                                height="30px"
+                                fill="white"
+                            />
+                        }
+                        padding="1rem"
+                        backgroundColor="#1282A2"
+                        fontSize="1rem"
+                        fontWeight="600"
+                        margin="0"
+                        onSubmit={() => setIsModalOpen(true)}
+                    >
+                    </Button>
+                </div>
             </div>
-            <Button
-                iconSVG={
-                    <SettingsIcon
-                        width="20px"
-                        height="20px"
-                        fill="white"
-                    />
-                }
-                backgroundColor="#1282A2"
-                fontSize="1rem"
-                fontWeight="600"
-                margin="0"
-                onSubmit={() => setIsModalOpen(true)}
-            >
-                Configuración
-            </Button>
+            <div className="divButtonSettings">
+                <Button
+                    iconSVG={
+                        <SettingsIcon
+                            width="20px"
+                            height="20px"
+                            fill="white"
+                        />
+                    }
+                    backgroundColor="#1282A2"
+                    fontSize="1rem"
+                    fontWeight="600"
+                    margin="0"
+                    onSubmit={() => setIsModalOpen(true)}
+                >
+                    Configuración
+                </Button>
+            </div>
             <ModalSettings
                 isOpen={isModalOpen}
                 setIsOpen={setIsModalOpen}

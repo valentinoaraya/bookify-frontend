@@ -36,8 +36,8 @@
 }
 
 .buttonFilter {
-    background-color: grey;
-    color: white;
+    background-color: rgb(211, 211, 211);
+    color: rgb(114, 114, 114);
     border: none;
     cursor: pointer;
     padding: .2rem .5rem;
@@ -46,10 +46,12 @@
 }
 
 .activeButtonFilter {
+    color: white;
     background-color: var(--azul-clarito);
 }
 
 .buttonFilter:hover {
+    color: white;
     background-color: var(--azul-clarito);
 }
 

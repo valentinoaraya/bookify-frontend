@@ -299,6 +299,7 @@ ant-input-search :where(.css-dev-only-do-not-override-19lec04).ant-input-group .
 .history-appointment-item {
   width: 100%;
   display: flex;
+  gap: 1rem;
   justify-content: space-between;
   padding: 1.5rem;
   border-bottom: 1px solid #f0f0f0;

@@ -2,7 +2,7 @@ import React from "react";
 import "./Button.css"
 
 interface Props {
-    children: React.ReactNode;
+    children?: React.ReactNode;
     iconSVG?: React.ReactNode;
     onSubmit?: () => void;
     backgroundColor?: string;
@@ -24,11 +24,11 @@ const Button: React.FC<Props> = ({ children, iconSVG, onSubmit, type, disabled, 
             onClick={onSubmit}
             type={type}
             disabled={disabled}
-            style={{ fontSize: fontSize, padding: padding, fontWeight: fontWeight, width: width, margin: margin, background: backgroundColor, flexDirection: reverse ? "row-reverse" : "row", cursor: cursor ? cursor : "pointer" }}
+            style={{ fontSize: fontSize, padding: padding, fontWeight: fontWeight, width: width, margin: margin, background: backgroundColor, flexDirection: reverse ? "row-reverse" : "row", cursor: cursor ? cursor : "pointer", gap: children ? "1.2rem" : "0" }}
         >
             {
                 iconSVG &&
-                <div className="divIcon">
+                <div>
                     {iconSVG}
                 </div>
             }

@@ -99,13 +99,23 @@
     animation: appointment-slide-in .5s ease-out;
 }
 
-@media (max-width: 930px) {
-    .divInterfaceCompanyContainer {
+@media (max-width: 1200px) {
+    .divCompanyPanel {
+        padding-right: 1rem;
+        margin-left: calc(300px + 1rem);
+    }
+}
+
+@media (max-width: 1000px) {
+    .divCompanyPanel {
+        padding-right: 2rem;
+        gap: 1rem;
         flex-direction: column;
+        margin: 0;
     }
 
-    .divCompanyPanel {
-        width: auto;
+    .divButtonsContainer {
+        margin: 0;
     }
 }
 
