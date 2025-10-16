@@ -48,6 +48,7 @@ body.settings-modal-open {
 }
 
 .modalSettingsContent {
+    margin: .5rem;
     overflow-y: auto;
     animation: settings-slide-in .3s ease-in;
     position: relative;
