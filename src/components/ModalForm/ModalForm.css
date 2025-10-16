@@ -141,12 +141,10 @@ body.modal-open {
 @media (max-width: 930px) {
     .modalContent {
         margin: 0.5rem;
-        padding: 2rem 1.5rem;
-        border-radius: 12px;
     }
 
-    .formModal {
-        gap: 1.5rem;
+    .divInputsContainer {
+        gap: 1rem;
     }
 
     .divButtonsFormModal {
@@ -178,9 +176,6 @@ body.modal-open {
         border-radius: 8px;
     }
 
-    .modalContent {
-        padding: 1.5rem 1rem;
-    }
 }
 
 @media (max-width: 360px) {

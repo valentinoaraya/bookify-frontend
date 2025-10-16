@@ -68,7 +68,39 @@ const AppointmentCard: React.FC<Props> = ({ appointment, onCancelAppointment }) 
         <>
             <div className="card-appointment-container">
                 <div className="card-appointment-item">
-                    <div className="card-appointment-header">
+                    <div className="cardAppointmentNameAndDateContainer">
+                        <div className="divTitleAndTodayContainer mobile">
+                            <h3 className="card-client-name">{`${appointment.name} ${appointment.lastName}`}</h3>
+                            {moment(appointment.date).isSame(moment(), 'day') && <span className="todayAppointmentSpan">Hoy</span>}
+                        </div>
+                        <div className="card-date-time-info mobile">
+                            <p className="card-appointment-date">
+                                <CalendarOutlined /> {formattedDate} {time}
+                            </p>
+                        </div>
+                    </div>
+                    <div className="card-appointment-main">
+                        <div className="card-appointment-header">
+                            <div className="card-client-info">
+                                <div className="divTitleAndTodayContainer">
+                                    <h3 className="card-client-name">{`${appointment.name} ${appointment.lastName}`}</h3>
+                                    {moment(appointment.date).isSame(moment(), 'day') && <span className="todayAppointmentSpan">Hoy</span>}
+                                </div>
+                                <p className="card-client-email">{appointment.email}</p>
+                                {appointment.phone && <p className="card-client-phone">{appointment.phone}</p>}
+                                <p className="card-client-phone">DNI: {appointment.dni}</p>
+                            </div>
+                        </div>
+                        <div className="card-appointment-details">
+                            <div className="card-service-info">
+                                <h4 className="card-service-title">{appointment.serviceId.title}</h4>
+                                <p className="card-service-duration">Duración: {appointment.serviceId.duration} min</p>
+                                <p className="card-service-price">Precio: ${appointment.price}</p>
+                                {appointment.totalPaidAmount && <p className="card-service-sign-price">Seña: ${appointment.totalPaidAmount}</p>}
+                            </div>
+                        </div>
+                    </div>
+                    <div className="card-appointment-header desktop">
                         <div className="card-client-info">
                             <div className="divTitleAndTodayContainer">
                                 <h3 className="card-client-name">{`${appointment.name} ${appointment.lastName}`}</h3>
@@ -79,7 +111,7 @@ const AppointmentCard: React.FC<Props> = ({ appointment, onCancelAppointment }) 
                             <p className="card-client-phone">DNI: {appointment.dni}</p>
                         </div>
                     </div>
-                    <div className="card-appointment-details">
+                    <div className="card-appointment-details desktop">
                         <div className="card-service-info">
                             <h4 className="card-service-title">{appointment.serviceId.title}</h4>
                             <p className="card-service-duration">Duración: {appointment.serviceId.duration} min</p>

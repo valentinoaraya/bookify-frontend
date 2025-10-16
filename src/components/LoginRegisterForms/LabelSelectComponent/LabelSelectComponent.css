@@ -21,17 +21,6 @@
     background-color: #F5F5F5;
 }
 
-@media (max-width: 930px) {
-    .divInput {
-        margin: 2rem 0;
-    }
-}
-
-@media (max-width: 630px) {
-    .divInput {
-        margin: 1rem 0;
-    }
-}
 
 @media (max-width: 450px) {
     .divInput select {

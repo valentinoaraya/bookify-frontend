@@ -516,13 +516,11 @@ ant-input-search :where(.css-dev-only-do-not-override-19lec04).ant-input-group .
 
 @media (max-width: 768px) {
   .history-list-container {
-    padding: 16px;
     gap: 16px;
   }
 
-  .history-filters-container,
-  .history-statistics-container {
-    padding: 20px;
+  .history-filters-container {
+    padding: 1rem;
   }
 
   .history-filters-row {
@@ -547,13 +545,13 @@ ant-input-search :where(.css-dev-only-do-not-override-19lec04).ant-input-group .
 
   .history-appointment-details {
     flex-direction: column;
+    align-self: flex-start;
     gap: 16px;
   }
 
   .history-date-time-info {
     text-align: left;
     min-width: auto;
-    align-self: flex-start;
   }
 
   .history-appointment-date {
@@ -567,26 +565,29 @@ ant-input-search :where(.css-dev-only-do-not-override-19lec04).ant-input-group .
   .history-service-title {
     font-size: 15px;
   }
+
+  :where(.css-dev-only-do-not-override-l9pxc0).ant-card .ant-card-body {
+    padding: 16px;
+  }
+
+  .history-stat-card .ant-statistic-content {
+    font-size: 20px;
+  }
+}
+
+@media (max-width: 650px) {
+  .history-appointment-item {
+    flex-direction: column;
+  }
 }
 
 @media (max-width: 480px) {
-  .history-list-container {
-    padding: 12px;
-    gap: 12px;
-  }
 
-  .history-filters-container,
-  .history-statistics-container {
-    padding: 16px;
-  }
 
   .history-filters-row {
     flex-direction: column;
     gap: 12px;
-  }
-
-  .history-filter-item {
-    min-width: auto;
+    align-items: stretch;
   }
 
   .history-stats-row {
