@@ -265,6 +265,10 @@
         align-self: flex-start;
     }
 
+    .card-appointment-container {
+        padding: .8rem;
+    }
+
     .cardAppointmentNameAndDateContainer {
         gap: .2rem;
     }

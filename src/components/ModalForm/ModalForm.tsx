@@ -60,7 +60,6 @@ const ModalForm: React.FC<Props> = ({ title, inputs, isOpen, onClose, onSubmitFo
         <div className={`modalOverlay ${closing ? "closing" : "opening"}`}>
             <div className="modalContent">
                 <Title
-                    fontSize={window.innerWidth <= 930 ? "1.8rem" : "2.2rem"}
                     textAlign="center"
                 >
                     {title}
