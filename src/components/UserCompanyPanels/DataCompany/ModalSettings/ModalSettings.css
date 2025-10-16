@@ -76,7 +76,9 @@ body.settings-modal-open {
 }
 
 .modalSettingsLateralBar {
+    position: sticky;
     display: flex;
+    top: 0;
     flex-direction: column;
     gap: 1rem;
     border-right: 2px solid var(--gris-claro);
@@ -137,6 +139,16 @@ body.settings-modal-open {
     transition: color 0.2s;
 }
 
+.modalCloseButtonMobile {
+    display: none;
+    background: transparent;
+    border: none;
+    font-size: 1.5rem;
+    color: #666;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
 .modalCloseButton:hover {
     color: #000;
 }
@@ -144,5 +156,51 @@ body.settings-modal-open {
 @media (max-width: 1300px) {
     .modalSettingsContent {
         max-width: 90vw;
+    }
+}
+
+@media (max-width: 740px) {
+
+    .modalSettingsContent {
+        padding-top: 0;
+    }
+
+    .modalCloseButton {
+        display: none;
+    }
+
+    .modalCloseButtonMobile {
+        display: block;
+    }
+
+    .modalSettingsBody {
+        height: 100%;
+        flex-direction: column;
+    }
+
+    .modalSettingsLateralBar {
+        flex-direction: row;
+        width: 100%;
+        border-right: none;
+        border-bottom: 2px solid var(--gris-claro);
+        padding: 1.2rem 0 1rem 0;
+        height: auto;
+        background-color: white;
+        z-index: 100;
+
+        ul {
+            width: 100%;
+            justify-content: space-around;
+            flex-direction: row;
+            gap: 1rem;
+
+            li {
+                white-space: nowrap;
+            }
+        }
+    }
+
+    .modalSettingsMainContent {
+        padding: 0 1rem 1rem 1rem;
     }
 }

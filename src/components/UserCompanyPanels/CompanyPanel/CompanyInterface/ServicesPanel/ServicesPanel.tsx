@@ -50,13 +50,15 @@ const ServicesPanel: React.FC<Props> = ({ companyServices, connectedWithMP, onDe
             <div className="servicesPanelHeader">
                 <Title
                     margin="0 0 1rem 0"
-                    fontSize={window.innerWidth <= 530 ? "1.8rem" : ""}
                 >
                     Servicios activos
                 </Title>
                 <Button onSubmit={() => setIsModalOpen(true)} width="fit-content" padding="0.5rem 1rem" fontSize="1.1rem" margin="0 0 1rem 0" backgroundColor="#3f9f0f">
                     <span className="plusButton">+ </span>
-                    Agregar servicio
+                    {
+                        window.innerWidth >= 470 ? "Agregar servicio" :
+                            window.innerWidth >= 400 ? "Agregar" : ""
+                    }
                 </Button>
             </div>
             {

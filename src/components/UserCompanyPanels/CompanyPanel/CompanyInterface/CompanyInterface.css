@@ -41,7 +41,6 @@
     border-radius: 10px;
     display: flex;
     justify-content: space-between;
-    align-items: center;
     gap: 1rem;
     padding: .3rem;
     border: 1px solid rgb(192, 192, 192);
@@ -102,6 +101,7 @@
 @media (max-width: 1200px) {
     .divCompanyPanel {
         padding-right: 1rem;
+        padding-left: 1rem;
         margin-left: calc(300px + 1rem);
     }
 }
@@ -109,6 +109,7 @@
 @media (max-width: 1000px) {
     .divCompanyPanel {
         padding-right: 2rem;
+        padding-left: 2rem;
         gap: 1rem;
         flex-direction: column;
         margin: 0;
@@ -119,8 +120,25 @@
     }
 }
 
-@media (max-width: 530px) {
+@media (max-width: 685px) {
+
     .divCompanyPanel {
-        padding: 2rem 1rem;
+        padding: 0 1rem;
+    }
+
+    .divSectionContainer {
+        padding: 2rem 1.5rem;
+    }
+
+    .buttonSection {
+        font-size: 1.1rem;
+        padding: .6rem 1rem;
+    }
+}
+
+@media (max-width: 520px) {
+    .buttonSection {
+        font-size: 1rem;
+        padding: .5rem .8rem;
     }
 }

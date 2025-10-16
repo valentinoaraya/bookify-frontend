@@ -73,7 +73,7 @@
 
 @media (max-width: 930px) {
     .divInput {
-        margin: 1.2rem 0;
+        margin: .5rem 0;
     }
 
     .divInput label {
@@ -87,10 +87,7 @@
     }
 }
 
-@media (max-width: 630px) {
-    .divInput {
-        margin: 1rem 0;
-    }
+@media (max-width: 730px) {
 
     .divInput label {
         font-size: 1rem;
@@ -98,23 +95,7 @@
 
     .divInput input,
     .divInput select {
-        padding: 0.8rem 0.9rem;
-        font-size: 0.9rem;
-    }
-}
-
-@media (max-width: 360px) {
-    .divInput {
-        margin: 0.8rem 0;
-    }
-
-    .divInput label {
-        font-size: 0.95rem;
-    }
-
-    .divInput input,
-    .divInput select {
-        padding: 0.7rem 0.8rem;
-        font-size: 0.85rem;
+        padding: 0.5rem;
+        font-size: 1rem;
     }
 }

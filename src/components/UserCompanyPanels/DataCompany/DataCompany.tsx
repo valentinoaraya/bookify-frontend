@@ -60,24 +60,44 @@ const DataCompany: React.FC<Props> = ({ dataCompany, children, scheduledAppointm
                     scheduledAppointments ?
                         <>
                             <div className="divQuantityAppointments">
-                                <ClockIcon
-                                    width="36px"
-                                    height="36px"
-                                    fill="#1282A2"
-                                />
-                                <div>
-                                    <h2>{todayAppointments.length}</h2>
+                                <div className="iconContainer">
+                                    <ClockIcon
+                                        width="36px"
+                                        height="36px"
+                                        fill="#1282A2"
+                                    />
+                                </div>
+                                <div className="divQuantityAppointmentsText">
+                                    <div className="divQuantityAppointmentsTextInner">
+                                        <ClockIcon
+                                            width="20px"
+                                            height="20px"
+                                            fill="#1282A2"
+                                        />
+                                        <h2>{todayAppointments.length}</h2>
+                                    </div>
+                                    <h2 className="iconContainer">{todayAppointments.length}</h2>
                                     <h3>Turnos para hoy</h3>
                                 </div>
                             </div>
                             <div className="divQuantityAppointments">
-                                <CalendarCheckIcon
-                                    width="36px"
-                                    height="36px"
-                                    fill="#1282A2"
-                                />
-                                <div>
-                                    <h2>{scheduledAppointments.length}</h2>
+                                <div className="iconContainer">
+                                    <CalendarCheckIcon
+                                        width="36px"
+                                        height="36px"
+                                        fill="#1282A2"
+                                    />
+                                </div>
+                                <div className="divQuantityAppointmentsText">
+                                    <div className="divQuantityAppointmentsTextInner">
+                                        <CalendarCheckIcon
+                                            width="20px"
+                                            height="20px"
+                                            fill="#1282A2"
+                                        />
+                                        <h2>{scheduledAppointments.length}</h2>
+                                    </div>
+                                    <h2 className="iconContainer">{scheduledAppointments.length}</h2>
                                     <h3>Turnos totales</h3>
                                 </div>
                             </div>
@@ -85,26 +105,46 @@ const DataCompany: React.FC<Props> = ({ dataCompany, children, scheduledAppointm
                         :
                         <>
                             <div className="divQuantityAppointments">
-                                <CalendarCheckIcon
-                                    width="36px"
-                                    height="36px"
-                                    fill="#1282A2"
-                                />
-                                <div>
-                                    <h2>{availableAppointmentsQuantity}</h2>
+                                <div className="iconContainer">
+                                    <CalendarCheckIcon
+                                        width="36px"
+                                        height="36px"
+                                        fill="#1282A2"
+                                    />
+                                </div>
+                                <div className="divQuantityAppointmentsText">
+                                    <div className="divQuantityAppointmentsTextInner">
+                                        <CalendarCheckIcon
+                                            width="20px"
+                                            height="20px"
+                                            fill="#1282A2"
+                                        />
+                                        <h2>{availableAppointmentsQuantity}</h2>
+                                    </div>
+                                    <h2 className="iconContainer">{availableAppointmentsQuantity}</h2>
                                     <h3>Turnos disponibles</h3>
                                 </div>
                             </div>
                         </>
                 }
                 <div className="divQuantityAppointments">
-                    <UsersIcon
-                        width="36px"
-                        height="36px"
-                        fill="#1282A2"
-                    />
-                    <div>
-                        <h2>{servicesLenght}</h2>
+                    <div className="iconContainer">
+                        <UsersIcon
+                            width="36px"
+                            height="36px"
+                            fill="#1282A2"
+                        />
+                    </div>
+                    <div className="divQuantityAppointmentsText">
+                        <div className="divQuantityAppointmentsTextInner">
+                            <UsersIcon
+                                width="20px"
+                                height="20px"
+                                fill="#1282A2"
+                            />
+                            <h2>{servicesLenght}</h2>
+                        </div>
+                        <h2 className="iconContainer">{servicesLenght}</h2>
                         <h3>Servicios activos</h3>
                     </div>
                 </div>
@@ -112,8 +152,8 @@ const DataCompany: React.FC<Props> = ({ dataCompany, children, scheduledAppointm
                     <Button
                         iconSVG={
                             <SettingsIcon
-                                width="30px"
-                                height="30px"
+                                width={window.innerWidth >= 740 ? "30px" : "25px"}
+                                height={window.innerWidth >= 740 ? "30px" : "25px"}
                                 fill="white"
                             />
                         }

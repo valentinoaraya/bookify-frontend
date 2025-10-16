@@ -111,3 +111,9 @@
     color: gray;
     font-weight: 600;
 }
+
+@media (max-width: 740px) {
+    .paymentMethodsSettings {
+        justify-content: space-between;
+    }
+}

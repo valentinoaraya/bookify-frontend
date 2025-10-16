@@ -1,5 +1,6 @@
 .anticipations-content {
     display: flex;
+    flex-direction: column;
     gap: 1rem;
     flex-wrap: wrap;
     margin-top: 1rem;

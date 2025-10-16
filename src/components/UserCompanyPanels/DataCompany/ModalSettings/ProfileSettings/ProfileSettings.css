@@ -136,3 +136,19 @@
         }
     }
 }
+
+@media (max-width: 510px) {
+    .link-for-clients {
+        .input-link {
+            width: 100px;
+        }
+    }
+}
+
+@media (max-width: 415px) {
+    .link-for-clients {
+        .input-link {
+            width: 60px;
+        }
+    }
+}

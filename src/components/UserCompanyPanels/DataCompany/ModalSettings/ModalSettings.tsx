@@ -52,7 +52,7 @@ const ModalSettings: React.FC<Props> = ({ isOpen, setIsOpen }) => {
                                     height="18"
                                     fill="#adadad"
                                 />
-                                Perfil
+                                {window.innerWidth <= 740 ? "" : "Perfil"}
                             </li>
                             <li className={active === "paymentmethods" ? "active-settings" : ""} onClick={() => setActive("paymentmethods")}>
                                 <CreditCardIcon
@@ -60,7 +60,7 @@ const ModalSettings: React.FC<Props> = ({ isOpen, setIsOpen }) => {
                                     height="18"
                                     fill="#adadad"
                                 />
-                                Medios de pago
+                                {window.innerWidth <= 740 ? "" : "Medios de pago"}
                             </li>
                             <li className={active === "reminders" ? "active-settings" : ""} onClick={() => setActive("reminders")}>
                                 <BellIcon
@@ -68,7 +68,7 @@ const ModalSettings: React.FC<Props> = ({ isOpen, setIsOpen }) => {
                                     height="18"
                                     fill="#adadad"
                                 />
-                                Recordatorios
+                                {window.innerWidth <= 740 ? "" : "Recordatorios"}
                             </li>
                             <li className={active === "anticipations" ? "active-settings" : ""} onClick={() => setActive("anticipations")}>
                                 <ClockIcon
@@ -76,8 +76,9 @@ const ModalSettings: React.FC<Props> = ({ isOpen, setIsOpen }) => {
                                     height="18"
                                     fill="#adadad"
                                 />
-                                Anticipaciones
+                                {window.innerWidth <= 740 ? "" : "Anticipaciones"}
                             </li>
+                            <button className="modalCloseButtonMobile" onClick={() => setIsOpen(false)} >X</button>
                         </ul>
                     </div>
                     <div className="modalSettingsMainContent">

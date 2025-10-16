@@ -29,7 +29,6 @@ const ScheduledAppointmentsPanel: React.FC<Props> = ({ scheduledAppointments }) 
         <div className="animation-section divSectionContainer">
             <div className="titleAndFilterContainer">
                 <Title
-                    fontSize={window.innerWidth <= 530 ? "1.8rem" : ""}
                     margin="0 0 0 0"
                 >
                     Turnos pendientes
