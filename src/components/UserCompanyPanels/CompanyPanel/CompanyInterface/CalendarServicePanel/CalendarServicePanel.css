@@ -74,6 +74,12 @@
     }
 }
 
+@media (max-width: 800px) {
+    .calendarServicePanel {
+        padding: 1.5rem 1rem;
+    }
+}
+
 @media (max-width: 530px) {
 
     .fc th {

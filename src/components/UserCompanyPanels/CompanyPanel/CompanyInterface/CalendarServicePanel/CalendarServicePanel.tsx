@@ -70,7 +70,7 @@ const CalendarServicePanel: React.FC<Props> = ({ serviceId, setActiveView }) => 
             >
                 Calendario para {service.title}
             </Title>
-            {
+            {/* {
                 window.innerWidth <= 1150 &&
                 <div className="divAvailabilityIndicator">
                     <div className="pointContainer">
@@ -82,7 +82,7 @@ const CalendarServicePanel: React.FC<Props> = ({ serviceId, setActiveView }) => 
                         <p className="redParraf">Ocupado</p>
                     </div>
                 </div>
-            }
+            } */}
             <div className="calendarContainer">
                 <FullCalendar
                     plugins={[dayGridPlugin]}
@@ -131,7 +131,13 @@ const CalendarServicePanel: React.FC<Props> = ({ serviceId, setActiveView }) => 
                             const eventEl = info.el
                             const titleEl = eventEl.querySelector('.fc-event-title')
                             if (titleEl) {
-                                titleEl.innerHTML = `
+                                titleEl.innerHTML = window.innerWidth <= 700 ? `                                
+                                    <div style="line-height: 1.2; padding: 0 4px;">
+                                        <div style="font-weight: 550; color: #fff;">${disponibility} Disp.</div>
+                                        <div style="font-weight: 550; color: #fff; margin-top: 2px;">${taken} Ocup.</div>
+                                        ${pendingCount >= 1 ? `<div style="font-weight: 550; color: #fff; margin-top: 2px;">${pendingCount} Pend.</div>` : ""}
+                                    </div>
+                                ` : `                                
                                     <div style="line-height: 1.2; padding: 0 4px;">
                                         <div style="font-weight: 550; color: #fff;">${disponibility} Disponible${disponibility !== 1 ? 's' : ''}</div>
                                         <div style="font-weight: 550; color: #fff; margin-top: 2px;">${taken} Ocupado${taken !== 1 ? 's' : ''}</div>
@@ -144,7 +150,11 @@ const CalendarServicePanel: React.FC<Props> = ({ serviceId, setActiveView }) => 
                             const eventEl = info.el
                             const titleEl = eventEl.querySelector('.fc-event-title')
                             if (titleEl) {
-                                titleEl.innerHTML = `
+                                titleEl.innerHTML = window.innerWidth <= 700 ? `
+                                    <div style="line-height: 1.2; padding: 0 4px;">
+                                        <div style="font-weight: bolder; color: #fff;">${scheduledCount} Ocup.</div>
+                                    </div>
+                                ` : `
                                     <div style="line-height: 1.2; padding: 0 4px;">
                                         <div style="font-weight: bolder; color: #fff;">${scheduledCount} Ocupado${scheduledCount !== 1 ? 's' : ''}</div>
                                     </div>
