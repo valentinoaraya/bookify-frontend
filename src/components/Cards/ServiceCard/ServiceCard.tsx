@@ -108,6 +108,7 @@ const ServiceCard: React.FC<Props> = ({ id, duration, price, title, description,
                     <div className="service-card-actions">
                         <Button
                             fontSize={window.innerWidth <= 930 ? "1rem" : "1.2rem"}
+                            backgroundColor="#1282A2"
                             padding=".5rem 1rem"
                             fontWeight="600"
                             margin="0"
@@ -118,6 +119,7 @@ const ServiceCard: React.FC<Props> = ({ id, duration, price, title, description,
                         </Button>
                         <Button
                             fontSize={window.innerWidth <= 930 ? "1rem" : "1.2rem"}
+                            backgroundColor="#1282A2"
                             padding=".5rem 1rem"
                             fontWeight="600"
                             margin="0"

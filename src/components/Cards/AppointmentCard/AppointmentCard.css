@@ -210,6 +210,7 @@
     .card-appointment-main {
         display: flex;
         justify-content: space-between;
+        gap: .5rem;
     }
 
     .card-appointment-header.desktop,

@@ -139,6 +139,11 @@ body.modal-open {
 }
 
 @media (max-width: 930px) {
+
+    .divInputsFormModal {
+        gap: 1rem;
+    }
+
     .modalContent {
         margin: 0.5rem;
     }
@@ -157,12 +162,10 @@ body.modal-open {
 @media (max-width: 630px) {
     .divInputsFormModal {
         flex-direction: column;
-        gap: 1rem;
     }
 
     .dayPickerContainer {
         margin: 1rem 0;
-        padding: 1rem;
     }
 
     .rdp-months {
@@ -177,6 +180,12 @@ body.modal-open {
         border-radius: 8px;
     }
 
+}
+
+@media (max-width: 400px) {
+    .rdp-months {
+        padding: 0.5rem;
+    }
 }
 
 @media (max-width: 360px) {
