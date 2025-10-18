@@ -70,23 +70,16 @@ const CalendarServicePanel: React.FC<Props> = ({ serviceId, setActiveView }) => 
             >
                 Calendario para {service.title}
             </Title>
-            {/* {
-                window.innerWidth <= 1150 &&
-                <div className="divAvailabilityIndicator">
-                    <div className="pointContainer">
-                        <div className="greenPoint point"></div>
-                        <p className="greenParraf">Disponible</p>
-                    </div>
-                    <div className="pointContainer">
-                        <div className="redPoint point"></div>
-                        <p className="redParraf">Ocupado</p>
-                    </div>
-                </div>
-            } */}
             <div className="calendarContainer">
                 <FullCalendar
                     plugins={[dayGridPlugin]}
-                    initialView="dayGridWeek"
+                    initialView={window.innerWidth <= 600 ? "dayGridMobile" : "dayGridWeek"}
+                    views={{
+                        dayGridMobile: {
+                            type: "dayGrid",
+                            duration: { days: 5 }
+                        }
+                    }}
                     contentHeight={"71vh"}
                     locale={"es"}
                     eventClassNames={"event animation-section"}
@@ -152,11 +145,11 @@ const CalendarServicePanel: React.FC<Props> = ({ serviceId, setActiveView }) => 
                             if (titleEl) {
                                 titleEl.innerHTML = window.innerWidth <= 700 ? `
                                     <div style="line-height: 1.2; padding: 0 4px;">
-                                        <div style="font-weight: bolder; color: #fff;">${scheduledCount} Ocup.</div>
+                                        <div style="font-weight: 550; color: #fff;">${scheduledCount} Ocup.</div>
                                     </div>
                                 ` : `
                                     <div style="line-height: 1.2; padding: 0 4px;">
-                                        <div style="font-weight: bolder; color: #fff;">${scheduledCount} Ocupado${scheduledCount !== 1 ? 's' : ''}</div>
+                                        <div style="font-weight: 550; color: #fff;">${scheduledCount} Ocupado${scheduledCount !== 1 ? 's' : ''}</div>
                                     </div>
                                 `
                             }

@@ -17,6 +17,7 @@ body.disponibility-modal-open {
 
 .modalDisponibilityContent {
     display: flex;
+    margin: .5rem;
     flex-direction: column;
     justify-content: center;
     align-items: center;
