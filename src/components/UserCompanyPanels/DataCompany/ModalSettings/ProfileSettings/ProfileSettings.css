@@ -14,7 +14,7 @@
 
 .link-for-clients {
     margin-bottom: 2rem;
-    font-size: 1.1rem;
+    font-size: 16px;
 
     a {
         color: var(--azul-clarito);
@@ -41,7 +41,7 @@
         padding: .5rem 1rem .5rem .3rem;
         border: 1px solid #adadad;
         border-radius: 0 8px 8px 0;
-        font-size: 1.1rem;
+        font-size: 16px;
         transition: all .2s ease;
 
         &:focus {
@@ -94,7 +94,7 @@
         padding: .5rem;
         border: 1px solid #adadad;
         border-radius: 8px;
-        font-size: 1rem;
+        font-size: 16px;
         transition: all .2s ease;
 
         &:focus {
@@ -121,16 +121,7 @@
         gap: .5rem;
     }
 
-
-    .label-link {
-        font-size: 1rem;
-    }
-
     .link-for-clients {
-        .input-link {
-            font-size: 1rem;
-        }
-
         .button-copy {
             margin: 0;
         }
