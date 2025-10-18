@@ -5,6 +5,15 @@ import Title from "../../common/Title/Title.tsx";
 import { CompanyIcon } from "../../common/Icons/Icons.tsx";
 
 const Home = () => {
+
+    const token = localStorage.getItem("access_token")
+
+    console.log(token)
+
+    if (token) {
+        window.location.href = "/company-panel"
+    }
+
     return (
         <div className="divHome">
             <Title fontSize={window.innerWidth <= 560 ? "4.5rem" : "6rem"} margin="0 0 .5rem 0">Bookify</Title>
