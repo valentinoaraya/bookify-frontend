@@ -28,6 +28,15 @@ ant-input-search :where(.css-dev-only-do-not-override-19lec04).ant-input-group .
   height: 42px;
 }
 
+:where(.css-dev-only-do-not-override-l9pxc0).ant-input-affix-wrapper>input.ant-input,
+:where(.css-dev-only-do-not-override-l9pxc0).ant-input-affix-wrapper>textarea.ant-input {
+  font-size: 16px;
+}
+
+:where(.css-dev-only-do-not-override-l9pxc0).ant-picker .ant-picker-input>input {
+  font-size: 16px;
+}
+
 .ant-input-search :where(.css-dev-only-do-not-override-l9pxc0).ant-input-group .ant-input-affix-wrapper:not(:last-child) {
   height: 42px;
 }

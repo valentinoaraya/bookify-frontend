@@ -128,15 +128,33 @@
     }
 }
 
-@media (max-width: 510px) {
+@media (max-width: 785px) {
+
+    .titleSetting {
+        font-size: 1.5rem;
+    }
+
+    .header-settings p {
+        font-size: 1rem;
+    }
+
     .link-for-clients {
+
+        h3 {
+            font-size: 1.2rem;
+        }
+
+        p {
+            font-size: 1rem;
+        }
+
         .input-link {
             width: 100px;
         }
     }
 }
 
-@media (max-width: 415px) {
+@media (max-width: 445px) {
     .link-for-clients {
         .input-link {
             width: 60px;
