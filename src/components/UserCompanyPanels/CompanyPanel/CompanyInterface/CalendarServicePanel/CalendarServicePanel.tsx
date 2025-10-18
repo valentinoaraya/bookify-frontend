@@ -133,9 +133,9 @@ const CalendarServicePanel: React.FC<Props> = ({ serviceId, setActiveView }) => 
                             if (titleEl) {
                                 titleEl.innerHTML = `
                                     <div style="line-height: 1.2; padding: 0 4px;">
-                                        <div style="font-weight: bolder; color: #fff;">${disponibility} Disponible${disponibility !== 1 ? 's' : ''}</div>
-                                        <div style="font-weight: bolder; color: #fff; margin-top: 2px;">${taken} Ocupado${taken !== 1 ? 's' : ''}</div>
-                                        ${pendingCount >= 1 ? `<div style="font-weight: bolder; color: #fff; margin-top: 2px;">${pendingCount} Pendiente${pendingCount !== 1 ? 's' : ''}</div>` : ""}
+                                        <div style="font-weight: 550; color: #fff;">${disponibility} Disponible${disponibility !== 1 ? 's' : ''}</div>
+                                        <div style="font-weight: 550; color: #fff; margin-top: 2px;">${taken} Ocupado${taken !== 1 ? 's' : ''}</div>
+                                        ${pendingCount >= 1 ? `<div style="font-weight: 550; color: #fff; margin-top: 2px;">${pendingCount} Pendiente${pendingCount !== 1 ? 's' : ''}</div>` : ""}
                                     </div>
                                 `
                             }
@@ -158,7 +158,7 @@ const CalendarServicePanel: React.FC<Props> = ({ serviceId, setActiveView }) => 
                 />
             </div>
             <div className="divButtonsCalendar animation-section">
-                <Button margin="0" padding=".8rem 0" fontSize="1.4rem" onSubmit={() => setIsModalOpen(true)}
+                <Button margin="0" padding=".8rem" fontSize="1.4rem" onSubmit={() => setIsModalOpen(true)}
                     backgroundColor="#3f9f0f"
                     iconSVG={
                         <CalendarCheckIcon
