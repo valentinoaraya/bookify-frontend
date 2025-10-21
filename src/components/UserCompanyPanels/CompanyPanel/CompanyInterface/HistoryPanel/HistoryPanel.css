@@ -200,7 +200,8 @@ ant-input-search :where(.css-dev-only-do-not-override-19lec04).ant-input-group .
   margin-bottom: 10px;
   display: flex;
   justify-content: space-between;
-  gap: 1rem;
+  align-items: center;
+  gap: 2rem;
 }
 
 .latestAppointmentsTitle {
@@ -691,4 +692,35 @@ ant-input-search :where(.css-dev-only-do-not-override-19lec04).ant-input-group .
 
 .history-appointments-container::-webkit-scrollbar-thumb:hover {
   background: #a8a8a8;
+}
+
+.divArrowReturnIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: .5rem;
+}
+
+@media (max-width: 500px) {
+  .showAll {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+@media (max-width: 450px) {
+
+  .latestAppointmentsTitle {
+    font-size: .9rem;
+  }
+
+  .pendingsAppointmentsTitle {
+    font-size: .9rem;
+  }
+
+  .pendingsAppointmentsTitle::before {
+    width: .75rem;
+    height: .75rem;
+    left: -15px;
+  }
 }

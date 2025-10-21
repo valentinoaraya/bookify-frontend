@@ -39,7 +39,8 @@ const HistoryAppointmentItem: React.FC<Props> = ({ appointment, setFilteredAppoi
         if (!isPendingAction || !headerRef.current) return;
         const rect = headerRef.current.getBoundingClientRect();
         const containerRect = e.currentTarget.getBoundingClientRect();
-        const x = rect.right - containerRect.left + 8;
+        const widthMenu = window.innerWidth <= 650 ? 207 : 0
+        const x = rect.right - containerRect.left + 8 - widthMenu;
         const y = rect.top - containerRect.top - 10;
         setMenuPosition({ x, y });
         setMenuOpen((prev) => !prev);
