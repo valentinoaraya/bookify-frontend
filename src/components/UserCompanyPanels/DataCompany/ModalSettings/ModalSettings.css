@@ -160,16 +160,6 @@ body.settings-modal-open {
     }
 }
 
-@media (max-width: 1000px) {
-    .modalSettingsContent {
-        height: 90vh;
-    }
-
-    .modalSettingsLateralBar {
-        height: 90vh;
-    }
-}
-
 @media (max-width: 740px) {
 
     .modalSettingsContent {
