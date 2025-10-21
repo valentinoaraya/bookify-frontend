@@ -236,12 +236,14 @@ const HistoryPanel: React.FC<HistoryPanelProps> = ({ company }) => {
                       setFilteredAppointments(backendAppointments)
                     }}
                   >
-                    <ArrowReturnIcon
-                      width="1rem"
-                      height="1rem"
-                      fill="#1282A2"
-                    />
-                    <h3 className="showAllText">Ver todos</h3>
+                    <div className="divArrowReturnIcon">
+                      <ArrowReturnIcon
+                        width="1rem"
+                        height="1rem"
+                        fill="#1282A2"
+                      />
+                      <h3 className="showAllText">Ver todos</h3>
+                    </div>
                     <h3 className="latestAppointmentsTitle">{filteredAppointments.length === 1 ? "" : filteredAppointments.length} {filteredAppointments.length === 1 ? "turno" : "turnos"} {filteredAppointments.length === 1 ? "filtrado" : "filtrados"}</h3>
                   </div>
                 </>
