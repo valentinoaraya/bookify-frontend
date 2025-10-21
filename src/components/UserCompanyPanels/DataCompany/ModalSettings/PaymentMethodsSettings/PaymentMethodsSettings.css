@@ -112,6 +112,69 @@
     font-weight: 600;
 }
 
+.connectButton {
+    background: linear-gradient(135deg, #00a650 0%, #00d4aa 100%);
+    border: none;
+    border-radius: 8px;
+    padding: 0.75rem 1.5rem;
+    color: white;
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0, 166, 80, 0.2);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.connectButton:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0, 166, 80, 0.3);
+    background: linear-gradient(135deg, #00b865 0%, #00e6c3 100%);
+}
+
+.connectButton:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(0, 166, 80, 0.2);
+}
+
+.connectButton:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.connectButton::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+}
+
+.connectButton:hover::before {
+    left: 100%;
+}
+
+.buttonIcon {
+    width: 16px;
+    height: 16px;
+}
+
+@media (max-width: 900px) {
+    .connectButton {
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+    }
+}
+
 @media (max-width: 785px) {
     .divMethodInfo {
         p {

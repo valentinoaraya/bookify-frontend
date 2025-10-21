@@ -154,9 +154,10 @@
     }
 }
 
-@media (max-width: 445px) {
+@media (max-width: 380px) {
     .link-for-clients {
         .input-link {
+            padding-right: .5rem;
             width: 60px;
         }
     }

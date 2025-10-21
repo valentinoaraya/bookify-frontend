@@ -22,7 +22,7 @@ function App() {
             <Route path='/login/:loginTo' element={<FormLogin />} />
             <Route path='/cancel/:appointmentId' element={<CancelAppointment />} />
             <Route path='/register/:registerTo' element={<FormRegister />} />
-            <Route path='/company/:company_id' element={
+            <Route path='/c/:company_id' element={
               <UserProvider>
                 <UserPanel />
               </UserProvider>

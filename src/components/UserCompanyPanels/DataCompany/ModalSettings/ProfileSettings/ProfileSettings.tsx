@@ -98,7 +98,7 @@ const ProfileSettings: React.FC<Props> = ({ data }) => {
     }
 
     const copyToClipboard = () => {
-        navigator.clipboard.writeText(`https://bookify-aedes.vercel.app/company/${data.company_id}`);
+        navigator.clipboard.writeText(`https://bookify-aedes.vercel.app/c/${data.company_id}`);
         notifySuccess("¡Link copiado!")
     }
 
@@ -113,7 +113,7 @@ const ProfileSettings: React.FC<Props> = ({ data }) => {
                     <h3>Link para tus clientes:</h3>
                     <div className="link-copy-container">
                         <div className="link-copy">
-                            <label className="label-link">bookify.aedestec.com/company/</label>
+                            <label className="label-link">bookify.aedestec.com/c/</label>
                             <input
                                 className="input-link"
                                 name="company_id"

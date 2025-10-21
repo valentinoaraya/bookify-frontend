@@ -5,7 +5,6 @@ import PayPalLogo from "../../../../../assets/images/pp-logo.webp"
 import { confirmDelete } from "../../../../../utils/alerts";
 import { notifyError } from "../../../../../utils/notifications";
 import { BACKEND_API_URL } from "../../../../../config";
-import Button from "../../../../../common/Button/Button";
 import { useState } from "react";
 import { useAuthenticatedGet } from "../../../../../hooks/useAuthenticatedFetch";
 
@@ -101,19 +100,13 @@ const PaymentMethodsSettings: React.FC<Props> = ({ data }) => {
                             data.connectedWithMP ?
                                 <p className="connectedText">¡Conectado!</p>
                                 :
-                                <Button
-                                    backgroundColor="#1282A2"
-                                    fontSize="1rem"
-                                    fontWeight="600"
-                                    padding=".5rem"
-                                    onSubmit={vinculateMP}
+                                <button
+                                    className="connectButton"
+                                    onClick={vinculateMP}
                                     disabled={isLoading}
-                                    cursor={isLoading ? "not-allowed" : "pointer"}
-                                    width="auto"
-                                    margin="0"
                                 >
-                                    Vincular cuenta
-                                </Button>
+                                    {isLoading ? "Conectando..." : "Vincular cuenta"}
+                                </button>
                         }
                     </div>
                 </div>
