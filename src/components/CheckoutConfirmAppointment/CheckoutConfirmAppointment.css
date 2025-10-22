@@ -1,40 +1,290 @@
-.checkoutContainer {
-    margin: 1rem;
-    max-width: 600px;
-}
+@keyframes checkout-slide-in {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
 
-.divDataCheckout {
-    margin: 1rem 0 2rem 0;
-
-    ul {
-        margin-left: 1rem;
+    to {
+        opacity: 1;
+        transform: translateY(0);
     }
 }
 
+.checkoutContainer {
+    margin: 2rem auto;
+    max-width: 700px;
+    padding: 0 1rem;
+    animation: checkout-slide-in 0.6s ease-out;
+}
+
+.checkoutCard {
+    background: var(--blanco);
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(18, 130, 162, 0.1);
+    overflow: hidden;
+    position: relative;
+}
+
+.checkoutCard::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(135deg, var(--azul-clarito), var(--azul-oscuro));
+}
+
+.checkoutHeader {
+    padding: 2rem 2rem 1rem 2rem;
+    text-align: center;
+    background: linear-gradient(135deg, #f8f9fa, #ffffff);
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.checkoutContent {
+    padding: 2rem;
+}
+
 .divExplicationCheckout {
-    margin: 2rem 0;
+    background: linear-gradient(135deg, #f8f9fa, #ffffff);
+    padding: 1.5rem;
+    border-radius: 16px;
+    border: 1px solid #e9ecef;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
 .explicationCheckout {
-    margin-top: 1rem;
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: #495057;
+    position: relative;
+    padding-left: 1.5rem;
+}
+
+.explicationCheckout::before {
+    content: "💡";
+    position: absolute;
+    left: 0;
+    top: 0;
     font-size: 1.2rem;
 }
 
-.parrafDataCheckout {
-    margin-top: .5rem;
-    font-size: 1.2rem;
+.explicationCheckout:last-child {
+    margin-bottom: 0;
+}
 
-    span {
-        font-weight: 800;
+.divDataCheckout {
+    background: var(--blanco);
+    border-radius: 16px;
+    border: 1px solid #e9ecef;
+    padding: 1.5rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.divDataCheckout ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.divDataCheckout li {
+    padding: 1rem 0;
+    border-bottom: 1px solid #f0f0f0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.3s ease;
+}
+
+.divDataCheckout li:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.divDataCheckout li:hover {
+    background-color: #f8f9fa;
+    margin: 0 -1rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    border-radius: 8px;
+}
+
+.parrafDataCheckout {
+    font-size: 1.1rem;
+    color: #495057;
+    margin: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.parrafDataCheckout span {
+    font-weight: 700;
+    color: var(--azul-oscuro);
+    background: linear-gradient(135deg, var(--azul-clarito), var(--azul-oscuro));
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.checkoutButtonContainer {
+    padding: 2rem;
+    background: linear-gradient(135deg, #f8f9fa, #ffffff);
+    border-top: 1px solid #f0f0f0;
+}
+
+.checkoutButtonContainer .button {
+    margin: 0;
+    padding: 1.2rem 2rem;
+    font-size: 1.3rem;
+    font-weight: 600;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(18, 130, 162, 0.3);
+    position: relative;
+    overflow: hidden;
+}
+
+.checkoutButtonContainer .button::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+}
+
+.checkoutButtonContainer .button:hover::before {
+    left: 100%;
+}
+
+.checkoutButtonContainer .button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 30px rgba(18, 130, 162, 0.4);
+}
+
+.backButton {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin-top: 1rem;
+    padding: 0.8rem 1.5rem;
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: var(--azul-oscuro);
+    background: transparent;
+    border: 2px solid var(--azul-clarito);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    position: relative;
+    overflow: hidden;
+}
+
+.backButton::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(18, 130, 162, 0.1), transparent);
+    transition: left 0.5s;
+}
+
+.backButton:hover::before {
+    left: 100%;
+}
+
+.backButton:hover {
+    background: var(--azul-clarito);
+    color: var(--blanco);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(18, 130, 162, 0.3);
+}
+
+.backButton:active {
+    transform: translateY(0);
+}
+
+@media (max-width: 768px) {
+    .checkoutContainer {
+        margin: 1rem;
+        padding: 0 0.5rem;
+    }
+
+    .checkoutHeader {
+        padding: 1.5rem 1rem 1rem 1rem;
+    }
+
+    .checkoutContent {
+        padding: 1.5rem;
+    }
+
+    .checkoutButtonContainer {
+        padding: 1.5rem;
+    }
+
+    .explicationCheckout {
+        font-size: 1rem;
+        padding-left: 1.2rem;
+    }
+
+    .parrafDataCheckout {
+        font-size: 1rem;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+
+    .divDataCheckout li {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
     }
 }
 
 @media (max-width: 530px) {
+    .checkoutCard {
+        border-radius: 16px;
+    }
+
+    .checkoutHeader {
+        padding: 1rem;
+    }
+
+    .checkoutContent {
+        padding: 1rem;
+    }
+
+    .checkoutButtonContainer {
+        padding: 1rem;
+    }
+
     .explicationCheckout {
-        font-size: 1rem;
+        font-size: 0.95rem;
+        padding-left: 1rem;
     }
 
     .parrafDataCheckout {
+        font-size: 0.95rem;
+    }
+
+    .checkoutButtonContainer .button {
+        padding: 1rem 1.5rem;
+        font-size: 1.1rem;
+    }
+
+    .backButton {
+        padding: 0.7rem 1.2rem;
         font-size: 1rem;
     }
 }
