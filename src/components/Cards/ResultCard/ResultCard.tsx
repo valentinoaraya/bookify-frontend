@@ -41,6 +41,7 @@ const ResultCard: React.FC<Props> = ({
 
                     </div>
                     <div className="durationPriceContainerResultCard">
+                        <p className="parrafPriceResultCard"><span className="spanPriceResultCard">$</span> {price}</p>
                         <div className="divDurationResultCard">
                             <ClockIcon
                                 width="18px"
@@ -49,13 +50,12 @@ const ResultCard: React.FC<Props> = ({
                             />
                             <p className="parrafDurationResultCard">{duration} mins</p>
                         </div>
-                        <p className="parrafPriceResultCard"><span className="spanPriceResultCard">$</span> {price}</p>
                     </div>
                 </div>
                 <div className="divDataContainer">
                     <p className="parrafDataCompany"><span>Ciudad:</span> {company.city}</p>
                     <p className="parrafDataCompany"><span>Ubicación:</span>  {company.street} {company.number}</p>
-                    {signPrice !== 0 ? <p className="parrafDataCompany withSignPrice"><span>Precio de la seña: $ {signPrice}</span></p> : <p className="parrafDataCompany"><span>Sin seña</span></p>}
+                    {signPrice !== 0 ? <p className="parrafDataCompany withSignPrice"><span>Precio de la seña: $ {signPrice}</span></p> : <p className="parrafDataCompany withSignPrice"><span>Sin seña</span></p>}
                 </div>
                 <div>
                     <Button
@@ -63,6 +63,7 @@ const ResultCard: React.FC<Props> = ({
                         onSubmit={() => setServiceToSchedule(_id)}
                         fontSize='1rem'
                         padding=".8rem"
+                        backgroundColor="#4CAF50"
                     >
                         Ver turnos disponibles
                     </Button>
@@ -70,6 +71,7 @@ const ResultCard: React.FC<Props> = ({
                         margin=".5rem 0 0 0"
                         fontSize='1rem'
                         padding=".8rem"
+                        backgroundColor="#1282A2"
                         onSubmit={() => {
                             const location = `${company.street} ${company.number} ${company.city}`.replace(/ /g, "+")
                             window.open(`https://www.google.com/maps/search/?api=1&query=${location}`, '_blank')
