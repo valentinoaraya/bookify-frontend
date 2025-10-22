@@ -86,7 +86,7 @@ const ServiceToSchedulePanel: React.FC<Props> = ({ serviceToSchedule, setService
                 time,
                 availablePlaces,
                 totalCapacity: appointment.capacity,
-                isAvailable: availablePlaces > 0
+                isAvailable: availablePlaces > 0 && new Date(appointment.datetime) > new Date()
             }
         }).sort((a, b) => a.time.localeCompare(b.time))
     }
