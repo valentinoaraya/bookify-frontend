@@ -1,0 +1,101 @@
+.timeSlotCard {
+    background: white;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 0.75rem;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.timeSlotCard.available {
+    border-color: #3f9f0f;
+}
+
+.timeSlotCard.available:hover {
+    border-color: #2d7a0a;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(63, 159, 15, 0.2);
+    background-color: #f8fff8;
+}
+
+.timeSlotCard.unavailable {
+    border-color: #d0d0d0;
+    background-color: #f5f5f5;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+.timeSlotTime {
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 0.5rem;
+}
+
+.timeSlotAvailability {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.availablePlaces {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #3f9f0f;
+}
+
+.availabilityLabel {
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.totalCapacity {
+    font-size: 0.8rem;
+    color: #888;
+}
+
+.unavailableText {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #999;
+}
+
+@media (max-width: 768px) {
+    .timeSlotCard {
+        padding: 0.75rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .timeSlotTime {
+        font-size: 1rem;
+    }
+
+    .availablePlaces {
+        font-size: 1.1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .timeSlotCard {
+        padding: 0.5rem;
+    }
+
+    .timeSlotTime {
+        font-size: 0.9rem;
+    }
+
+    .availablePlaces {
+        font-size: 1rem;
+    }
+
+    .availabilityLabel {
+        font-size: 0.8rem;
+    }
+
+    .totalCapacity {
+        font-size: 0.7rem;
+    }
+}

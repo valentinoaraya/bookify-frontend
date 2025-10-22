@@ -38,6 +38,12 @@
     }
 }
 
+@media (max-width: 685px) {
+    .divListContainerResultsPanel {
+        margin-top: 1rem;
+    }
+}
+
 @media (max-width: 530px) {
 
     .divListContainer,
