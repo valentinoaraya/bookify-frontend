@@ -58,14 +58,14 @@ const ServiceToSchedulePanel: React.FC<Props> = ({ serviceToSchedule, setService
         fetchService()
     }, [])
 
-    if (isLoadingData) return <div className="serviceToScheduleContainer">
+    if (isLoadingData) return <div className="serviceToScheduleContainer animation-section">
         <LoadingSpinner
             text="Cargando servicio..."
             shadow="none"
         />
     </div>
 
-    if (!serviceToScheduleData) return <div className="serviceToScheduleContainer">
+    if (!serviceToScheduleData) return <div className="serviceToScheduleContainer animation-section">
         <h1>Lo sentimos, no encontramos el servicio que buscabas...</h1>
     </div>
 
@@ -155,7 +155,7 @@ const ServiceToSchedulePanel: React.FC<Props> = ({ serviceToSchedule, setService
     const arrayEventsScheduled = generateScheudledAppointmentArray(serviceToScheduleData.scheduledAppointments, serviceToScheduleData.availableAppointments)
 
     return (
-        <div className="serviceToScheduleContainer">
+        <div className="serviceToScheduleContainer animation-section">
             <Title
                 fontSize={window.innerWidth <= 930 ? "1.5rem" : ""}
             >

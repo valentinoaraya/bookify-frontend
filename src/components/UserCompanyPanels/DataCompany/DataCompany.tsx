@@ -148,47 +148,55 @@ const DataCompany: React.FC<Props> = ({ dataCompany, children, scheduledAppointm
                         <h3>Servicios activos</h3>
                     </div>
                 </div>
-                <div className="divButtonSettingsMobile">
-                    <Button
-                        iconSVG={
-                            <SettingsIcon
-                                width={window.innerWidth >= 740 ? "30px" : "25px"}
-                                height={window.innerWidth >= 740 ? "30px" : "25px"}
-                                fill="white"
-                            />
-                        }
-                        padding="1rem"
-                        backgroundColor="#1282A2"
-                        fontSize="1rem"
-                        fontWeight="600"
-                        margin="0"
-                        onSubmit={() => setIsModalOpen(true)}
-                    >
-                    </Button>
-                </div>
+                {
+                    window.location.pathname === "/company-panel" &&
+                    <div className="divButtonSettingsMobile">
+                        <Button
+                            iconSVG={
+                                <SettingsIcon
+                                    width={window.innerWidth >= 740 ? "30px" : "25px"}
+                                    height={window.innerWidth >= 740 ? "30px" : "25px"}
+                                    fill="white"
+                                />
+                            }
+                            padding="1rem"
+                            backgroundColor="#1282A2"
+                            fontSize="1rem"
+                            fontWeight="600"
+                            margin="0"
+                            onSubmit={() => setIsModalOpen(true)}
+                        >
+                        </Button>
+                    </div>
+                }
             </div>
-            <div className="divButtonSettings">
-                <Button
-                    iconSVG={
-                        <SettingsIcon
-                            width="20px"
-                            height="20px"
-                            fill="white"
-                        />
-                    }
-                    backgroundColor="#1282A2"
-                    fontSize="1rem"
-                    fontWeight="600"
-                    margin="0"
-                    onSubmit={() => setIsModalOpen(true)}
-                >
-                    Configuración
-                </Button>
-            </div>
-            <ModalSettings
-                isOpen={isModalOpen}
-                setIsOpen={setIsModalOpen}
-            />
+            {
+                window.location.pathname === "/company-panel" &&
+                <>
+                    <div className="divButtonSettings">
+                        <Button
+                            iconSVG={
+                                <SettingsIcon
+                                    width="20px"
+                                    height="20px"
+                                    fill="white"
+                                />
+                            }
+                            backgroundColor="#1282A2"
+                            fontSize="1rem"
+                            fontWeight="600"
+                            margin="0"
+                            onSubmit={() => setIsModalOpen(true)}
+                        >
+                            Configuración
+                        </Button>
+                    </div>
+                    <ModalSettings
+                        isOpen={isModalOpen}
+                        setIsOpen={setIsModalOpen}
+                    />
+                </>
+            }
         </div>
     );
 }
