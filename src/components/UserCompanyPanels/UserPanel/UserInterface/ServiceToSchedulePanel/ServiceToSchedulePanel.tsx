@@ -17,12 +17,12 @@ import DayCard from "./DayCard";
 import TimeSlotCard from "./TimeSlotCard";
 
 interface Props {
-    bookingAnticipationHours: number;
+    cancellationAnticipationHours: number;
     serviceToSchedule: string;
     setServiceToSchedule: React.Dispatch<React.SetStateAction<string | null>>;
 }
 
-const ServiceToSchedulePanel: React.FC<Props> = ({ serviceToSchedule, setServiceToSchedule, bookingAnticipationHours }) => {
+const ServiceToSchedulePanel: React.FC<Props> = ({ serviceToSchedule, setServiceToSchedule, cancellationAnticipationHours }) => {
     const [isOpen, setIsOpen] = useState(false)
     const [dateAppointment, setDateAppointment] = useState<Date | null>(null)
     const [isScheduling, setIsScheduling] = useState(false)
@@ -141,15 +141,15 @@ const ServiceToSchedulePanel: React.FC<Props> = ({ serviceToSchedule, setService
         const formattedDate = formatDate(stringDate)
 
         let messageHours = ""
-        if (bookingAnticipationHours > 24) {
-            messageHours = `${bookingAnticipationHours / 24} ${bookingAnticipationHours / 24 === 1 ? "día" : "días"}`
+        if (cancellationAnticipationHours > 24) {
+            messageHours = `${cancellationAnticipationHours / 24} ${cancellationAnticipationHours / 24 === 1 ? "día" : "días"}`
         } else {
-            messageHours = `${bookingAnticipationHours} ${bookingAnticipationHours === 1 ? "hora" : "horas"}`
+            messageHours = `${cancellationAnticipationHours} ${cancellationAnticipationHours === 1 ? "hora" : "horas"}`
         }
 
         const decisionConfirmed = await confirmDelete({
             question: `¿Desea reservar un turno para ${serviceToScheduleData.title} el día ${formattedDate} a las ${time} hs?`,
-            mesasge: `Solo podrás cancelar el turno con más de ${messageHours} de anticipación.`,
+            mesasge: cancellationAnticipationHours === 0 ? "Podrás cancelar el turno cuando desees." : `Solo podrás cancelar el turno con más de ${messageHours} de anticipación.`,
             confirmButtonText: "Aceptar",
             cancelButtonText: "Cancelar",
             cancelButton: true
@@ -169,7 +169,8 @@ const ServiceToSchedulePanel: React.FC<Props> = ({ serviceToSchedule, setService
                                 companyId: serviceToScheduleData.companyId,
                                 totalPrice: serviceToScheduleData.price
                             },
-                            dataUser
+                            dataUser,
+                            cancellationAnticipationHours
                         }
                     })
                 } else {

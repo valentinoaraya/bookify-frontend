@@ -21,11 +21,14 @@ const AppointmentCard: React.FC<Props> = ({ appointment, onCancelAppointment }) 
     const { deleteAppointment } = useCompany()
     const { error, isLoading, delete: del } = useAuthenticatedDelete()
     const { error: errorFinishAppointment, isLoading: isLoadingFinish, put } = useAuthenticatedPut()
+    const { isLoading: isLoadingChangeStatus, error: errorChangeStatus, put: changeStatus } = useAuthenticatedPut()
     const urlDeleteAppointment = `${BACKEND_API_URL}/appointments/delete-appointment/${appointment._id}`
     const urlFinishAppointment = `${BACKEND_API_URL}/appointments/finish-appointment/${appointment._id}`
+    const urlChangeStatus = `${BACKEND_API_URL}/appointments/change-status`
 
     if (error) notifyError("Error al cancelar turno. Inténtalo de nuevo más tarde.")
     if (errorFinishAppointment) notifyError("Error al finalizar turno. Inténtalo de nuevo más tarde.")
+    if (errorChangeStatus) notifyError("Error al cambiar el estado del turno. Inténtalo de nuevo más tarde.")
 
     const { stringDate, time } = parseDateToString(appointment.date)
     const formattedDate = formatDate(stringDate)
@@ -53,11 +56,26 @@ const AppointmentCard: React.FC<Props> = ({ appointment, onCancelAppointment }) 
             }
         }
     }
+
     const handleFinishAppointment = async () => {
         const response = await put(urlFinishAppointment, {})
         if (response.data) {
             deleteAppointment(appointment._id)
             notifySuccess("Turno finalizado.")
+        }
+        if (response.error) {
+            notifyError(response.error)
+        }
+    }
+
+    const handleChangeStatusAppointment = async () => {
+        const response = await changeStatus(urlChangeStatus, {
+            appointmentId: appointment._id,
+            status: "did_not_attend"
+        })
+        if (response.data) {
+            deleteAppointment(appointment._id)
+            notifySuccess("Turno modificado.")
         }
         if (response.error) {
             notifyError(response.error)
@@ -135,6 +153,17 @@ const AppointmentCard: React.FC<Props> = ({ appointment, onCancelAppointment }) 
                         >
                             Finalizar
                         </Button>
+                        <button
+                            className={`button-no-show-appointment ${new Date(appointment.date) > new Date() ? "disabled" : ""}`}
+                            onClick={() => {
+                                if (new Date(appointment.date) > new Date()) {
+                                    return;
+                                }
+                                handleChangeStatusAppointment()
+                            }}
+                        >
+                            No asistió
+                        </button>
                         <Button
                             backgroundColor="red"
                             fontWeight="600"
@@ -149,8 +178,8 @@ const AppointmentCard: React.FC<Props> = ({ appointment, onCancelAppointment }) 
                 </div>
             </div>
             <LoadingModal
-                text={isLoading ? "Cancelando..." : "Finalizando..."}
-                isOpen={isLoading || isLoadingFinish}
+                text={isLoading ? "Cancelando..." : isLoadingFinish ? "Finalizando..." : "Cargando..."}
+                isOpen={isLoading || isLoadingFinish || isLoadingChangeStatus}
             />
         </>
 
