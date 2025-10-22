@@ -31,7 +31,13 @@ const TimeSlotCard: React.FC<TimeSlotCardProps> = ({
                         <span className="totalCapacity">de {totalCapacity}</span>
                     </>
                 ) : (
-                    <span className="unavailableText">Completo</span>
+                    <span className="unavailableText">
+                        {
+                            availablePlaces === 0
+                                ? 'Completo'
+                                : 'Pasado'
+                        }
+                    </span>
                 )}
             </div>
         </div>
