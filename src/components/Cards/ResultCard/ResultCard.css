@@ -12,7 +12,6 @@
 }
 
 .divResultCard:hover {
-    background-color: #fafafa;
     transform: translateX(4px);
 }
 
@@ -143,7 +142,6 @@
     font-weight: 600;
 }
 
-/* Estilos para los párrafos de seña */
 .parrafDataCompany.withSignPrice {
     background: linear-gradient(135deg, #f8f0ff, #e6f7ff);
     padding: 8px 12px;
@@ -176,7 +174,6 @@
     align-items: stretch;
 }
 
-/* Animación de entrada */
 @keyframes result-card-slide-in {
     from {
         opacity: 0;
@@ -243,14 +240,12 @@
     }
 }
 
-/* Focus state para accesibilidad */
 .divResultCard:focus {
     outline: 2px solid var(--azul-clarito);
     outline-offset: 2px;
     background-color: #f6ffed;
 }
 
-/* Print styles */
 @media print {
     .divResultCard {
         break-inside: avoid;

@@ -1,0 +1,104 @@
+.dayCard {
+    background: white;
+    border: 2px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-width: 120px;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    max-width: 150px;
+    flex: 1;
+}
+
+.dayCard:hover {
+    border-color: #3f9f0f;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.dayCard.selected {
+    border-color: #3f9f0f;
+    background-color: #f0f8f0;
+    box-shadow: 0 4px 12px rgba(63, 159, 15, 0.2);
+}
+
+.dayCardHeader {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 0.5rem;
+}
+
+.dayName {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.dayNumber {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #333;
+    margin-top: 0.25rem;
+}
+
+.dayCardMonth {
+    font-size: 0.8rem;
+    color: #888;
+    margin-bottom: 0.75rem;
+}
+
+.dayCardSlots {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.slotsCount {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #3f9f0f;
+}
+
+.slotsLabel {
+    font-size: 0.75rem;
+    color: #666;
+    margin-top: 0.25rem;
+}
+
+@media (max-width: 768px) {
+    .dayCard {
+        min-width: 100px;
+        padding: 0.75rem;
+    }
+
+    .dayNumber {
+        font-size: 1.3rem;
+    }
+
+    .slotsCount {
+        font-size: 1.1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .dayCard {
+        min-width: 80px;
+        padding: 0.5rem;
+    }
+
+    .dayName {
+        font-size: 0.8rem;
+    }
+
+    .dayNumber {
+        font-size: 1.2rem;
+    }
+
+    .slotsCount {
+        font-size: 1rem;
+    }
+}
