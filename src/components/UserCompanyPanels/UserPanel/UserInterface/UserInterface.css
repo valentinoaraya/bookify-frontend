@@ -23,6 +23,10 @@
     margin: 2rem 0;
 }
 
+.userPanelContent.noPadding {
+    padding: 0;
+}
+
 @media (max-width: 1200px) {
     .divUserPanel {
         margin-left: calc(250px + 4rem);

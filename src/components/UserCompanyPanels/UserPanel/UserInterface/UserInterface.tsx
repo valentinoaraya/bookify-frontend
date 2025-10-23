@@ -23,7 +23,7 @@ const UserInterface: React.FC<Props> = ({ company }) => {
                     dataCompany={company}
                     servicesLenght={company.services.length}
                 />
-                <div className="userPanelContent">
+                <div className={`userPanelContent ${serviceToScheduleId ? "noPadding" : ""}`}>
                     {
                         serviceToScheduleId ?
                             <ServiceToSchedulePanel

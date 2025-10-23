@@ -2,12 +2,12 @@
     display: flex;
     gap: 1rem;
     margin: 2rem 0;
-    flex-wrap: wrap;
-    padding: 0.5rem 0;
+    padding: 0.5rem 2rem;
+    overflow-x: auto;
 }
 
 .timeSlotsContainer {
-    margin: 2rem 0;
+    margin: 2rem;
     padding: 1.5rem;
     background: #f8f9fa;
     border-radius: 12px;
@@ -41,6 +41,15 @@
 
 .divAvailabilityIndicator {
     margin-top: 1rem;
+}
+
+.divTitleServiceToSchedule {
+    padding: 2rem 2rem 0 2rem;
+}
+
+.divButtonCancelServiceToSchedule {
+    display: flex;
+    justify-content: flex-end;
 }
 
 .pointContainer {
@@ -79,13 +88,6 @@
     color: black;
 }
 
-@media (max-width: 1000px) {
-    .weekDaysContainer {
-        flex-wrap: nowrap;
-        overflow-x: auto;
-    }
-}
-
 @media (max-width: 768px) {
     .weekDaysContainer {
         gap: 0.75rem;
@@ -93,7 +95,6 @@
     }
 
     .timeSlotsContainer {
-        margin: 1.5rem 0;
         padding: 1rem;
     }
 
@@ -108,14 +109,22 @@
     }
 }
 
-@media (max-width: 530px) {
-    .weekDaysContainer {
-        gap: 0.5rem;
-        margin: 1rem 0;
+@media (max-width: 685px) {
+    .divTitleServiceToSchedule {
+        padding: 1rem 1rem 0 1rem;
     }
 
     .timeSlotsContainer {
-        margin: 1rem 0;
+        margin: 1rem;
+    }
+}
+
+@media (max-width: 530px) {
+    .weekDaysContainer {
+        gap: 0.5rem;
+    }
+
+    .timeSlotsContainer {
         padding: 0.75rem;
     }
 
