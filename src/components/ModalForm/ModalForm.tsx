@@ -30,6 +30,7 @@ const ModalForm: React.FC<Props> = ({ title, inputs, isOpen, onClose, onSubmitFo
     const [selectedDays, setSelectedDays] = useState<Date[] | undefined>()
     const [shouldRender, setShouldRender] = useState(isOpen);
     const [closing, setClosing] = useState(false);
+    const [isDisabled, setIsDisabled] = useState(true)
 
     useEffect(() => {
         if (isOpen) {
@@ -48,6 +49,24 @@ const ModalForm: React.FC<Props> = ({ title, inputs, isOpen, onClose, onSubmitFo
             return () => clearTimeout(timeout);
         }
     }, [isOpen])
+
+    useEffect(() => {
+        const checkData = () => {
+            if (JSON.stringify({
+                ...initialData,
+                days: selectedDays
+            }) === JSON.stringify({
+                ...dataForm,
+                days: selectedDays
+            })) {
+                setIsDisabled(true)
+                return
+            }
+            setIsDisabled(false)
+        }
+
+        checkData()
+    }, [dataForm])
 
     const handleCloseForm = () => {
         deleteData()
@@ -68,9 +87,14 @@ const ModalForm: React.FC<Props> = ({ title, inputs, isOpen, onClose, onSubmitFo
                     className="formModal"
                     onSubmit={(e) => {
                         e.preventDefault()
+                        if (isDisabled) {
+                            return
+                        }
                         if (Object.keys(dataForm).includes("days")) {
-                            if (!selectedDays) {
+                            if (!selectedDays || selectedDays.length === 0) {
                                 notifyError("Selecciona los días en el calendario.")
+                            } else if (!dataForm["hourStart"] || !dataForm["hourFinish"]) {
+                                notifyError("Completa las horas de inicio y fin.")
                             } else {
                                 const newDataForm = { ...dataForm, days: selectedDays }
                                 onSubmitForm(newDataForm)
@@ -93,6 +117,7 @@ const ModalForm: React.FC<Props> = ({ title, inputs, isOpen, onClose, onSubmitFo
                                     selected={selectedDays}
                                     onSelect={setSelectedDays}
                                     locale={es}
+                                    required
                                 />
                             </div>
                         }

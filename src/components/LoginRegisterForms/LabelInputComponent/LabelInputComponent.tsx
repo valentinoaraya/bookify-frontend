@@ -64,6 +64,7 @@ const LabelInputComponent: React.FC<LabelInputComponentProps> = ({ label, type, 
                                     </>
                                     :
                                     <TimePicker
+                                        required={required}
                                         format={"HH:mm"}
                                         placeholder="Selecciona una hora"
                                         showNow={false}
