@@ -27,6 +27,7 @@ const UserInterface: React.FC<Props> = ({ company }) => {
                     {
                         serviceToScheduleId ?
                             <ServiceToSchedulePanel
+                                slotsVisibilityDays={company.slotsVisibilityDays}
                                 cancellationAnticipationHours={company.cancellationAnticipationHours}
                                 serviceToSchedule={serviceToScheduleId}
                                 setServiceToSchedule={setServiceToScheduleId}

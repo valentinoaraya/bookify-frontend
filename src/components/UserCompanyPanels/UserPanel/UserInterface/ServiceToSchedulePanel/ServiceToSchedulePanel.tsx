@@ -17,12 +17,13 @@ import DayCard from "./DayCard";
 import TimeSlotCard from "./TimeSlotCard";
 
 interface Props {
+    slotsVisibilityDays: number;
     cancellationAnticipationHours: number;
     serviceToSchedule: string;
     setServiceToSchedule: React.Dispatch<React.SetStateAction<string | null>>;
 }
 
-const ServiceToSchedulePanel: React.FC<Props> = ({ serviceToSchedule, setServiceToSchedule, cancellationAnticipationHours }) => {
+const ServiceToSchedulePanel: React.FC<Props> = ({ serviceToSchedule, setServiceToSchedule, cancellationAnticipationHours, slotsVisibilityDays }) => {
     const [isOpen, setIsOpen] = useState(false)
     const [dateAppointment, setDateAppointment] = useState<Date | null>(null)
     const [isScheduling, setIsScheduling] = useState(false)
@@ -49,7 +50,7 @@ const ServiceToSchedulePanel: React.FC<Props> = ({ serviceToSchedule, setService
         const days = []
         const today = new Date()
 
-        for (let i = 0; i < 7; i++) {
+        for (let i = 0; i < slotsVisibilityDays; i++) {
             const date = new Date(today)
             date.setDate(today.getDate() + i)
 
