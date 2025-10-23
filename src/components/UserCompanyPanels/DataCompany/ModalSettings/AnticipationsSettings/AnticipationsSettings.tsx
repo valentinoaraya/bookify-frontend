@@ -18,6 +18,7 @@ const AnticipationsSettings: React.FC<Props> = ({ data }) => {
     const [form, setForm] = useState({
         cancellationAnticipationHours: data.cancellationAnticipationHours ?? 24,
         bookingAnticipationHours: data.bookingAnticipationHours ?? 1,
+        slotsVisibilityDays: data.slotsVisibilityDays ?? 7,
     })
     const { isLoading, error, put } = useAuthenticatedPut()
     const urlUpdateCompany = `${BACKEND_API_URL}/companies/update-company`
@@ -26,19 +27,24 @@ const AnticipationsSettings: React.FC<Props> = ({ data }) => {
         setForm({
             cancellationAnticipationHours: data.cancellationAnticipationHours ?? 24,
             bookingAnticipationHours: data.bookingAnticipationHours ?? 1,
+            slotsVisibilityDays: data.slotsVisibilityDays ?? 7,
         })
-    }, [data.cancellationAnticipationHours, data.bookingAnticipationHours])
+    }, [data.cancellationAnticipationHours, data.bookingAnticipationHours, data.slotsVisibilityDays])
 
     const hoursOptions = [0, 1, 2, 4, 6, 12, 24, 48, 72, 96]
+    const visibilityDaysOptions = [7, 14, 21, 28, 35, 42, 49, 56, 63, 70, 77, 84]
 
     const handleSave = async () => {
         const payload = {
             ...data,
             cancellationAnticipationHours: form.cancellationAnticipationHours,
             bookingAnticipationHours: form.bookingAnticipationHours,
+            slotsVisibilityDays: form.slotsVisibilityDays,
         }
 
-        if (payload.cancellationAnticipationHours === data.cancellationAnticipationHours && payload.bookingAnticipationHours === data.bookingAnticipationHours) {
+        if (payload.cancellationAnticipationHours === data.cancellationAnticipationHours &&
+            payload.bookingAnticipationHours === data.bookingAnticipationHours &&
+            payload.slotsVisibilityDays === data.slotsVisibilityDays) {
             notifyError("No hay cambios para guardar.")
             return
         }
@@ -85,7 +91,6 @@ const AnticipationsSettings: React.FC<Props> = ({ data }) => {
                         })}
                     </select>
                 </div>
-
                 <div className="anticipation-item">
                     <div>
                         <h3 className="anticipation-title">Reserva de turnos</h3>
@@ -105,6 +110,26 @@ const AnticipationsSettings: React.FC<Props> = ({ data }) => {
                             return (
                                 <option key={`cancel-${h}`} value={h}>
                                     {h >= 24 ? `${h / 24} ${h / 24 === 1 ? "día" : "días"} antes` : `${h} ${h === 1 ? "hora" : "horas"} antes`}
+                                </option>
+                            )
+                        })}
+                    </select>
+                </div>
+                <div className="anticipation-item">
+                    <div>
+                        <h3 className="anticipation-title">Visibilidad de turnos disponibles</h3>
+                        <p className="anticipation-desc">Define cuántos días a partir de hoy se mostrarán los turnos disponibles para reservar.</p>
+                    </div>
+                    <select
+                        className="anticipation-select"
+                        value={form.slotsVisibilityDays}
+                        onChange={(e) => setForm({ ...form, slotsVisibilityDays: parseInt(e.target.value) })}
+                    >
+                        {visibilityDaysOptions.map(days => {
+                            const weeks = days / 7
+                            return (
+                                <option key={`visibility-${days}`} value={days}>
+                                    {weeks === 1 ? "1 semana" : `${weeks} semanas`}
                                 </option>
                             )
                         })}

@@ -34,6 +34,7 @@ const initialState: Company = {
     reminders: [],
     cancellationAnticipationHours: 0,
     bookingAnticipationHours: 0,
+    slotsVisibilityDays: 7,
     scheduledAppointments: [],
     connectedWithMP: false
 };
