@@ -209,12 +209,13 @@ const ServiceToSchedulePanel: React.FC<Props> = ({ serviceToSchedule, setService
 
     return (
         <div className="serviceToScheduleContainer animation-section">
-            <Title
-                fontSize={window.innerWidth <= 930 ? "1.5rem" : ""}
-            >
-                Turnos disponibles para {serviceToScheduleData.title}
-            </Title>
-
+            <div className="divTitleServiceToSchedule">
+                <Title
+                    fontSize={window.innerWidth <= 930 ? "1.5rem" : ""}
+                >
+                    Turnos disponibles para {serviceToScheduleData.title}
+                </Title>
+            </div>
             <div className="weekDaysContainer">
                 {weekDays.map((day) => (
                     <DayCard
@@ -251,7 +252,9 @@ const ServiceToSchedulePanel: React.FC<Props> = ({ serviceToSchedule, setService
                     )}
                 </div>
             )}
-            <Button onSubmit={() => setServiceToSchedule(null)}>Cancelar</Button>
+            <div className="divButtonCancelServiceToSchedule">
+                <Button width="100%" padding="1rem" margin="0 2rem 2rem 2rem" onSubmit={() => setServiceToSchedule(null)}>Cancelar</Button>
+            </div>
             <ModalForm
                 title="Completa tus datos"
                 isOpen={isOpen}
