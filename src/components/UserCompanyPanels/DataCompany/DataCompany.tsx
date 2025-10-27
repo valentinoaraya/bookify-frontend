@@ -15,6 +15,7 @@ interface Props {
 const DataCompany: React.FC<Props> = ({ dataCompany, children, scheduledAppointments, servicesLenght }) => {
 
     const [isModalOpen, setIsModalOpen] = useState(false)
+    const location = window.location.pathname;
 
     const availableAppointmentsQuantity = dataCompany.services.reduce((acc, service) => {
         return acc + service.availableAppointments.reduce((acc, appointment) => {
@@ -33,7 +34,7 @@ const DataCompany: React.FC<Props> = ({ dataCompany, children, scheduledAppointm
         : [];
 
     return (
-        <div className="dataCompanyPanel">
+        <div className={`dataCompanyPanel ${location.split("/")[1] === "c" ? "user" : ""}`}>
             <div className="dataContent">
                 <div className="titleContainer">
                     <h2 className="h2TitleCompanyPanel">{dataCompany.name}</h2>
@@ -48,10 +49,13 @@ const DataCompany: React.FC<Props> = ({ dataCompany, children, scheduledAppointm
                         <span>Email</span>
                         {dataCompany.email}
                     </p>
-                    <p className="parrafData">
-                        <span>Ubicación: </span>
-                        {dataCompany.city} - {dataCompany.street} {dataCompany.number}
-                    </p>
+                    {
+                        (dataCompany.city && dataCompany.street && dataCompany.number) &&
+                        <p className="parrafData">
+                            <span>Ubicación: </span>
+                            {dataCompany.city} - {dataCompany.street} {dataCompany.number}
+                        </p>
+                    }
                 </div>
                 {children}
             </div>
