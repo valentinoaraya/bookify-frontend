@@ -53,8 +53,13 @@ const ResultCard: React.FC<Props> = ({
                     </div>
                 </div>
                 <div className="divDataContainer">
-                    <p className="parrafDataCompany"><span>Ciudad:</span> {company.city}</p>
-                    <p className="parrafDataCompany"><span>Ubicación:</span>  {company.street} {company.number}</p>
+                    {
+                        (company.city && company.street && company.number) &&
+                        <>
+                            <p className="parrafDataCompany"><span>Ciudad:</span> {company.city}</p>
+                            <p className="parrafDataCompany"><span>Ubicación:</span>  {company.street} {company.number}</p>
+                        </>
+                    }
                     {signPrice !== 0 ? <p className="parrafDataCompany withSignPrice"><span>Precio de la seña: $ {signPrice}</span></p> : <p className="parrafDataCompany withSignPrice"><span>Sin seña</span></p>}
                 </div>
                 <div>
@@ -67,25 +72,29 @@ const ResultCard: React.FC<Props> = ({
                     >
                         Ver turnos disponibles
                     </Button>
-                    <Button
-                        margin=".5rem 0 0 0"
-                        fontSize='1rem'
-                        padding=".8rem"
-                        backgroundColor="#1282A2"
-                        onSubmit={() => {
-                            const location = `${company.street} ${company.number} ${company.city}`.replace(/ /g, "+")
-                            window.open(`https://www.google.com/maps/search/?api=1&query=${location}`, '_blank')
-                        }}
-                        iconSVG={
-                            <NewWindowIcon
-                                width="14px"
-                                height="14px"
-                                fill="white"
-                            />
-                        }
-                    >
-                        Ver ubicación
-                    </Button>
+                    {
+                        (company.city && company.street && company.number) &&
+                        <Button
+                            margin=".5rem 0 0 0"
+                            fontSize='1rem'
+                            padding=".8rem"
+                            backgroundColor="#1282A2"
+                            onSubmit={() => {
+                                const location = `${company.street} ${company.number} ${company.city}`.replace(/ /g, "+")
+                                window.open(`https://www.google.com/maps/search/?api=1&query=${location}`, '_blank')
+                            }}
+                            iconSVG={
+                                <NewWindowIcon
+                                    width="14px"
+                                    height="14px"
+                                    fill="white"
+                                />
+                            }
+                        >
+                            Ver ubicación
+                        </Button>
+
+                    }
                 </div>
             </div>
         </div>
