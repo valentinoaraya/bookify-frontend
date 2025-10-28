@@ -18,6 +18,7 @@ export interface Service extends ServiceBasicInfo {
     capacityPerShift: number
     duration: number
     price: number
+    mode: "in-person" | "online"
     companyId: string
     availableAppointments: AvailableAppointment[]
     scheduledAppointments: string[]
@@ -62,6 +63,7 @@ export interface Appointment extends UserData {
     serviceId: Service
     companyId?: Company
     date: string
+    mode: "in-person" | "online"
     price: number
     totalPaidAmount?: number
     status: "scheduled" | "finished" | "cancelled" | "pending_action" | "did_not_attend"
@@ -93,7 +95,7 @@ export interface Input {
     name: string;
     label: string;
     placeholder?: string;
-    selectOptions?: string[];
+    selectOptions?: { label: string, value: string | number }[];
     mainSelectOption?: string;
 }
 

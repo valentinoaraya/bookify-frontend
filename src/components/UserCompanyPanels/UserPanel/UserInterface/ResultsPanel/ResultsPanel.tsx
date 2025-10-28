@@ -30,6 +30,7 @@ const ResultsPanel: React.FC<Props> = ({ results, setServiceToSchedule, company 
                                     price={service.price}
                                     title={service.title}
                                     signPrice={service.signPrice}
+                                    mode={service.mode}
                                     setServiceToSchedule={setServiceToSchedule}
                                 />
                             })

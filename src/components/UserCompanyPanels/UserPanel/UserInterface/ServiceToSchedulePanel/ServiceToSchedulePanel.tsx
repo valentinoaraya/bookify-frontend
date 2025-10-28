@@ -168,7 +168,8 @@ const ServiceToSchedulePanel: React.FC<Props> = ({ serviceToSchedule, setService
                                 title: serviceToScheduleData.title,
                                 signPrice: serviceToScheduleData.signPrice,
                                 companyId: serviceToScheduleData.companyId,
-                                totalPrice: serviceToScheduleData.price
+                                totalPrice: serviceToScheduleData.price,
+                                mode: serviceToScheduleData.mode
                             },
                             dataUser,
                             cancellationAnticipationHours

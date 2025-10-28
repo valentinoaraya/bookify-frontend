@@ -22,6 +22,7 @@
     transform: translateX(4px);
 }
 
+
 .card-appointment-container:last-child {
     border-bottom: none;
 }
@@ -224,6 +225,39 @@
 
 .card-appointment-main {
     display: none;
+}
+
+.appointment-mode {
+    display: inline-flex;
+    align-items: center;
+    margin-bottom: 6px;
+    gap: .4rem;
+    font-size: 14px;
+    font-weight: 600;
+    padding: .2rem .5rem;
+    border-radius: 999px;
+    border: 1px solid;
+    color: #595959;
+    background-color: #e6f7ff;
+    border-color: #91d5ff;
+}
+
+.appointment-mode .appointment-mode-label {
+    color: #8c8c8c;
+    font-weight: 500;
+}
+
+.appointment-mode .appointment-mode-value {
+    color: #262626;
+}
+
+.appointment-mode .appointment-mode-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: #bfbfbf;
+    background-color: #1890ff;
+
 }
 
 @media (max-width: 720px) {

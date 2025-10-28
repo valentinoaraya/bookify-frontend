@@ -12,7 +12,7 @@ interface LabelInputComponentProps {
     required: boolean;
     value?: string | number;
     mainSelectOption?: string;
-    selectOptions?: string[];
+    selectOptions?: { label: string, value: string | number }[];
     onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
 }
 
@@ -88,14 +88,14 @@ const LabelInputComponent: React.FC<LabelInputComponentProps> = ({ label, type, 
                                         required={required}
                                         onChange={onChange}
                                     >
-                                        <option value="">{mainSelectOption}</option>
+                                        {mainSelectOption && <option value="">{mainSelectOption}</option>}
                                         {
                                             selectOptions?.map(option => {
                                                 return <option
-                                                    key={option}
-                                                    value={option}
+                                                    key={option.value}
+                                                    value={option.value}
                                                 >
-                                                    {option}
+                                                    {option.label}
                                                 </option>
                                             })
                                         }

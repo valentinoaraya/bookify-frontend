@@ -94,6 +94,12 @@ const CheckoutConfirmAppointment = () => {
                                     ${service.signPrice}
                                 </p>
                             </li>
+                            <li>
+                                <p className="parrafDataCheckout">
+                                    <span>Modalidad del turno:</span>
+                                    {service.mode === "in-person" ? "Presencial" : "Virtual"}
+                                </p>
+                            </li>
                         </ul>
                     </div>
                 </div>
