@@ -80,6 +80,7 @@ const ServicesPanel: React.FC<Props> = ({ companyServices, connectedWithMP, onDe
                                     description={service.description}
                                     signPrice={service.signPrice}
                                     connectedWithMP={connectedWithMP}
+                                    mode={service.mode}
                                     availableAppointmentsLenght={service.availableAppointments.reduce((acc, appointment) => acc + appointment.capacity - appointment.taken, 0)}
                                     scheduledAppointmentsLenght={service.scheduledAppointments.length}
                                     onDeleteService={onDeleteService}
@@ -97,6 +98,7 @@ const ServicesPanel: React.FC<Props> = ({ companyServices, connectedWithMP, onDe
                     { type: "text", name: "title", placeholder: "Título", label: "Título" },
                     { type: "text", name: "description", placeholder: "Descripción", label: "Descripción" },
                     { type: "number", name: "price", placeholder: "Precio", label: "Precio" },
+                    { type: "select", name: "mode", label: "Modalidad", selectOptions: [{ label: "Presencial", value: "in-person" }, { label: "Virtual", value: "online" }] },
                     { type: "number", name: "duration", placeholder: "Duración", label: "Duración (en minutos)" },
                     { type: "number", name: "capacityPerShift", placeholder: "Capacidad de personas por turno", label: "Capacidad de personas por turno" },
                     connectedWithMP ?
@@ -105,7 +107,7 @@ const ServicesPanel: React.FC<Props> = ({ companyServices, connectedWithMP, onDe
                         { type: "none", name: "notConnectedWithMP", placeholder: "No puede cobrar señas", label: "Si quiere cobrar señas, vincule su cuenta de Mercado Pago." }
 
                 ]}
-                initialData={{ title: "", description: "", price: 0, duration: 0, signPrice: 0, capacityPerShift: 1 }}
+                initialData={{ title: "", description: "", price: 0, duration: 0, signPrice: 0, capacityPerShift: 1, mode: "in-person" }}
                 onClose={() => setIsModalOpen(false)}
                 onSubmitForm={(data) => handleAddService(data)}
                 disabledButtons={isLoading}

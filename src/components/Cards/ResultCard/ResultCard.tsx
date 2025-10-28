@@ -12,11 +12,12 @@ interface Props {
     price: number;
     title: string;
     signPrice: number;
+    mode?: "in-person" | "online";
     setServiceToSchedule: React.Dispatch<React.SetStateAction<string | null>>
 }
 
 const ResultCard: React.FC<Props> = ({
-    _id, company, availableAppointments, description, duration, price, title, signPrice, setServiceToSchedule
+    _id, company, availableAppointments, description, duration, price, title, signPrice, mode, setServiceToSchedule
 }) => {
 
     const quantityAvailable = availableAppointments.reduce((acc, appointment) => {
@@ -36,7 +37,6 @@ const ResultCard: React.FC<Props> = ({
             <div className="divDescriptionAndButtonsContainer">
                 <div className="divDescriptionContainer">
                     <div>
-                        <p className="parrafCompanyName"><span>En {company.name}</span></p>
                         <p className="parrafDescription">{description}</p>
 
                     </div>
@@ -53,14 +53,15 @@ const ResultCard: React.FC<Props> = ({
                     </div>
                 </div>
                 <div className="divDataContainer">
+                    <p className="parrafDataCompany mode"><span>Modalidad: {mode === "in-person" ? "Presencial" : "Virtual"}</span></p>
+                    {signPrice !== 0 ? <p className="parrafDataCompany withSignPrice"><span>Precio de la seña: $ {signPrice}</span></p> : <p className="parrafDataCompany withSignPrice"><span>Sin seña</span></p>}
                     {
-                        (company.city && company.street && company.number) &&
+                        (company.city && company.street && company.number && mode === "in-person") &&
                         <>
                             <p className="parrafDataCompany"><span>Ciudad:</span> {company.city}</p>
                             <p className="parrafDataCompany"><span>Ubicación:</span>  {company.street} {company.number}</p>
                         </>
                     }
-                    {signPrice !== 0 ? <p className="parrafDataCompany withSignPrice"><span>Precio de la seña: $ {signPrice}</span></p> : <p className="parrafDataCompany withSignPrice"><span>Sin seña</span></p>}
                 </div>
                 <div>
                     <Button
@@ -73,7 +74,7 @@ const ResultCard: React.FC<Props> = ({
                         Ver turnos disponibles
                     </Button>
                     {
-                        (company.city && company.street && company.number) &&
+                        (company.city && company.street && company.number && mode === "in-person") &&
                         <Button
                             margin=".5rem 0 0 0"
                             fontSize='1rem'
@@ -93,7 +94,6 @@ const ResultCard: React.FC<Props> = ({
                         >
                             Ver ubicación
                         </Button>
-
                     }
                 </div>
             </div>
