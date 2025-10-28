@@ -10,6 +10,7 @@ import ProcessingPayment from './components/ProcessingPayment/ProcessingPayment.
 import { CompanyProvider } from './contexts/CompanyContext.tsx'
 import { UserProvider } from './contexts/UserContext.tsx'
 import CancelAppointment from './components/CancelAppointment/CancelAppointment.tsx'
+import Panel from './components/Panel/Panel.tsx'
 
 function App() {
 
@@ -19,6 +20,7 @@ function App() {
         <main className='mainPage'>
           <Routes>
             <Route path='/' element={<Home />} />
+            <Route path='/panel/mercadopago-success' element={<Panel />} />
             <Route path='/login/:loginTo' element={<FormLogin />} />
             <Route path='/cancel/:appointmentId' element={<CancelAppointment />} />
             <Route path='/register/:registerTo' element={<FormRegister />} />
