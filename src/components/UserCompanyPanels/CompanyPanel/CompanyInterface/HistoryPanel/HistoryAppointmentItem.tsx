@@ -19,6 +19,7 @@ interface Props {
         totalAppointments: number;
         mostPopularService: string;
         totalIncome: number;
+        finishedAppointmentsPercentage: number
     }>>
 }
 

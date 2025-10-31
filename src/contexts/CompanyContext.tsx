@@ -36,7 +36,8 @@ const initialState: Company = {
     bookingAnticipationHours: 0,
     slotsVisibilityDays: 7,
     scheduledAppointments: [],
-    connectedWithMP: false
+    connectedWithMP: false,
+    plan: "individual"
 };
 
 interface CompanyContextState {

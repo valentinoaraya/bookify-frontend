@@ -43,10 +43,12 @@ const HistoryPanel: React.FC<HistoryPanelProps> = ({ company }) => {
     totalAppointments: number;
     mostPopularService: string;
     totalIncome: number;
+    finishedAppointmentsPercentage: number;
   }>({
     totalAppointments: 0,
     mostPopularService: "N/A",
     totalIncome: 0,
+    finishedAppointmentsPercentage: 0,
   });
 
   const fetchHistoryFromBackend = async () => {
@@ -72,9 +74,9 @@ const HistoryPanel: React.FC<HistoryPanelProps> = ({ company }) => {
           totalAppointments: 0,
           mostPopularService: "N/A",
           totalIncome: 0,
+          finishedAppointmentsPercentage: 0,
         });
       } else if (response.code === "SESSION_EXPIRED") {
-        // Si la sesión expiró, redirigir al login
         window.location.href = "/login/company";
       } else {
         setBackendAppointments([]);
@@ -113,6 +115,7 @@ const HistoryPanel: React.FC<HistoryPanelProps> = ({ company }) => {
           totalAppointments: 0,
           mostPopularService: "N/A",
           totalIncome: 0,
+          finishedAppointmentsPercentage: 0,
         });
       }
     } catch (error) {
@@ -192,7 +195,7 @@ const HistoryPanel: React.FC<HistoryPanelProps> = ({ company }) => {
         </div>
       </div>
 
-      {statistics && (
+      {statistics && company.plan !== "individual" && (
         <div className="history-statistics-container">
           <div className="history-stats-row">
             <Card className="history-stat-card animation-section">
@@ -213,6 +216,12 @@ const HistoryPanel: React.FC<HistoryPanelProps> = ({ company }) => {
                 title={`Total de turnos en ${dayjs().locale("es").format("MMMM")[0].toUpperCase() + dayjs().locale("es").format("MMMM").slice(1)}`}
                 value={statistics.totalAppointments}
                 prefix={<CalendarOutlined />}
+              />
+            </Card>
+            <Card className="history-stat-card animation-section">
+              <Statistic
+                title={"Porcentaje de asistencias este mes"}
+                value={statistics.finishedAppointmentsPercentage.toPrecision(4) + "%"}
               />
             </Card>
           </div>
