@@ -88,6 +88,13 @@
     color: black;
 }
 
+.serviceNotFound {
+    text-align: center;
+    color: #666;
+    font-style: italic;
+    margin: 2rem 0;
+}
+
 @media (max-width: 768px) {
     .weekDaysContainer {
         gap: 0.75rem;

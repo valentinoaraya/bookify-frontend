@@ -99,13 +99,13 @@ const HistoryAppointmentItem: React.FC<Props> = ({ appointment, setFilteredAppoi
             </div>
             <div className="history-appointment-details">
                 <div className="history-service-info">
-                    <h4 className="history-service-title">{appointment.serviceId.title}</h4>
+                    <h4 className="history-service-title">{appointment.serviceInfo?.title ? appointment.serviceInfo.title : appointment.serviceId.title}</h4>
                     <div className={`appointment-mode ${appointment.mode === "in-person" ? "presencial" : "virtual"}`}>
                         <span className="appointment-mode-dot"></span>
                         <span className="appointment-mode-label">Modalidad</span>
                         <span className="appointment-mode-value">{appointment.mode === "in-person" ? "Presencial" : "Virtual"}</span>
                     </div>
-                    <p className="history-service-duration">Duración: {appointment.serviceId.duration} min</p>
+                    <p className="history-service-duration">Duración: {appointment.duration} min</p>
                     <p className="history-service-price">Precio: ${appointment.price}</p>
                     {appointment.totalPaidAmount && <p className="history-service-sign-price">Seña: ${appointment.totalPaidAmount}</p>}
                 </div>
