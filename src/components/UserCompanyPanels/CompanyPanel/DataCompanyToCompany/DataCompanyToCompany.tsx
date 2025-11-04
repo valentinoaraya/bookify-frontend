@@ -1,3 +1,4 @@
+import "./DataCompanyToCompany.css"
 import DataCompany from "../../DataCompany/DataCompany";
 import { Appointment, type Company } from "../../../../types";
 
@@ -15,20 +16,8 @@ const DataCompanyToCompany: React.FC<Props> = ({ dataCompany, servicesLength, sc
                 scheduledAppointments={scheduledAppointments}
                 servicesLenght={servicesLength}
             >
-                <p
-                    style={{
-                        background: "linear-gradient(90deg, #7b2ff2, #1e90ff)",
-                        color: "#fff",
-                        padding: "0.4rem 1rem",
-                        borderRadius: "5px",
-                        display: "inline-block",
-                        fontWeight: 600,
-                        fontSize: "1rem",
-                        margin: "0.5rem 0 0 0",
-                        boxShadow: "0 1px 3px rgba(60,98,85,0.09)"
-                    }}
-                >
-                    <span role="img" aria-label="plan">📝</span> Plan <span>{dataCompany.plan === "individual" ? "Individual" : dataCompany.plan === "individual_plus" ? "Individual Plus" : "Equipo"}</span>
+                <p className="planBadge">
+                    <span role="img" aria-label="plan">📝</span> Plan <span className="planName">{dataCompany.plan === "individual" ? "Individual" : dataCompany.plan === "individual_plus" ? "Individual Plus" : "Equipo"}</span>
                 </p>
             </DataCompany>
         </>

@@ -1,0 +1,54 @@
+.planBadge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.6rem 1rem;
+    margin: 1rem 0 0 0;
+    background: linear-gradient(135deg, #f0f4ff 0%, #e6f0ff 100%);
+    border: 2px solid #722ed1;
+    border-radius: 20px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #262626;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.planBadge::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(114, 46, 209, 0.1), transparent);
+    transition: left 0.5s ease;
+}
+
+.planBadge:hover::before {
+    left: 100%;
+}
+
+.planBadge:hover {
+    border-color: #9254de;
+    background: linear-gradient(135deg, #f6f9ff 0%, #ebf3ff 100%);
+    box-shadow: 0 4px 12px rgba(114, 46, 209, 0.2);
+}
+
+.planBadge span[role="img"] {
+    font-size: 1.3rem;
+    filter: drop-shadow(0 1px 2px rgba(114, 46, 209, 0.3));
+    z-index: 1;
+    position: relative;
+}
+
+
+.planName {
+    font-weight: 700;
+    font-size: 1rem;
+    color: #722ed1;
+    z-index: 1;
+    position: relative;
+    text-shadow: 0 1px 2px rgba(114, 46, 209, 0.1);
+}
