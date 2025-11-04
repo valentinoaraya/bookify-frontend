@@ -54,17 +54,22 @@ export interface Company extends CompanyBasicInfo {
     cancellationAnticipationHours: number
     bookingAnticipationHours: number
     slotsVisibilityDays: number
+    plan: "individual" | "individual_plus" | "team"
 }
 
-export type CompanyToUser = Omit<Company, "scheduledAppointments" | "connectedWithMP" | "reminders" | "company_id">
+export type CompanyToUser = Omit<Company, "scheduledAppointments" | "connectedWithMP" | "reminders" | "company_id" | "plan">
 
 export interface Appointment extends UserData {
     _id: string
     serviceId: Service
+    serviceInfo?: {
+        title: string
+    }
     companyId?: Company
     date: string
     mode: "in-person" | "online"
     price: number
+    duration: number
     totalPaidAmount?: number
     status: "scheduled" | "finished" | "cancelled" | "pending_action" | "did_not_attend"
     cancelledBy: "company" | "client"

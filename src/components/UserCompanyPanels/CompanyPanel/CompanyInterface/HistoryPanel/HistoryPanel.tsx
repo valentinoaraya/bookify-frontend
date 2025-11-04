@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import { DatePicker, Select, Input, Card, Empty, Statistic } from "antd";
 import { SearchOutlined, CalendarOutlined, DollarOutlined } from "@ant-design/icons";
 import dayjs, { Dayjs } from "dayjs";
@@ -39,15 +39,25 @@ const HistoryPanel: React.FC<HistoryPanelProps> = ({ company }) => {
   const [backendAppointments, setBackendAppointments] = useState<Appointment[]>([]);
   const [page, setPage] = useState(1)
   const [hasMore, setHasMore] = useState(false)
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("")
   const [statistics, setStatistics] = useState<{
     totalAppointments: number;
     mostPopularService: string;
     totalIncome: number;
+    finishedAppointmentsPercentage: number;
   }>({
     totalAppointments: 0,
     mostPopularService: "N/A",
     totalIncome: 0,
+    finishedAppointmentsPercentage: 0,
   });
+
+  useEffect(() => {
+    const id = setTimeout(() => {
+      setDebouncedSearchTerm(searchTerm)
+    }, 400)
+    return () => clearTimeout(id)
+  }, [searchTerm])
 
   const fetchHistoryFromBackend = async () => {
     try {
@@ -56,6 +66,8 @@ const HistoryPanel: React.FC<HistoryPanelProps> = ({ company }) => {
       const queryParams = new URLSearchParams({
         page: "1",
         limit: "10",
+        ...(debouncedSearchTerm ? { q: debouncedSearchTerm } : {}),
+        ...(selectedService && selectedService !== "all" ? { serviceId: selectedService } : {}),
         ...(dateRange?.[0] ? { from: dateRange?.[0].format("YYYY-MM-DD") } : {}),
         ...(dateRange?.[1] ? { to: dateRange?.[1].format("YYYY-MM-DD") } : {}),
       })
@@ -72,9 +84,10 @@ const HistoryPanel: React.FC<HistoryPanelProps> = ({ company }) => {
           totalAppointments: 0,
           mostPopularService: "N/A",
           totalIncome: 0,
+          finishedAppointmentsPercentage: 0,
         });
+
       } else if (response.code === "SESSION_EXPIRED") {
-        // Si la sesión expiró, redirigir al login
         window.location.href = "/login/company";
       } else {
         setBackendAppointments([]);
@@ -87,8 +100,10 @@ const HistoryPanel: React.FC<HistoryPanelProps> = ({ company }) => {
   };
 
   useEffect(() => {
+    setPage(1)
+    setIsFilterPendingAppointments(false)
     fetchHistoryFromBackend();
-  }, [company._id, dateRange]);
+  }, [company._id, dateRange, debouncedSearchTerm, selectedService]);
 
   const handleLoadMore = async () => {
     try {
@@ -97,6 +112,8 @@ const HistoryPanel: React.FC<HistoryPanelProps> = ({ company }) => {
       const queryParams = new URLSearchParams({
         page: (page + 1).toString(),
         limit: "10",
+        ...(debouncedSearchTerm ? { q: debouncedSearchTerm } : {}),
+        ...(selectedService && selectedService !== "all" ? { serviceId: selectedService } : {}),
         ...(dateRange?.[0] ? { from: dateRange?.[0].format("YYYY-MM-DD") } : {}),
         ...(dateRange?.[1] ? { to: dateRange?.[1].format("YYYY-MM-DD") } : {}),
       })
@@ -113,6 +130,7 @@ const HistoryPanel: React.FC<HistoryPanelProps> = ({ company }) => {
           totalAppointments: 0,
           mostPopularService: "N/A",
           totalIncome: 0,
+          finishedAppointmentsPercentage: 0,
         });
       }
     } catch (error) {
@@ -122,33 +140,13 @@ const HistoryPanel: React.FC<HistoryPanelProps> = ({ company }) => {
     }
   }
 
-  const processedAppointments = useMemo(() => {
-    if (!backendAppointments.length) return [];
-
-    const filtered = backendAppointments.filter((appointment) => {
-      if (searchTerm) {
-        const searchLower = searchTerm.toLowerCase();
-        const fullName = `${appointment.name.trim()} ${appointment.lastName.trim()}`
-        const matchesClient =
-          fullName.toLowerCase().includes(searchLower) ||
-          appointment.email.toLowerCase().includes(searchLower) ||
-          appointment.dni.toString().includes(searchLower);
-        if (!matchesClient) return false;
-      }
-
-      if (selectedService !== "all" && appointment.serviceId._id !== selectedService) return false;
-
-      return true;
-    });
-
-    filtered.sort((a, b) => dayjs(b.date).valueOf() - dayjs(a.date).valueOf());
-
-    return filtered;
-  }, [backendAppointments, searchTerm, selectedService]);
-
   useEffect(() => {
-    setFilteredAppointments(processedAppointments);
-  }, [processedAppointments]);
+    if (isFilterPendingAppointments) {
+      setFilteredAppointments(pendingAppointments)
+    } else {
+      setFilteredAppointments(backendAppointments)
+    }
+  }, [backendAppointments, pendingAppointments, isFilterPendingAppointments])
 
   return (
     <div className="history-list-container animation-section divSectionContainer">
@@ -192,7 +190,7 @@ const HistoryPanel: React.FC<HistoryPanelProps> = ({ company }) => {
         </div>
       </div>
 
-      {statistics && (
+      {statistics && company.plan !== "individual" && (
         <div className="history-statistics-container">
           <div className="history-stats-row">
             <Card className="history-stat-card animation-section">
@@ -204,7 +202,7 @@ const HistoryPanel: React.FC<HistoryPanelProps> = ({ company }) => {
             </Card>
             <Card className="history-stat-card animation-section">
               <div className="history-popular-service">
-                <div className="history-stat-title">Servicio Más Popular</div>
+                <div className="history-stat-title">Servicio más Popular</div>
                 <div className="history-stat-value">{statistics.mostPopularService}</div>
               </div>
             </Card>
@@ -213,6 +211,12 @@ const HistoryPanel: React.FC<HistoryPanelProps> = ({ company }) => {
                 title={`Total de turnos en ${dayjs().locale("es").format("MMMM")[0].toUpperCase() + dayjs().locale("es").format("MMMM").slice(1)}`}
                 value={statistics.totalAppointments}
                 prefix={<CalendarOutlined />}
+              />
+            </Card>
+            <Card className="history-stat-card animation-section">
+              <Statistic
+                title={"Porcentaje de asistencias este mes"}
+                value={statistics.finishedAppointmentsPercentage.toPrecision(4) + "%"}
               />
             </Card>
           </div>
@@ -233,7 +237,8 @@ const HistoryPanel: React.FC<HistoryPanelProps> = ({ company }) => {
                       setSelectedService("all")
                       setDateRange(null)
                       setIsFilterPendingAppointments(false)
-                      setFilteredAppointments(backendAppointments)
+                      setPage(1)
+                      fetchHistoryFromBackend()
                     }}
                   >
                     <div className="divArrowReturnIcon">
@@ -244,7 +249,7 @@ const HistoryPanel: React.FC<HistoryPanelProps> = ({ company }) => {
                       />
                       <h3 className="showAllText">Ver todos</h3>
                     </div>
-                    <h3 className="latestAppointmentsTitle">{filteredAppointments.length === 1 ? "" : filteredAppointments.length} {filteredAppointments.length === 1 ? "turno" : "turnos"} {filteredAppointments.length === 1 ? "filtrado" : "filtrados"}</h3>
+                    <h3 className="latestAppointmentsTitle">{filteredAppointments.length} {filteredAppointments.length === 1 ? "turno" : "turnos"} {filteredAppointments.length === 1 ? "filtrado" : "filtrados"}</h3>
                   </div>
                 </>
                 :
@@ -253,7 +258,6 @@ const HistoryPanel: React.FC<HistoryPanelProps> = ({ company }) => {
             {
               pendingAppointments.length > 0 &&
               <h3 className="pendingsAppointmentsTitle" onClick={() => {
-                setFilteredAppointments(pendingAppointments)
                 setIsFilterPendingAppointments(true)
               }}>
                 Tienes {pendingAppointments.length} {pendingAppointments.length === 1 ? "turno" : "turnos"} {pendingAppointments.length === 1 ? "pendiente" : "pendientes"}

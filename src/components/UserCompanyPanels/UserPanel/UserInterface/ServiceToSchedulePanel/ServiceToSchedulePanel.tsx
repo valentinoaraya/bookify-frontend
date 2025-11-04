@@ -117,7 +117,7 @@ const ServiceToSchedulePanel: React.FC<Props> = ({ serviceToSchedule, setService
         />
     </div>
 
-    if (!serviceToScheduleData) return <div className="serviceToScheduleContainer animation-section">
+    if (!serviceToScheduleData) return <div className="serviceToScheduleContainer animation-section serviceNotFound">
         <h1>Lo sentimos, no encontramos el servicio que buscabas...</h1>
     </div>
 

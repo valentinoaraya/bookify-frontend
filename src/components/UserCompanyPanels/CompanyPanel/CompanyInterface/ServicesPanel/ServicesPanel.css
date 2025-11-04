@@ -9,3 +9,25 @@
     flex-direction: column;
     gap: 2rem;
 }
+
+.buttonAddService {
+    width: fit-content;
+    padding: 0.5rem 1rem;
+    font-size: 1.1rem;
+    margin: 0 0 1rem 0;
+    background-color: #3f9f0f;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+}
+
+.buttonAddService:hover {
+    background-color: #367c0c;
+}
+
+.buttonAddService.disabled {
+    background-color: grey;
+    cursor: default;
+    opacity: 0.6;
+}

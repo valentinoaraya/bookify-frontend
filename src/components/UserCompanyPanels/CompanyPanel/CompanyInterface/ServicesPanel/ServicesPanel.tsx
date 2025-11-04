@@ -7,17 +7,17 @@ import { BACKEND_API_URL } from "../../../../../config";
 import { notifyError } from "../../../../../utils/notifications";
 import ModalForm from "../../../../ModalForm/ModalForm";
 import { CompanyContext } from "../../../../../contexts/CompanyContext";
-import Button from "../../../../../common/Button/Button";
 import { useAuthenticatedPost } from "../../../../../hooks/useAuthenticatedFetch";
 
 interface Props {
     companyServices: Service[]
     connectedWithMP: boolean
+    companyPlan: string
     onDeleteService: (id: string, scheduledAppointmentsToDelete: string[]) => void
     handleChangeToCalendar: (id: string, view: View) => void
 }
 
-const ServicesPanel: React.FC<Props> = ({ companyServices, connectedWithMP, onDeleteService, handleChangeToCalendar }) => {
+const ServicesPanel: React.FC<Props> = ({ companyServices, connectedWithMP, companyPlan, onDeleteService, handleChangeToCalendar }) => {
 
     const { updateServices, addService } = useContext(CompanyContext)
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
@@ -45,6 +45,14 @@ const ServicesPanel: React.FC<Props> = ({ companyServices, connectedWithMP, onDe
         updateServices({ ...serviceToUpdate!, ...data })
     }
 
+    const verifyAddServiceLimit = () => {
+        if (companyPlan === "individual" && companyServices.length >= 5) {
+            notifyError("Has alcanzado el límite de servicios para tu plan. Actualiza tu plan para agregar más servicios.", true)
+            return false
+        }
+        setIsModalOpen(true)
+    }
+
     return (
         <div className="animation-section divSectionContainer">
             <div className="servicesPanelHeader">
@@ -53,13 +61,16 @@ const ServicesPanel: React.FC<Props> = ({ companyServices, connectedWithMP, onDe
                 >
                     Servicios activos
                 </Title>
-                <Button onSubmit={() => setIsModalOpen(true)} width="fit-content" padding="0.5rem 1rem" fontSize="1.1rem" margin="0 0 1rem 0" backgroundColor="#3f9f0f">
+                <button
+                    className={`buttonAddService ${companyPlan === "individual" && companyServices.length >= 5 ? "disabled" : ""}`}
+                    onClick={verifyAddServiceLimit}
+                >
                     <span className="plusButton">+ </span>
                     {
                         window.innerWidth >= 470 ? "Agregar servicio" :
                             window.innerWidth >= 400 ? "Agregar" : ""
                     }
-                </Button>
+                </button>
             </div>
             {
                 companyServices.length === 0 ?

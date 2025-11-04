@@ -73,6 +73,7 @@ const CompanyInterface = () => {
                                                         <HistoryPanel company={state} />
                                                         :
                                                         <ServicesPanel
+                                                            companyPlan={state.plan}
                                                             connectedWithMP={state.connectedWithMP}
                                                             companyServices={state.services}
                                                             onDeleteService={onDeleteService}
