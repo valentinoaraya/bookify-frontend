@@ -10,6 +10,25 @@
     align-items: center;
 }
 
+.plans-container {
+    width: 100%;
+    margin-bottom: 2rem;
+}
+
+.plans-title {
+    color: var(--azul-oscuro);
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin: 1.5rem 0;
+}
+
+.plans-grid {
+    display: flex;
+    gap: 1.5rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
 .formRegister {
     width: 100%;
 }
@@ -33,10 +52,14 @@
     display: flex;
     justify-content: center;
     gap: 1rem;
+    margin: 2rem 0;
+}
 
-    .divHalf {
-        width: 50%;
-    }
+.divHalf {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    width: 50%;
 }
 
 @media (max-width: 700px) {
@@ -51,7 +74,16 @@
 
 @media (max-width: 560px) {
     .divFormRegister {
-        margin: 2rem 1.5rem;
-        padding: 3rem 2rem;
+        margin: 2rem 1rem;
+        padding: 2rem 1.5rem;
+    }
+
+    .plans-grid {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .plans-title {
+        font-size: 1.3rem;
     }
 }

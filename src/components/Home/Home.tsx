@@ -5,13 +5,6 @@ import Title from "../../common/Title/Title.tsx";
 import { CompanyIcon } from "../../common/Icons/Icons.tsx";
 
 const Home = () => {
-
-    const token = localStorage.getItem("access_token")
-
-    if (token) {
-        window.location.href = "/company-panel"
-    }
-
     return (
         <div className="divHome">
             <Title fontSize={window.innerWidth <= 560 ? "4.5rem" : "6rem"} margin="0 0 .5rem 0">Bookify</Title>
@@ -33,6 +26,16 @@ const Home = () => {
                     </Button>
                 </Link>
                 <p className="pDescription">Para gestionar los turnos de tus clientes.</p>
+                <Link className="linkButton" to={"/register/company"}>
+                    <Button
+                        reverse
+                        padding="1.2rem"
+                        fontWeight="600"
+                    >
+                        Crear una cuenta
+                    </Button>
+                </Link>
+                <p className="pDescription">Crea una cuenta para comenzar.</p>
             </div>
         </div>
     );
