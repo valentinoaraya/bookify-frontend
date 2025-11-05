@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import "./FormRegister.css"
 import { useDataForm } from "../../../hooks/useDataForm.ts";
 import Title from "../../../common/Title/Title.tsx";
@@ -11,11 +11,11 @@ import { notifyError } from "../../../utils/notifications.ts";
 import { ToastContainer } from "react-toastify";
 import { BACKEND_API_URL } from "../../../config.ts";
 import { setTokens } from "../../../utils/tokenManager.ts";
+import PlanCard from "../PlanCard/PlanCard.tsx";
 
 const FormRegister = () => {
 
     const { registerTo } = useParams();
-    const navigate = useNavigate()
     const { dataForm, handleChange } = useDataForm({
         name: "",
         lastName: "",
@@ -26,8 +26,10 @@ const FormRegister = () => {
         street: "",
         number: "",
         password: "",
-        confirmPassword: ""
+        confirmPassword: "",
+        plan: ""
     })
+
     const { isLoading, error, post } = useAuthenticatedPost()
 
     if (error) {
@@ -39,22 +41,21 @@ const FormRegister = () => {
         e.preventDefault();
         if (dataForm.password !== dataForm.confirmPassword) return notifyError("Las contraseñas no coinciden")
 
+        if (registerTo === "company" && !dataForm.plan) {
+            return notifyError("Por favor selecciona un plan")
+        }
+
         const url = `${BACKEND_API_URL}/${registerTo === "user" ? "users" : "companies"}/register`;
         const response = await post(url, dataForm, { skipAuth: true });
 
-        if (response.data) {
-            // Para empresas, guardar ambos tokens
-            if (registerTo === "company" && response.data.access_token && response.data.refresh_token) {
-                setTokens({
-                    access_token: response.data.access_token,
-                    refresh_token: response.data.refresh_token
-                });
-            } else {
-                // Para usuarios, mantener el comportamiento actual
-                localStorage.setItem("access_token", response.data.access_token);
-            }
-
-            navigate(registerTo === "user" ? "/user-panel" : "/company-panel")
+        if (response.data.data.init_point) {
+            setTokens({
+                access_token: response.data.data.access_token,
+                refresh_token: response.data.data.refresh_token
+            });
+            window.location.href = response.data.data.init_point
+        } else {
+            notifyError("Error al crear suscripción, intente de nuevo más tarde.")
         }
 
         if (response.error) {
@@ -66,12 +67,78 @@ const FormRegister = () => {
         }
     }
 
-    if (registerTo === "company") return <h2>No estás autorizado a registrar empresas.</h2>
+    const plans = registerTo === "company" ? [
+        {
+            name: "Plan Individual",
+            value: "individual",
+            price: "$12.000",
+            features: [
+                "1 profesional",
+                "Hasta 5 servicios",
+                "Recordatorios y emails automáticos",
+                "Pagos online con Mercado Pago",
+                "Rembolsos automáticos",
+                "Historial completo de movimientos",
+                "Soporte por correo"
+            ]
+        },
+        {
+            name: "Plan Individual Plus",
+            value: "individual_plus",
+            price: "$18.000",
+            features: [
+                "Incluye Plan Individual",
+                "Servicios personalizados e ilimitados",
+                "Métricas de rendimiento (ingresos, asistencias, etc.)",
+                "Soporte prioritario"
+            ]
+        },
+        {
+            name: "Plan Equipo",
+            value: "teams",
+            price: "$35.000",
+            features: [
+                "Incluye Plan Individual Plus por profesional",
+                "Hasta 5 profesionales",
+                "Dashborard administrativo",
+                "Gestión de agendas separadas",
+                "Historial completo de movimientos por profesional",
+                "Historial centralizado de clientes",
+                "+ Profesionales adicionales: $5.000 / mes cada profesional",
+            ],
+            isComingSoon: true
+        }
+    ] : [];
 
     return (
         <div className="divFormRegister">
             <ToastContainer />
-            <Title textAlign="center" fontSize={window.innerWidth <= 630 ? "2rem" : "2.2rem"} margin="0 0 .5rem 0">Registrarse como {registerTo === "user" ? "usuario" : "empresa"}</Title>
+            <Title textAlign="center">Registrarse como {registerTo === "user" ? "usuario" : "empresa"}</Title>
+
+            {registerTo === "company" && (
+                <div className="plans-container">
+                    <h2 className="plans-title">Elige tu plan</h2>
+                    <div className="plans-grid">
+                        {plans.map((plan, index) => (
+                            <PlanCard
+                                key={index}
+                                planName={plan.name}
+                                price={plan.price}
+                                features={plan.features}
+                                isSelected={dataForm.plan === plan.value}
+                                onClick={() => handleChange({
+                                    target: {
+                                        name: "plan",
+                                        value: plan.value
+                                    }
+                                } as any)}
+                                isComingSoon={plan.isComingSoon}
+                            />
+                        ))}
+                    </div>
+                </div>
+            )}
+
             <form className="formRegister" onSubmit={handleSubmit}>
                 <div className={registerTo === "company" ? "horizontalForm" : ""}>
                     <div className="divHalf divFirstHalf">
@@ -79,6 +146,7 @@ const FormRegister = () => {
                             label="Nombre:"
                             type="text"
                             name="name"
+                            value={dataForm["name"]}
                             required={true}
                             onChange={handleChange}
                         />
@@ -88,6 +156,7 @@ const FormRegister = () => {
                                 label="Apellido:"
                                 type="text"
                                 name="lastName"
+                                value={dataForm["lastName"]}
                                 required={true}
                                 onChange={handleChange}
                             />
@@ -102,6 +171,7 @@ const FormRegister = () => {
                                     label="Calle:"
                                     type="text"
                                     name="street"
+                                    value={dataForm["street"]}
                                     required={true}
                                     onChange={handleChange}
                                 />
@@ -109,6 +179,7 @@ const FormRegister = () => {
                                     label="Número de calle:"
                                     type="text"
                                     name="number"
+                                    value={dataForm["number"]}
                                     required={true}
                                     onChange={handleChange}
                                 />
@@ -120,6 +191,7 @@ const FormRegister = () => {
                             label="Email:"
                             type="email"
                             name="email"
+                            value={dataForm["email"]}
                             required={true}
                             onChange={handleChange}
                         />
@@ -127,6 +199,7 @@ const FormRegister = () => {
                             label="Teléfono:"
                             type="tel"
                             name="phone"
+                            value={dataForm["phone"]}
                             required={true}
                             onChange={handleChange}
                         />
@@ -134,6 +207,7 @@ const FormRegister = () => {
                             label="Contraseña:"
                             type="password"
                             name="password"
+                            value={dataForm["password"]}
                             required={true}
                             onChange={handleChange}
                         />
@@ -141,6 +215,7 @@ const FormRegister = () => {
                             label="Confirmar contraseña:"
                             type="password"
                             name="confirmPassword"
+                            value={dataForm["confirmPassword"]}
                             required={true}
                             onChange={handleChange}
                         />
@@ -150,12 +225,12 @@ const FormRegister = () => {
                     type="submit"
                     disabled={isLoading}
                 >
-                    Registrarse
+                    Suscribirme
                 </Button>
                 <div className="divLinkForm">
                     <p className="pDescriptionForm">¿Ya tienes cuenta?</p>
                     <Link className="linkForm" to={"/login/" + registerTo}>
-                        <p>Inicia sesión ahora.</p>
+                        <p>Inicia sesión.</p>
                     </Link>
                 </div>
             </form>

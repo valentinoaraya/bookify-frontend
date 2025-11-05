@@ -18,6 +18,12 @@ const FormLogin = () => {
     const { dataForm, handleChange } = useDataForm({ email: "", password: "" });
     const { isLoading, error, post } = useAuthenticatedPost();
 
+    const token = localStorage.getItem("access_token")
+
+    if (token) {
+        window.location.href = "/company-panel"
+    }
+
     if (error) {
         console.error(error)
         notifyError("Error del servidor: Inténtalo de nuevo más tarde")

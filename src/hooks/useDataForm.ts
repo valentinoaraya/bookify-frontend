@@ -29,9 +29,17 @@ export const useDataForm = (initialState: DataForm) => {
         }
     }
 
+    const updateField = (name: string, value: string | number) => {
+        setDataForm({
+            ...dataForm,
+            [name]: value
+        });
+    }
+
     return {
         dataForm,
         handleChange,
-        deleteData
+        deleteData,
+        updateField
     }
 }
