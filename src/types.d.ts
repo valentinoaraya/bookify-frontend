@@ -58,7 +58,7 @@ export interface Company extends CompanyBasicInfo {
     statusSuscription: "inactive" | "active" | "pending"
 }
 
-export type CompanyToUser = Omit<Company, "scheduledAppointments" | "connectedWithMP" | "reminders" | "company_id" | "plan">
+export type CompanyToUser = Omit<Company, "scheduledAppointments" | "connectedWithMP" | "reminders" | "company_id" | "plan" | "statusSuscription">
 
 export interface Appointment extends UserData {
     _id: string
