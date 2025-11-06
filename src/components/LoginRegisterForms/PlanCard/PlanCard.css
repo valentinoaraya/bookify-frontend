@@ -214,3 +214,10 @@
         padding: 0.3rem 0.6rem;
     }
 }
+
+@media (max-width: 420px) {
+    .plan-card {
+        min-width: 80px;
+        height: 420px;
+    }
+}
