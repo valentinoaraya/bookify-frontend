@@ -27,7 +27,8 @@ const FormRegister = () => {
         number: "",
         password: "",
         confirmPassword: "",
-        plan: ""
+        plan: "",
+        payer_email: ""
     })
 
     const { isLoading, error, post } = useAuthenticatedPost()
@@ -48,22 +49,16 @@ const FormRegister = () => {
         const url = `${BACKEND_API_URL}/${registerTo === "user" ? "users" : "companies"}/register`;
         const response = await post(url, dataForm, { skipAuth: true });
 
+        if (response.error) {
+            notifyError(response.error)
+        }
+
         if (response.data.data.init_point) {
             setTokens({
                 access_token: response.data.data.access_token,
                 refresh_token: response.data.data.refresh_token
             });
             window.location.href = response.data.data.init_point
-        } else {
-            notifyError("Error al crear suscripción, intente de nuevo más tarde.")
-        }
-
-        if (response.error) {
-            if (response.error === "Ya existe una cuenta con este email.") {
-                notifyError('Ya existe una cuenta con este email.')
-            } else {
-                notifyError("Error: Inténtalo de nuevo más tarde")
-            }
         }
     }
 
@@ -188,7 +183,15 @@ const FormRegister = () => {
                     </div>
                     <div className="divHalf divSecondHalf">
                         <LabelInputComponent
-                            label="Email:"
+                            label="Email del pagador:"
+                            type="email"
+                            name="payer_email"
+                            value={dataForm["payer_email"]}
+                            required={true}
+                            onChange={handleChange}
+                        />
+                        <LabelInputComponent
+                            label="Email de contacto:"
                             type="email"
                             name="email"
                             value={dataForm["email"]}
@@ -221,6 +224,15 @@ const FormRegister = () => {
                         />
                     </div>
                 </div>
+                <p className="infoParraf">
+                    El email de pagador debe ser el mismo email asociado a la cuenta de Mercado Pago con la que se va a ejecutar el pago.
+                </p>
+                <p className="infoParraf">
+                    El email de contacto es el que utilizarás para iniciar sesión y el que Bookify utilizará para enviar correos y notificaicones.
+                </p>
+                <p className="infoParraf">
+                    Es posible usar el mismo correo para ambos campos.
+                </p>
                 <Button
                     type="submit"
                     disabled={isLoading}

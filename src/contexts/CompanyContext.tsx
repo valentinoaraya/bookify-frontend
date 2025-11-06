@@ -37,6 +37,7 @@ const initialState: Company = {
     slotsVisibilityDays: 7,
     scheduledAppointments: [],
     connectedWithMP: false,
+    statusSuscription: "inactive",
     plan: "individual"
 };
 

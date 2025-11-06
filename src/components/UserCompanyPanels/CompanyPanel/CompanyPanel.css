@@ -1,0 +1,40 @@
+.notFoundedCompanyDiv {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 60vh;
+    gap: 2rem;
+    padding: 2.5rem;
+}
+
+.notFoundedCompanyTitle {
+    color: var(--azul-oscuro);
+    font-weight: 700;
+    font-size: 2rem;
+}
+
+.notFoundedCompanyButton {
+    background: var(--azul-clarito);
+    color: #fff;
+    border: none;
+    padding: 0.9rem 2.5rem;
+    border-radius: 0.65rem;
+    font-size: 1.15rem;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 2px 8px 0 rgba(91, 63, 110, 0.10);
+    transition: all .2s ease;
+}
+
+.notFoundedCompanyButton:hover {
+    transform: translateY(-.2rem);
+    box-shadow: 0 .5rem 1rem rgba(0, 0, 0, .2);
+}
+
+.notFoundedCompanyDescription {
+    font-size: 1.1rem;
+    text-align: center;
+    color: var(--azul-oscuro);
+    font-weight: 600;
+}
