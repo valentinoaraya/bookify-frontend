@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import "./FormRegister.css"
 import { useDataForm } from "../../../hooks/useDataForm.ts";
 import Title from "../../../common/Title/Title.tsx";
@@ -12,10 +12,12 @@ import { ToastContainer } from "react-toastify";
 import { BACKEND_API_URL } from "../../../config.ts";
 import { setTokens } from "../../../utils/tokenManager.ts";
 import PlanCard from "../PlanCard/PlanCard.tsx";
+import { ArrowReturnIcon } from "../../../common/Icons/Icons.tsx";
 
 const FormRegister = () => {
 
     const { registerTo } = useParams();
+    const navigate = useNavigate();
     const { dataForm, handleChange } = useDataForm({
         name: "",
         lastName: "",
@@ -105,9 +107,17 @@ const FormRegister = () => {
         }
     ] : [];
 
+    const handleGoBack = () => {
+        navigate(-1);
+    };
+
     return (
         <div className="divFormRegister">
             <ToastContainer />
+            <button className="backButtonForm" onClick={handleGoBack} type="button">
+                <ArrowReturnIcon width="20" height="20" fill="var(--azul-oscuro)" />
+                <span>Volver</span>
+            </button>
             <Title textAlign="center">Registrarse como {registerTo === "user" ? "usuario" : "empresa"}</Title>
 
             {registerTo === "company" && (

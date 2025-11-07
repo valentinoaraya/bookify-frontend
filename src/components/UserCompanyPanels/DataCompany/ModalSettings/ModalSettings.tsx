@@ -1,20 +1,22 @@
 import "./ModalSettings.css"
-import { useEffect, useState } from "react"
-import { CreditCardIcon, ClockIcon, BellIcon, UserIcon } from "../../../../common/Icons/Icons"
+import React, { useEffect, useState } from "react"
+import { CreditCardIcon, ClockIcon, BellIcon, UserIcon, RocketIcon } from "../../../../common/Icons/Icons"
 import ProfileSettings from "./ProfileSettings/ProfileSettings"
 import PaymentMethodsSettings from "./PaymentMethodsSettings/PaymentMethodsSettings"
 import RemindersSettings from "./RemindersSettings/RemindersSettings"
 import AnticipationsSettings from "./AnticipationsSettings/AnticipationsSettings"
 import { useCompany } from "../../../../hooks/useCompany"
+import PlansSettings from "./PlansSettings/PlansSettings"
 
 interface Props {
     isOpen: boolean
     setIsOpen: React.Dispatch<React.SetStateAction<boolean>>
+    active: string
+    setActive: React.Dispatch<React.SetStateAction<string>>
 }
 
-const ModalSettings: React.FC<Props> = ({ isOpen, setIsOpen }) => {
+const ModalSettings: React.FC<Props> = ({ isOpen, setIsOpen, active, setActive }) => {
 
-    const [active, setActive] = useState("profile")
     const [shouldRender, setShouldRender] = useState(isOpen);
     const [closing, setClosing] = useState(false);
     const { state } = useCompany()
@@ -78,6 +80,14 @@ const ModalSettings: React.FC<Props> = ({ isOpen, setIsOpen }) => {
                                 />
                                 {window.innerWidth <= 740 ? "" : "Anticipaciones"}
                             </li>
+                            <li className={active === "plans" ? "active-settings" : ""} onClick={() => setActive("plans")}>
+                                <RocketIcon
+                                    width="18"
+                                    height="18"
+                                    fill="#adadad"
+                                />
+                                {window.innerWidth <= 740 ? "" : "Planes"}
+                            </li>
                             <button className="modalCloseButtonMobile" onClick={() => setIsOpen(false)} >X</button>
                         </ul>
                     </div>
@@ -86,6 +96,7 @@ const ModalSettings: React.FC<Props> = ({ isOpen, setIsOpen }) => {
                         {active === "paymentmethods" && <PaymentMethodsSettings data={state} />}
                         {active === "reminders" && <RemindersSettings data={state} />}
                         {active === "anticipations" && <AnticipationsSettings data={state} />}
+                        {active === "plans" && <PlansSettings data={state} />}
                     </div>
                 </div>
             </div>

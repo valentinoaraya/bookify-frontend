@@ -16,7 +16,32 @@
     height: 380px;
 }
 
+.plan-card-settings {
+    background-color: var(--blanco);
+    border: 2px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 1.5rem;
+    cursor: pointer;
+    transition: border-color 0.4s ease, background-color 0.4s ease, background 0.4s ease, box-shadow 0.4s ease, transform 0.3s ease;
+    position: relative;
+    box-shadow: 0 0 5px 0 rgb(202, 202, 202);
+    flex: 1;
+    min-width: 200px;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    overflow: hidden;
+    height: 380px;
+}
+
 .plan-card:hover:not(.coming-soon) {
+    border-color: var(--azul-clarito);
+    transform: translateY(-4px);
+    box-shadow: 0 4px 12px rgba(18, 130, 162, 0.2);
+    background-color: #f8f9fa;
+}
+
+.plan-card-settings:hover:not(.coming-soon, .selected) {
     border-color: var(--azul-clarito);
     transform: translateY(-4px);
     box-shadow: 0 4px 12px rgba(18, 130, 162, 0.2);
@@ -27,6 +52,17 @@
     border-color: var(--azul-clarito);
     background: linear-gradient(135deg, #f0f8ff, #ffffff);
     box-shadow: 0 4px 16px rgba(18, 130, 162, 0.3);
+}
+
+.plan-card-settings.selected {
+    border-color: #722ed1;
+    background: linear-gradient(135deg, #fdf0ff, #ffffff);
+    box-shadow: 0 4px 16px rgba(104, 18, 162, 0.3);
+}
+
+.plan-card-settings.selected:hover {
+    transform: translateY(-4px);
+    background-color: #f8f9fa;
 }
 
 .plan-card::before {
@@ -41,11 +77,37 @@
     transition: width 0.5s ease-out;
 }
 
+.plan-card-settings::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 0;
+    background: linear-gradient(135deg, #722ed1, var(--azul-oscuro));
+    border-radius: 12px 0 0 12px;
+    transition: width 0.5s ease-out;
+}
+
 .plan-card.selected::before {
     width: 4px;
 }
 
+.plan-card-settings.selected::before {
+    width: 4px;
+}
+
 .plan-card.coming-soon {
+    opacity: 0.6;
+    cursor: default;
+    background-color: #f5f5f5;
+
+    .plan-title {
+        align-self: flex-start;
+    }
+}
+
+.plan-card-settings.coming-soon {
     opacity: 0.6;
     cursor: default;
     background-color: #f5f5f5;
@@ -104,6 +166,10 @@
     color: var(--azul-oscuro);
 }
 
+.plan-card-settings.selected .price-amount {
+    color: var(--azul-oscuro);
+}
+
 .plan-features {
     list-style: none;
     padding: 0;
@@ -131,11 +197,15 @@
     margin-top: 0.1rem;
 }
 
+.plan-card-settings.selected .feature-checkmark {
+    color: #722ed1;
+}
+
 .selected-indicator {
     text-align: center;
     color: var(--azul-clarito);
     font-weight: 600;
-    font-size: 0.9rem;
+    font-size: 1rem;
     padding: 0.5rem;
     background-color: rgba(18, 130, 162, 0.1);
     border-radius: 8px;
@@ -145,7 +215,26 @@
     transition: opacity 0.4s ease-out 0.2s, transform 0.4s ease-out 0.2s;
 }
 
+.selected-indicator-settings {
+    text-align: center;
+    color: #722ed1;
+    font-weight: 600;
+    font-size: 1rem;
+    padding: 0.5rem;
+    background-color: rgba(104, 18, 162, 0.1);
+    border-radius: 8px;
+    margin-top: auto;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.4s ease-out 0.2s, transform 0.4s ease-out 0.2s;
+}
+
 .plan-card.selected .selected-indicator {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.plan-card-settings.selected .selected-indicator-settings {
     opacity: 1;
     transform: translateY(0);
 }

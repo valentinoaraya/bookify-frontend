@@ -8,6 +8,42 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    position: relative;
+}
+
+.backButtonForm {
+    position: absolute;
+    top: 1.5rem;
+    left: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background-color: transparent;
+    border: none;
+    border-radius: 8px;
+    padding: 0.5rem 1rem;
+    color: var(--azul-oscuro);
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.backButtonForm:hover {
+    color: var(--azul-clarito);
+}
+
+.backButtonForm:hover svg {
+    fill: var(--azul-clarito);
+}
+
+.backButtonForm:active {
+    transform: scale(0.98);
+}
+
+.backButtonForm span {
+    display: flex;
+    align-items: center;
 }
 
 .plans-container {
@@ -77,6 +113,21 @@
     }
 }
 
+@media (max-width: 600px) {
+    .backButtonForm {
+        top: 1rem;
+        left: 1rem;
+        padding: 0.4rem 0.8rem;
+        font-size: 0.9rem;
+    }
+
+    .backButtonForm svg {
+        width: 18px;
+        height: 18px;
+    }
+
+}
+
 @media (max-width: 560px) {
     .divFormRegister {
         margin: 2rem 1rem;
@@ -96,8 +147,24 @@
         gap: 1rem;
     }
 
+    .backButtonForm {
+        top: .5rem;
+        left: .5rem;
+        padding: 0.4rem 0.8rem;
+        font-size: 0.9rem;
+    }
+
+    .backButtonForm svg {
+        width: 18px;
+        height: 18px;
+    }
+
     .horizontalForm {
         margin: 1rem 0;
+    }
+
+    .backButtonForm span {
+        display: none;
     }
 }
 
@@ -107,4 +174,13 @@
         padding: 1.5rem 1rem;
     }
 
+    .backButtonForm {
+        padding: 0.35rem 0.7rem;
+        font-size: 0.85rem;
+    }
+
+    .backButtonForm svg {
+        width: 16px;
+        height: 16px;
+    }
 }

@@ -10,6 +10,7 @@ import { BACKEND_API_URL } from "../../../config.ts";
 import { ToastContainer } from "react-toastify";
 import { notifyError } from "../../../utils/notifications.ts";
 import { setTokens } from "../../../utils/tokenManager.ts";
+import { ArrowReturnIcon } from "../../../common/Icons/Icons.tsx";
 
 const FormLogin = () => {
 
@@ -36,14 +37,12 @@ const FormLogin = () => {
         const response = await post(url, dataForm, { skipAuth: true });
 
         if (response.data) {
-            // Para empresas, guardar ambos tokens
             if (response.data.data.access_token && response.data.data.refresh_token) {
                 setTokens({
                     access_token: response.data.data.access_token,
                     refresh_token: response.data.data.refresh_token
                 });
             } else {
-                // Para usuarios, mantener el comportamiento actual
                 localStorage.setItem("access_token", response.data.data.access_token);
             }
 
@@ -56,9 +55,17 @@ const FormLogin = () => {
         }
     }
 
+    const handleGoBack = () => {
+        navigate(-1);
+    };
+
     return (
         <div className="divFormLogin">
             <ToastContainer />
+            <button className="backButtonForm" onClick={handleGoBack} type="button">
+                <ArrowReturnIcon width="20" height="20" fill="var(--azul-oscuro)" />
+                <span>Volver</span>
+            </button>
             <Title textAlign="center" fontSize={window.innerWidth <= 630 ? "2rem" : "2.2rem"} margin="0 0 .5rem 0">Iniciar sesión como {loginTo === "user" ? "usuario" : "empresa"}</Title>
             <form className="formLogin" onSubmit={handleSubmit}>
                 <LabelInputComponent

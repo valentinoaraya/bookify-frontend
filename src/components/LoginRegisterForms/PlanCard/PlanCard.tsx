@@ -8,12 +8,13 @@ interface PlanCardProps {
     onClick: () => void;
     isComingSoon?: boolean;
     price?: string;
+    isSettings?: boolean
 }
 
-const PlanCard: React.FC<PlanCardProps> = ({ planName, features, isSelected, onClick, isComingSoon = false, price }) => {
+const PlanCard: React.FC<PlanCardProps> = ({ planName, features, isSelected, onClick, isComingSoon = false, price, isSettings }) => {
     return (
         <div
-            className={`plan-card ${isSelected ? 'selected' : ''} ${isComingSoon ? 'coming-soon' : ''}`}
+            className={`${isSettings ? "plan-card-settings" : "plan-card"} ${isSelected ? 'selected' : ''} ${isComingSoon ? 'coming-soon' : ''}`}
             onClick={!isComingSoon ? onClick : undefined}
         >
             {isComingSoon && (
@@ -35,7 +36,7 @@ const PlanCard: React.FC<PlanCardProps> = ({ planName, features, isSelected, onC
                 ))}
             </ul>
             {isSelected && !isComingSoon && (
-                <div className="selected-indicator animation-section">Seleccionado</div>
+                <div className={`${isSettings ? "selected-indicator-settings" : "selected-indicator"} animation-section`}>{isSettings ? "🚀 Plan actual" : "Seleccionado"}</div>
             )}
         </div>
     );
