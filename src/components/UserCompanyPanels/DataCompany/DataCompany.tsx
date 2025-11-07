@@ -3,18 +3,21 @@ import { ClockIcon, CalendarCheckIcon, UsersIcon, SettingsIcon } from "../../../
 import { Appointment, type CompanyToUser } from "../../../types";
 import Button from "../../../common/Button/Button";
 import ModalSettings from "./ModalSettings/ModalSettings";
-import { useState } from "react";
+import { SetStateAction } from "react";
 
 interface Props {
     dataCompany: CompanyToUser;
     children?: React.ReactNode;
     scheduledAppointments?: Appointment[];
     servicesLenght?: number;
+    isModalOpen: boolean
+    setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>
+    active: string
+    setActive: React.Dispatch<SetStateAction<string>>
 }
 
-const DataCompany: React.FC<Props> = ({ dataCompany, children, scheduledAppointments, servicesLenght }) => {
+const DataCompany: React.FC<Props> = ({ dataCompany, children, scheduledAppointments, servicesLenght, isModalOpen, setIsModalOpen, active, setActive }) => {
 
-    const [isModalOpen, setIsModalOpen] = useState(false)
     const location = window.location.pathname;
 
     const availableAppointmentsQuantity = dataCompany.services.reduce((acc, service) => {
@@ -168,7 +171,10 @@ const DataCompany: React.FC<Props> = ({ dataCompany, children, scheduledAppointm
                             fontSize="1rem"
                             fontWeight="600"
                             margin="0"
-                            onSubmit={() => setIsModalOpen(true)}
+                            onSubmit={() => {
+                                setActive("profile")
+                                setIsModalOpen(true)
+                            }}
                         >
                         </Button>
                     </div>
@@ -190,12 +196,17 @@ const DataCompany: React.FC<Props> = ({ dataCompany, children, scheduledAppointm
                             fontSize="1rem"
                             fontWeight="600"
                             margin="0"
-                            onSubmit={() => setIsModalOpen(true)}
+                            onSubmit={() => {
+                                setActive("profile")
+                                setIsModalOpen(true)
+                            }}
                         >
                             Configuración
                         </Button>
                     </div>
                     <ModalSettings
+                        active={active}
+                        setActive={setActive}
                         isOpen={isModalOpen}
                         setIsOpen={setIsModalOpen}
                     />

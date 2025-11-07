@@ -1,0 +1,13 @@
+.plans-content {
+    display: flex;
+    flex-direction: row;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    margin-top: 1rem;
+}
+
+.plans-actions {
+    display: flex;
+    justify-content: end;
+    margin-top: 2rem;
+}
