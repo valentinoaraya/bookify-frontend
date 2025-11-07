@@ -20,6 +20,10 @@ const UserInterface: React.FC<Props> = ({ company }) => {
             <ToastContainer />
             <div className="divUserPanel">
                 <DataCompany
+                    active=""
+                    setActive={() => { }}
+                    isModalOpen={false}
+                    setIsModalOpen={() => { }}
                     dataCompany={company}
                     servicesLenght={company.services.length}
                 />
