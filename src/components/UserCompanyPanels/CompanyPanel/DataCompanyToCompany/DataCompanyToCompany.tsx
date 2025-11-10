@@ -29,7 +29,7 @@ const DataCompanyToCompany: React.FC<Props> = ({ dataCompany, servicesLength, sc
                     setActive("plans")
                     setIsModalOpen(true)
                 }}>
-                    <span role="img" aria-label="plan">🚀</span> Plan <span className="planName">{dataCompany.plan === "individual" ? "Individual" : dataCompany.plan === "individual_plus" ? "Individual Plus" : "Equipo"}</span>
+                    <span role="img" aria-label="plan">🚀</span> Plan <span className="planName">{dataCompany.suscription.plan === "individual" ? "Individual" : dataCompany.suscription.plan === "individual_plus" ? "Individual Plus" : "Equipo"}</span>
                 </p>
             </DataCompany>
         </>

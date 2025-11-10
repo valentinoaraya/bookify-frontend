@@ -37,7 +37,7 @@ const CompanyPanel = () => {
                     :
                     <>
                         {
-                            state.statusSuscription === "active" ?
+                            state.suscription.status_suscription === "active" ?
                                 <CompanyInterface />
                                 :
                                 <div className="notFoundedCompanyDiv">
