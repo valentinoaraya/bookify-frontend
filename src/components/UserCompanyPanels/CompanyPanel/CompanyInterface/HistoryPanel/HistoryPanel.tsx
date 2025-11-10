@@ -190,7 +190,7 @@ const HistoryPanel: React.FC<HistoryPanelProps> = ({ company }) => {
         </div>
       </div>
 
-      {statistics && company.plan !== "individual" && (
+      {statistics && company.suscription.plan !== "individual" && (
         <div className="history-statistics-container">
           <div className="history-stats-row">
             <Card className="history-stat-card animation-section">

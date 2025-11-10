@@ -44,6 +44,13 @@ export interface Company extends CompanyBasicInfo {
     scheduledAppointments: Appointment[]
     connectedWithMP: boolean
     company_id: string
+    suscription: {
+        suscription_id: string
+        plan: "individual" | "individual_plus" | "team"
+        status_suscription: "inactive" | "active" | "pending"
+        start_date?: Date
+        next_payment_date?: Date
+    }
     reminders: {
         hoursBefore: number
         services: {
@@ -54,11 +61,9 @@ export interface Company extends CompanyBasicInfo {
     cancellationAnticipationHours: number
     bookingAnticipationHours: number
     slotsVisibilityDays: number
-    plan: "individual" | "individual_plus" | "team"
-    statusSuscription: "inactive" | "active" | "pending"
 }
 
-export type CompanyToUser = Omit<Company, "scheduledAppointments" | "connectedWithMP" | "reminders" | "company_id" | "plan" | "statusSuscription">
+export type CompanyToUser = Omit<Company, "scheduledAppointments" | "connectedWithMP" | "reminders" | "company_id" | "suscription">
 
 export interface Appointment extends UserData {
     _id: string

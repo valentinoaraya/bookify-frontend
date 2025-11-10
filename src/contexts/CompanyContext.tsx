@@ -37,8 +37,13 @@ const initialState: Company = {
     slotsVisibilityDays: 7,
     scheduledAppointments: [],
     connectedWithMP: false,
-    statusSuscription: "inactive",
-    plan: "individual"
+    suscription: {
+        suscription_id: "",
+        plan: "individual",
+        status_suscription: "pending",
+        next_payment_date: undefined,
+        start_date: undefined,
+    }
 };
 
 interface CompanyContextState {

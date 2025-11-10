@@ -3,6 +3,7 @@ import { Company } from "../../../../../types"
 import PlanCard from "../../../../LoginRegisterForms/PlanCard/PlanCard"
 import Button from "../../../../../common/Button/Button"
 import { UserXIcon } from "../../../../../common/Icons/Icons"
+import { confirmDelete } from "../../../../../utils/alerts"
 
 interface Props {
     data: Company
@@ -55,6 +56,16 @@ const PlansSettings: React.FC<Props> = ({ data }) => {
         }
     ]
 
+    const alertWorking = async () => {
+        return await confirmDelete({
+            question: "Estamos trabajando en esta sección...",
+            mesasge: "Si quieres cambiar de plan o cancelarlo, comunícate con el soporte: aedestechnologies@gmail.com",
+            icon: "info",
+            confirmButtonText: "Aceptar",
+            cancelButton: false
+        })
+    }
+
     return (
         <div className="plansSettings animation-section">
             <div className="header-settings">
@@ -69,8 +80,8 @@ const PlansSettings: React.FC<Props> = ({ data }) => {
                             planName={p.name}
                             features={p.features}
                             price={p.price}
-                            isSelected={p.id === data.plan}
-                            onClick={() => console.log("click")}
+                            isSelected={p.id === data.suscription.plan}
+                            onClick={alertWorking}
                             isComingSoon={p.id === "teams"}
                             isSettings
                         />
@@ -92,6 +103,7 @@ const PlansSettings: React.FC<Props> = ({ data }) => {
                             fill="white"
                         />
                     }
+                    onSubmit={alertWorking}
                 >
                     Cancelar suscripción
                 </Button>
