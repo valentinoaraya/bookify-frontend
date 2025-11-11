@@ -92,6 +92,7 @@ const ServicesPanel: React.FC<Props> = ({ companyServices, connectedWithMP, comp
                                     signPrice={service.signPrice}
                                     connectedWithMP={connectedWithMP}
                                     mode={service.mode}
+                                    active={service.active}
                                     availableAppointmentsLenght={service.availableAppointments.reduce((acc, appointment) => acc + appointment.capacity - appointment.taken, 0)}
                                     scheduledAppointmentsLenght={service.scheduledAppointments.length}
                                     onDeleteService={onDeleteService}

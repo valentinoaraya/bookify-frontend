@@ -21,12 +21,13 @@ interface Props {
     availableAppointmentsLenght?: number
     capacityPerShift: number
     mode: "in-person" | "online"
+    active: boolean
     onDeleteService: (id: string, scheduledAppointmentsToDelete: string[]) => void
     onUpdateService: (data: { [key: string]: any }) => void
     onRedirectToCalendar: (id: string, view: View) => void
 }
 
-const ServiceCard: React.FC<Props> = ({ id, duration, price, title, description, mode, signPrice, connectedWithMP, scheduledAppointmentsLenght = 0, availableAppointmentsLenght = 0, capacityPerShift, onDeleteService, onUpdateService, onRedirectToCalendar }) => {
+const ServiceCard: React.FC<Props> = ({ id, duration, price, title, description, mode, signPrice, connectedWithMP, scheduledAppointmentsLenght = 0, availableAppointmentsLenght = 0, capacityPerShift, onDeleteService, onUpdateService, onRedirectToCalendar, active }) => {
 
     const { error, isLoading, delete: del } = useAuthenticatedDelete()
     const { error: errorUpdate, isLoading: isLoadingUpdate, put } = useAuthenticatedPut()
@@ -71,7 +72,7 @@ const ServiceCard: React.FC<Props> = ({ id, duration, price, title, description,
 
     return (
         <>
-            <div className="service-card-container">
+            <div className={`service-card-container ${active ? "" : "disabled"}`}>
                 <div className="service-card-item">
                     <div className="service-card-header">
                         <div className="service-base-info">
@@ -112,39 +113,46 @@ const ServiceCard: React.FC<Props> = ({ id, duration, price, title, description,
                         </div>
                     </div>
                     <div className="service-card-actions">
-                        <Button
-                            fontSize={window.innerWidth <= 930 ? "1rem" : "1.2rem"}
-                            backgroundColor="#1282A2"
-                            padding=".5rem 1rem"
-                            fontWeight="600"
-                            margin="0"
-                            disabled={isLoading || isLoadingUpdate}
-                            onSubmit={() => onRedirectToCalendar(id, "calendar")}
-                        >
-                            Habilitar turnos
-                        </Button>
-                        <Button
-                            fontSize={window.innerWidth <= 930 ? "1rem" : "1.2rem"}
-                            backgroundColor="#1282A2"
-                            padding=".5rem 1rem"
-                            fontWeight="600"
-                            margin="0"
-                            disabled={isLoading || isLoadingUpdate}
-                            onSubmit={() => setIsModalOpen(true)}
-                        >
-                            Editar
-                        </Button>
-                        <Button
-                            fontSize={window.innerWidth <= 930 ? "1rem" : "1.2rem"}
-                            padding=".5rem 1rem"
-                            fontWeight="600"
-                            backgroundColor="rgb(231, 76, 60)"
-                            margin="0"
-                            onSubmit={deleteService}
-                            disabled={isLoading || isLoadingUpdate}
-                        >
-                            Eliminar
-                        </Button>
+                        {
+                            !active ?
+                                <h3 className="disabledTilte">Deshabilitado</h3>
+                                :
+                                <>
+                                    <Button
+                                        fontSize={window.innerWidth <= 930 ? "1rem" : "1.2rem"}
+                                        backgroundColor="#1282A2"
+                                        padding=".5rem 1rem"
+                                        fontWeight="600"
+                                        margin="0"
+                                        disabled={isLoading || isLoadingUpdate}
+                                        onSubmit={() => onRedirectToCalendar(id, "calendar")}
+                                    >
+                                        Habilitar turnos
+                                    </Button>
+                                    <Button
+                                        fontSize={window.innerWidth <= 930 ? "1rem" : "1.2rem"}
+                                        backgroundColor="#1282A2"
+                                        padding=".5rem 1rem"
+                                        fontWeight="600"
+                                        margin="0"
+                                        disabled={isLoading || isLoadingUpdate}
+                                        onSubmit={() => setIsModalOpen(true)}
+                                    >
+                                        Editar
+                                    </Button>
+                                    <Button
+                                        fontSize={window.innerWidth <= 930 ? "1rem" : "1.2rem"}
+                                        padding=".5rem 1rem"
+                                        fontWeight="600"
+                                        backgroundColor="rgb(231, 76, 60)"
+                                        margin="0"
+                                        onSubmit={deleteService}
+                                        disabled={isLoading || isLoadingUpdate}
+                                    >
+                                        Eliminar
+                                    </Button>
+                                </>
+                        }
                     </div>
                 </div>
             </div>

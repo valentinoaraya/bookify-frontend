@@ -7,6 +7,7 @@ import RemindersSettings from "./RemindersSettings/RemindersSettings"
 import AnticipationsSettings from "./AnticipationsSettings/AnticipationsSettings"
 import { useCompany } from "../../../../hooks/useCompany"
 import PlansSettings from "./PlansSettings/PlansSettings"
+import ModalPlans from "./PlansSettings/ModalPlans"
 
 interface Props {
     isOpen: boolean
@@ -16,10 +17,11 @@ interface Props {
 }
 
 const ModalSettings: React.FC<Props> = ({ isOpen, setIsOpen, active, setActive }) => {
-
     const [shouldRender, setShouldRender] = useState(isOpen);
     const [closing, setClosing] = useState(false);
     const { state } = useCompany()
+    const [isModalPlansOpen, setIsModalPlansOpen] = useState(false)
+    const [selectedPlanId, setSelectedPlanId] = useState<string | null>(null)
 
     useEffect(() => {
         if (isOpen) {
@@ -96,10 +98,16 @@ const ModalSettings: React.FC<Props> = ({ isOpen, setIsOpen, active, setActive }
                         {active === "paymentmethods" && <PaymentMethodsSettings data={state} />}
                         {active === "reminders" && <RemindersSettings data={state} />}
                         {active === "anticipations" && <AnticipationsSettings data={state} />}
-                        {active === "plans" && <PlansSettings data={state} />}
+                        {active === "plans" && <PlansSettings data={state} setIsModalPlansOpen={setIsModalPlansOpen} setSelectedPlanId={setSelectedPlanId} />}
                     </div>
                 </div>
             </div>
+            <ModalPlans
+                data={state}
+                isModalPlansOpen={isModalPlansOpen}
+                setIsModalPlansOpen={setIsModalPlansOpen}
+                selectedPlanId={selectedPlanId}
+            />
         </div>
     );
 }

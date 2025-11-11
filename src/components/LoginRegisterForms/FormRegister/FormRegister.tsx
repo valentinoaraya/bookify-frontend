@@ -92,7 +92,7 @@ const FormRegister = () => {
         },
         {
             name: "Plan Equipo",
-            value: "teams",
+            value: "team",
             price: "$35.000",
             features: [
                 "Incluye Plan Individual Plus por profesional",
