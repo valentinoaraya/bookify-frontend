@@ -4,111 +4,116 @@ import PlanCard from "../../../../LoginRegisterForms/PlanCard/PlanCard"
 import Button from "../../../../../common/Button/Button"
 import { UserXIcon } from "../../../../../common/Icons/Icons"
 import { confirmDelete } from "../../../../../utils/alerts"
+import { plans } from "../../../../../utils/plans"
+import { useAuthenticatedDelete } from "../../../../../hooks/useAuthenticatedFetch"
+import { notifyError } from "../../../../../utils/notifications"
+import { BACKEND_API_URL } from "../../../../../config"
+import LoadingModal from "../../../../../common/LoadingModal/LoadingModal"
+import { useNavigate } from "react-router-dom"
 
 interface Props {
     data: Company
+    setIsModalPlansOpen: React.Dispatch<React.SetStateAction<boolean>>
+    setSelectedPlanId: React.Dispatch<React.SetStateAction<string | null>>
 }
 
-const PlansSettings: React.FC<Props> = ({ data }) => {
+const PlansSettings: React.FC<Props> = ({ data, setIsModalPlansOpen, setSelectedPlanId }) => {
 
-    const plans = [
-        {
-            id: "individual",
-            name: "Individual",
-            price: "$12.000",
-            available: true,
-            features: [
-                "1 profesional",
-                "Hasta 5 servicios",
-                "Recordatorios y emails automáticos",
-                "Pagos online con Mercado Pago",
-                "Rembolsos automáticos",
-                "Historial completo de movimientos",
-                "Soporte por correo"
-            ]
-        },
-        {
-            id: "individual_plus",
-            name: "Individual Plus",
-            price: "$18.000",
-            available: true,
-            features: [
-                "Incluye Plan Individual",
-                "Servicios personalizados e ilimitados",
-                "Métricas de rendimiento (ingresos, asistencias, etc.)",
-                "Soporte prioritario"
-            ]
-        },
-        {
-            id: "teams",
-            name: "Equipo",
-            price: "$35.000",
-            available: false,
-            features: [
-                "Incluye Plan Individual Plus por profesional",
-                "Hasta 5 profesionales",
-                "Dashborard administrativo",
-                "Gestión de agendas separadas",
-                "Historial completo de movimientos por profesional",
-                "Historial centralizado de clientes",
-                "+ Profesionales adicionales: $5.000 / mes cada profesional",
-            ],
+    const { isLoading, error, delete: del } = useAuthenticatedDelete()
+    const navigate = useNavigate()
+
+    if (error) {
+        notifyError("Error al cancelar suscripción")
+        console.log(error)
+    }
+
+    const handleOpenModal = (planId: string) => {
+        if (planId === data.suscription.plan) {
+            return
         }
-    ]
+        setSelectedPlanId(planId)
+        setIsModalPlansOpen(true)
+    }
 
-    const alertWorking = async () => {
-        return await confirmDelete({
-            question: "Estamos trabajando en esta sección...",
-            mesasge: "Si quieres cambiar de plan o cancelarlo, comunícate con el soporte: aedestechnologies@gmail.com",
-            icon: "info",
+    const cancelSuscription = async () => {
+        const desicion = await confirmDelete({
+            question: "¿Seguro que quieres cancelar tu suscripción a Bookify?",
+            mesasge: "Al cancelar tu suscripción, no podrás volver a crear una cuenta con el mismo email utilizado para esta.",
+            icon: "warning",
             confirmButtonText: "Aceptar",
-            cancelButton: false
+            cancelButton: true,
+            cancelButtonText: "Cancelar"
         })
+
+        if (desicion) {
+            const url = `${BACKEND_API_URL}/suscriptions/cancel/${data.suscription.suscription_id}`
+            const response = await del(url, { companyId: data._id }, { skipAuth: false })
+
+            if (response.data && response.data.data === "Suscription cancelled") {
+                const decision = await confirmDelete({
+                    question: "Suscripción cancelada",
+                    icon: "success",
+                    cancelButton: false,
+                    confirmButtonText: "Aceptar",
+                    mesasge: "¡Gracias por confiar en nosotros!"
+                })
+
+                if (decision) {
+                    navigate("/")
+                }
+            }
+        }
     }
 
     return (
-        <div className="plansSettings animation-section">
-            <div className="header-settings">
-                <h2 className="titleSetting">Planes de Bookify</h2>
-                <p>Puedes cambiar de plan o cancelar tu suscripción cuando desees.</p>
-            </div>
-            <div className="plans-content">
-                {
-                    plans.map(p => {
-                        return <PlanCard
-                            key={p.id}
-                            planName={p.name}
-                            features={p.features}
-                            price={p.price}
-                            isSelected={p.id === data.suscription.plan}
-                            onClick={alertWorking}
-                            isComingSoon={p.id === "teams"}
-                            isSettings
-                        />
-                    })
-                }
-            </div>
-            <div className="plans-actions">
-                <Button
-                    backgroundColor="#E74C3C"
-                    width="auto"
-                    margin="0"
-                    fontSize="1rem"
-                    padding=".5rem 1rem"
-                    fontWeight="600"
-                    iconSVG={
-                        <UserXIcon
-                            width="18"
-                            height="18"
-                            fill="white"
-                        />
+        <>
+            <div className="plansSettings animation-section">
+                <div className="header-settings">
+                    <h2 className="titleSetting">Planes de Bookify</h2>
+                    <p>Puedes cambiar de plan o cancelar tu suscripción cuando desees.</p>
+                </div>
+                <div className="plans-content">
+                    {
+                        plans.map(p => {
+                            return <PlanCard
+                                key={p.id}
+                                planName={p.name}
+                                features={p.features}
+                                price={p.price}
+                                isSelected={p.id === data.suscription.plan}
+                                onClick={() => handleOpenModal(p.id)}
+                                isComingSoon={p.id === "team"}
+                                isSettings
+                            />
+                        })
                     }
-                    onSubmit={alertWorking}
-                >
-                    Cancelar suscripción
-                </Button>
+                </div>
+                <div className="plans-actions">
+                    <Button
+                        backgroundColor="#E74C3C"
+                        width="auto"
+                        margin="0"
+                        fontSize="1rem"
+                        padding=".5rem 1rem"
+                        fontWeight="600"
+                        iconSVG={
+                            <UserXIcon
+                                width="18"
+                                height="18"
+                                fill="white"
+                            />
+                        }
+                        onSubmit={cancelSuscription}
+                    >
+                        Cancelar suscripción
+                    </Button>
+                </div>
             </div>
-        </div>
+            <LoadingModal
+                text="Cancelando suscripción..."
+                isOpen={isLoading}
+            />
+        </>
     )
 }
 

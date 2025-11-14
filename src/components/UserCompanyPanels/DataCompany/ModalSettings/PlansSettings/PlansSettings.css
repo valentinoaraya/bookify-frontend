@@ -11,3 +11,199 @@
     justify-content: end;
     margin-top: 2rem;
 }
+
+@keyframes modal-plans-slide-in {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes modal-plans-slide-out {
+    from {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    to {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+}
+
+.modalFormPlansOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    padding: 0;
+}
+
+.modalFormPlansOverlay.opening .modalFormPlansContent {
+    animation: modal-plans-slide-in 0.3s ease forwards;
+}
+
+.modalFormPlansOverlay.closing .modalFormPlansContent {
+    animation: modal-plans-slide-out 0.3s ease forwards;
+}
+
+body.modal-plans-open {
+    overflow: hidden;
+}
+
+.modalFormPlansContent {
+    margin: .5rem;
+    overflow-y: auto;
+    width: 100%;
+    max-width: 70vw;
+    height: 80vh;
+    background: var(--blanco);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    border-radius: 10px;
+    position: relative;
+    animation: modal-plans-slide-in 0.3s ease-in;
+}
+
+.modalFormPlansCloseButton {
+    position: absolute;
+    top: 2rem;
+    right: 2rem;
+    background: transparent;
+    border: none;
+    font-size: 3rem;
+    color: #666;
+    cursor: pointer;
+    transition: color 0.2s;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    line-height: 1;
+    z-index: 10;
+}
+
+.modalFormPlansCloseButton:hover {
+    color: #000;
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+.modalFormPlansHeader {
+    text-align: center;
+    max-width: 600px;
+}
+
+.modalFormPlansHeader h2 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    color: var(--azul-oscuro);
+    font-weight: 700;
+}
+
+.modalFormPlansHeader p {
+    font-size: 1.2rem;
+    color: #666;
+    margin: 0;
+}
+
+.modalFormPlansForm {
+    width: 100%;
+    max-width: 500px;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.modalFormPlansButtons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 1rem;
+}
+
+.spanFormPlans {
+    font-style: italic;
+    color: #722ed1;
+}
+
+.divFeaturesPlan {
+    margin: 2rem 0;
+}
+
+.ulFeaturesPlan {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    list-style: none;
+}
+
+.liFeaturesPlan {
+    display: flex;
+    gap: .5rem;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--azul-oscuro);
+    text-align: center;
+
+    .feature-checkmark {
+        color: #722ed1;
+    }
+}
+
+@media (max-width: 1300px) {
+    .modalFormPlansContent {
+        max-width: 90vw;
+    }
+}
+
+@media (max-width: 768px) {
+
+    .modalFormPlansCloseButton {
+        top: 1rem;
+        right: 1rem;
+        font-size: 2.5rem;
+        width: 40px;
+        height: 40px;
+    }
+
+    .modalFormPlansHeader h2 {
+        font-size: 2rem;
+    }
+
+    .modalFormPlansHeader p {
+        font-size: 1rem;
+    }
+
+    .modalFormPlansButtons {
+        flex-direction: column;
+    }
+}
+
+@media (max-width: 480px) {
+
+    .modalFormPlansHeader h2 {
+        font-size: 1.5rem;
+    }
+
+    .modalFormPlansForm {
+        gap: 1.5rem;
+    }
+}
