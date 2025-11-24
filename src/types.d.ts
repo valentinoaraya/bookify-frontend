@@ -48,7 +48,7 @@ export interface Company extends CompanyBasicInfo {
     suscription: {
         suscription_id: string
         plan: "individual" | "individual_plus" | "team"
-        status_suscription: "inactive" | "active" | "pending" | "upgrading"
+        status_suscription: "inactive" | "active" | "pending" | "upgrading" | "downgrading"
         start_date?: Date
         next_payment_date?: Date
     }

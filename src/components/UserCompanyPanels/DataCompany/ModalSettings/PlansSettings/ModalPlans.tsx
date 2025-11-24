@@ -21,7 +21,7 @@ const ModalPlans: React.FC<Props> = ({ data, isModalPlansOpen, setIsModalPlansOp
     const { isLoading, error, post } = useAuthenticatedPost()
     const [shouldRenderPlans, setShouldRenderPlans] = useState(false)
     const [closingPlans, setClosingPlans] = useState(false)
-    const { dataForm, handleChange, deleteData } = useDataForm({ email: "" })
+    const { dataForm, handleChange, deleteData } = useDataForm({ payer_email: "" })
     const navigate = useNavigate()
 
     if (error) {
@@ -55,7 +55,7 @@ const ModalPlans: React.FC<Props> = ({ data, isModalPlansOpen, setIsModalPlansOp
     const handleSubmitEmail = async (e: React.FormEvent) => {
         e.preventDefault()
 
-        const email = dataForm.email as string
+        const email = dataForm.payer_email as string
 
         if (!email || !email.includes("@")) {
             notifyError("Por favor, ingresa un email válido")
@@ -148,7 +148,7 @@ const ModalPlans: React.FC<Props> = ({ data, isModalPlansOpen, setIsModalPlansOp
                     <LabelInputComponent
                         label="Email de Meracado Pago"
                         type="email"
-                        name="email"
+                        name="payer_email"
                         placeholder="tu-mercadopago@email.com"
                         required={true}
                         value={dataForm.email}
