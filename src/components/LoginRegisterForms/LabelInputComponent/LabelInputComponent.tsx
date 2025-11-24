@@ -18,8 +18,11 @@ interface LabelInputComponentProps {
 
 const LabelInputComponent: React.FC<LabelInputComponentProps> = ({ label, type, name, required, value, selectOptions, mainSelectOption, placeholder, onChange }) => {
 
+    const location = window.location.pathname;
     const [visible, setVisible] = useState(false)
     const [valueButtonPicker, setValueButtonPicker] = useState<string>("Selecciona hora...")
+
+    console.log(location)
 
     return (
         <ConfigProvider
@@ -38,10 +41,19 @@ const LabelInputComponent: React.FC<LabelInputComponentProps> = ({ label, type, 
             <div className="divInput">
                 <label>{label}</label>
                 {
-                    name === "email" &&
-                    <p className="emailWarningParagraph">
-                        Asegurate de escribir correctamente tu dirección de correo. Si está mal escrita no podrás recibir la confirmación del turno.
-                    </p>
+                    location === "/login/company" ?
+                        <></>
+                        :
+                        name === "email" &&
+                        <p className="emailWarningParagraph">
+                            Asegurate de escribir correctamente tu dirección de correo.
+                            {
+                                location === "/register/company" ?
+                                    ""
+                                    :
+                                    "Si está mal escrita no podrás recibir la confirmación del turno."
+                            }
+                        </p>
                 }
                 {
                     type === "selectHour" ?
