@@ -22,8 +22,6 @@ const LabelInputComponent: React.FC<LabelInputComponentProps> = ({ label, type, 
     const [visible, setVisible] = useState(false)
     const [valueButtonPicker, setValueButtonPicker] = useState<string>("Selecciona hora...")
 
-    console.log(location)
-
     return (
         <ConfigProvider
             theme={{

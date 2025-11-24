@@ -40,7 +40,7 @@ const CompanyPanel = () => {
                                 :
                                 <div className="notFoundedCompanyDiv">
                                     {
-                                        state.suscription.status_suscription === "pending" || state.suscription.status_suscription === "upgrading" ?
+                                        state.suscription.status_suscription === "pending" || state.suscription.status_suscription === "upgrading" || state.suscription.status_suscription === "downgrading" ?
                                             <>
                                                 <h2 className="notFoundedCompanyTitle">⏱️ Estamos procesando tu suscripción</h2>
                                                 <p className="notFoundedCompanyDescription">Te avisaremos por correo cuando esté activa, esto puede tomar algunos minutos.</p>
