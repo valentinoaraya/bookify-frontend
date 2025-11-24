@@ -38,6 +38,12 @@ const LabelInputComponent: React.FC<LabelInputComponentProps> = ({ label, type, 
             <div className="divInput">
                 <label>{label}</label>
                 {
+                    name === "email" &&
+                    <p className="emailWarningParagraph">
+                        Asegurate de escribir correctamente tu dirección de correo. Si está mal escrita no podrás recibir la confirmación del turno.
+                    </p>
+                }
+                {
                     type === "selectHour" ?
                         <div className="timePickerContainer">
                             {
