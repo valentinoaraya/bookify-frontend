@@ -235,11 +235,12 @@
     font-size: 14px;
     font-weight: 600;
     padding: .2rem .5rem;
-    border-radius: 999px;
+    border-radius: 10px;
     border: 1px solid;
     color: #595959;
     background-color: #e6f7ff;
     border-color: #91d5ff;
+    flex-wrap: wrap;
 }
 
 .appointment-mode .appointment-mode-label {
@@ -258,6 +259,16 @@
     background-color: #bfbfbf;
     background-color: #1890ff;
 
+}
+
+.userLocation {
+    cursor: pointer;
+    font-weight: 600;
+    transition: all .2s ease;
+}
+
+.userLocation:hover {
+    color: #1890ff;
 }
 
 @media (max-width: 720px) {

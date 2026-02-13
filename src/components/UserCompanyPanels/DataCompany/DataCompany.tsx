@@ -20,12 +20,6 @@ const DataCompany: React.FC<Props> = ({ dataCompany, children, scheduledAppointm
 
     const location = window.location.pathname;
 
-    const availableAppointmentsQuantity = dataCompany.services.reduce((acc, service) => {
-        return acc + service.availableAppointments.reduce((acc, appointment) => {
-            return acc + appointment.capacity - appointment.taken;
-        }, 0);
-    }, 0);
-
     const todayAppointments = scheduledAppointments
         ? scheduledAppointments.filter(appointment => {
             const appointmentDate = new Date(appointment.date);
@@ -64,75 +58,51 @@ const DataCompany: React.FC<Props> = ({ dataCompany, children, scheduledAppointm
             </div>
             <div className="divQuantityAppointmentsContainer">
                 {
-                    scheduledAppointments ?
-                        <>
-                            <div className="divQuantityAppointments">
-                                <div className="iconContainer">
+                    scheduledAppointments &&
+                    <>
+                        <div className="divQuantityAppointments">
+                            <div className="iconContainer">
+                                <ClockIcon
+                                    width="36px"
+                                    height="36px"
+                                    fill="#1282A2"
+                                />
+                            </div>
+                            <div className="divQuantityAppointmentsText">
+                                <div className="divQuantityAppointmentsTextInner">
                                     <ClockIcon
-                                        width="36px"
-                                        height="36px"
+                                        width="20px"
+                                        height="20px"
                                         fill="#1282A2"
                                     />
+                                    <h2>{todayAppointments.length}</h2>
                                 </div>
-                                <div className="divQuantityAppointmentsText">
-                                    <div className="divQuantityAppointmentsTextInner">
-                                        <ClockIcon
-                                            width="20px"
-                                            height="20px"
-                                            fill="#1282A2"
-                                        />
-                                        <h2>{todayAppointments.length}</h2>
-                                    </div>
-                                    <h2 className="iconContainer">{todayAppointments.length}</h2>
-                                    <h3>Turnos para hoy</h3>
-                                </div>
+                                <h2 className="iconContainer">{todayAppointments.length}</h2>
+                                <h3>Turnos para hoy</h3>
                             </div>
-                            <div className="divQuantityAppointments">
-                                <div className="iconContainer">
+                        </div>
+                        <div className="divQuantityAppointments">
+                            <div className="iconContainer">
+                                <CalendarCheckIcon
+                                    width="36px"
+                                    height="36px"
+                                    fill="#1282A2"
+                                />
+                            </div>
+                            <div className="divQuantityAppointmentsText">
+                                <div className="divQuantityAppointmentsTextInner">
                                     <CalendarCheckIcon
-                                        width="36px"
-                                        height="36px"
+                                        width="20px"
+                                        height="20px"
                                         fill="#1282A2"
                                     />
+                                    <h2>{scheduledAppointments.length}</h2>
                                 </div>
-                                <div className="divQuantityAppointmentsText">
-                                    <div className="divQuantityAppointmentsTextInner">
-                                        <CalendarCheckIcon
-                                            width="20px"
-                                            height="20px"
-                                            fill="#1282A2"
-                                        />
-                                        <h2>{scheduledAppointments.length}</h2>
-                                    </div>
-                                    <h2 className="iconContainer">{scheduledAppointments.length}</h2>
-                                    <h3>Turnos totales</h3>
-                                </div>
+                                <h2 className="iconContainer">{scheduledAppointments.length}</h2>
+                                <h3>Turnos totales</h3>
                             </div>
-                        </>
-                        :
-                        <>
-                            <div className="divQuantityAppointments">
-                                <div className="iconContainer">
-                                    <CalendarCheckIcon
-                                        width="36px"
-                                        height="36px"
-                                        fill="#1282A2"
-                                    />
-                                </div>
-                                <div className="divQuantityAppointmentsText">
-                                    <div className="divQuantityAppointmentsTextInner">
-                                        <CalendarCheckIcon
-                                            width="20px"
-                                            height="20px"
-                                            fill="#1282A2"
-                                        />
-                                        <h2>{availableAppointmentsQuantity}</h2>
-                                    </div>
-                                    <h2 className="iconContainer">{availableAppointmentsQuantity}</h2>
-                                    <h3>Turnos disponibles</h3>
-                                </div>
-                            </div>
-                        </>
+                        </div>
+                    </>
                 }
                 <div className="divQuantityAppointments">
                     <div className="iconContainer">
