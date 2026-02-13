@@ -104,7 +104,7 @@ const RemindersSettings: React.FC<Props> = ({ data }) => {
                                                     <td>
                                                         {reminder.services && reminder.services.length > 0
                                                             ? reminder.services.map(service => service.title).join(", ")
-                                                            : "Todos los servicios"}
+                                                            : "No hay servicios afectados"}
                                                     </td>
                                                     <td>
                                                         <button className="delete-reminder-button" onClick={async () => {
