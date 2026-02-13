@@ -259,14 +259,26 @@ const ServiceToSchedulePanel: React.FC<Props> = ({ serviceToSchedule, setService
             <ModalForm
                 title="Completa tus datos"
                 isOpen={isOpen}
-                inputs={[
-                    { type: "text", name: "name", placeholder: "Nombre", label: "Nombre" },
-                    { type: "text", name: "lastName", placeholder: "Apellido", label: "Apellido" },
-                    { type: "text", name: "email", placeholder: "Email", label: "Email" },
-                    { type: "text", name: "dni", placeholder: "DNI", label: "DNI" },
-                    { type: "text", name: "phone", placeholder: "Teléfono", label: "Teléfono" },
-                ]}
-                initialData={{ name: "", lastName: "", email: "", dni: "", phone: "", }}
+                inputs={
+                    serviceToScheduleData.mode === "in-person-at-home" ?
+                        [
+                            { type: "text", name: "name", placeholder: "Nombre", label: "Nombre" },
+                            { type: "text", name: "lastName", placeholder: "Apellido", label: "Apellido" },
+                            { type: "text", name: "email", placeholder: "Email", label: "Email" },
+                            { type: "text", name: "dni", placeholder: "DNI", label: "DNI" },
+                            { type: "text", name: "phone", placeholder: "Teléfono", label: "Teléfono" },
+                            { type: "text", name: "userLocation", placeholder: "El servicio es pres1encial a domicilio, coloque su dirección (calle, número y ciudad)", label: "Tu dirección" },
+                        ]
+                        :
+                        [
+                            { type: "text", name: "name", placeholder: "Nombre", label: "Nombre" },
+                            { type: "text", name: "lastName", placeholder: "Apellido", label: "Apellido" },
+                            { type: "text", name: "email", placeholder: "Email", label: "Email" },
+                            { type: "text", name: "dni", placeholder: "DNI", label: "DNI" },
+                            { type: "text", name: "phone", placeholder: "Teléfono", label: "Teléfono" },
+                        ]
+                }
+                initialData={{ name: "", lastName: "", email: "", dni: "", phone: "", userLocation: "" }}
                 onClose={() => setIsOpen(false)}
                 onSubmitForm={(data) => {
                     if (!dateAppointment) return notifyError("No se ha especificado una fecha para el turno.")

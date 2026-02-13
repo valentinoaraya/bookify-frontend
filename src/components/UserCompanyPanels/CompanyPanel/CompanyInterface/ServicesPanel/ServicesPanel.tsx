@@ -110,7 +110,7 @@ const ServicesPanel: React.FC<Props> = ({ companyServices, connectedWithMP, comp
                     { type: "text", name: "title", placeholder: "Título", label: "Título" },
                     { type: "text", name: "description", placeholder: "Descripción", label: "Descripción" },
                     { type: "number", name: "price", placeholder: "Precio", label: "Precio" },
-                    { type: "select", name: "mode", label: "Modalidad", selectOptions: [{ label: "Presencial", value: "in-person" }, { label: "Virtual", value: "online" }] },
+                    { type: "select", name: "mode", label: "Modalidad", selectOptions: [{ label: "Presencial en local", value: "in-person" }, { label: "Virtual", value: "online" }, { label: "Presencial a domicilio", value: "in-person-at-home" }] },
                     { type: "number", name: "duration", placeholder: "Duración", label: "Duración (en minutos)" },
                     { type: "number", name: "capacityPerShift", placeholder: "Capacidad de personas por turno", label: "Capacidad de personas por turno" },
                     connectedWithMP ?

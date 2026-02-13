@@ -20,7 +20,7 @@ interface Props {
     scheduledAppointmentsLenght?: number
     availableAppointmentsLenght?: number
     capacityPerShift: number
-    mode: "in-person" | "online"
+    mode: "in-person" | "online" | "in-person-at-home"
     active: boolean
     onDeleteService: (id: string, scheduledAppointmentsToDelete: string[]) => void
     onUpdateService: (data: { [key: string]: any }) => void
@@ -93,10 +93,10 @@ const ServiceCard: React.FC<Props> = ({ id, duration, price, title, description,
                                         <p className="service-sign-price"><span>Sin seña</span></p>
                                     )}
                                 </div>
-                                <div className={`service-mode ${mode === "in-person" ? "presencial" : "virtual"}`}>
+                                <div className={`service-mode ${mode === "online" ? "virtual" : "presencial"}`}>
                                     <span className="service-mode-dot"></span>
                                     <span className="service-mode-label">Modalidad</span>
-                                    <span className="service-mode-value">{mode === "in-person" ? "Presencial" : "Virtual"}</span>
+                                    <span className="service-mode-value">{mode === "in-person" ? "Presencial en local" : mode === "online" ? "Virtual" : "Presencial a domicilio"}</span>
                                 </div>
                             </div>
                             <div className="service-duration-price-info">
@@ -163,7 +163,7 @@ const ServiceCard: React.FC<Props> = ({ id, duration, price, title, description,
                     { type: "text", name: "title", placeholder: "Título", label: "Título" },
                     { type: "text", name: "description", placeholder: "Descripción", label: "Descripción" },
                     { type: "number", name: "price", placeholder: "Precio", label: "Precio" },
-                    { type: "select", name: "mode", label: "Modalidad", selectOptions: mode === "in-person" ? [{ label: "Presencial", value: "in-person" }, { label: "Virtual", value: "online" }] : [{ label: "Virtual", value: "online" }, { label: "Presencial", value: "in-person" }] },
+                    { type: "select", name: "mode", label: "Modalidad", selectOptions: mode === "in-person" ? [{ label: "Presencial en local", value: "in-person" }, { label: "Virtual", value: "online" }, { label: "Presencial a domicilio", value: "in-person-at-home" }] : mode === "online" ? [{ label: "Virtual", value: "online" }, { label: "Presencial en local", value: "in-person" }, { label: "Presencial a domicilio", value: "in-person-at-home" }] : [{ label: "Presencial a domicilio", value: "in-person-at-home" }, { label: "Virtual", value: "online" }, { label: "Presencial en local", value: "in-person" }] },
                     { type: "number", name: "capacityPerShift", placeholder: "Capacidad de personas por turno", label: "Capacidad de personas por turno" },
                     { type: "number", name: "duration", placeholder: "Duración", label: "Duración (en minutos)" },
                     connectedWithMP ?

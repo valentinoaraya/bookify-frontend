@@ -18,7 +18,7 @@ export interface Service extends ServiceBasicInfo {
     capacityPerShift: number
     duration: number
     price: number
-    mode: "in-person" | "online"
+    mode: "in-person" | "online" | "in-person-at-home"
     active: boolean
     companyId: string
     availableAppointments: AvailableAppointment[]
@@ -74,12 +74,13 @@ export interface Appointment extends UserData {
     }
     companyId?: Company
     date: string
-    mode: "in-person" | "online"
+    mode: "in-person" | "online" | "in-person-at-home"
     price: number
     duration: number
     totalPaidAmount?: number
     status: "scheduled" | "finished" | "cancelled" | "pending_action" | "did_not_attend"
     cancelledBy: "company" | "client"
+    userLocation?: string
 }
 
 export interface UserData {

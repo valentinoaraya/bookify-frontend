@@ -12,7 +12,7 @@ interface Props {
     price: number;
     title: string;
     signPrice: number;
-    mode?: "in-person" | "online";
+    mode?: "in-person" | "online" | "in-person-at-home";
     setServiceToSchedule: React.Dispatch<React.SetStateAction<string | null>>
 }
 
@@ -53,7 +53,7 @@ const ResultCard: React.FC<Props> = ({
                     </div>
                 </div>
                 <div className="divDataContainer">
-                    <p className="parrafDataCompany mode"><span>Modalidad: {mode === "in-person" ? "Presencial" : "Virtual"}</span></p>
+                    <p className="parrafDataCompany mode"><span>Modalidad: {mode === "in-person" ? "Presencial en local" : mode === "online" ? "Virtual" : "Presencial a domicilio"}</span></p>
                     {signPrice !== 0 ? <p className="parrafDataCompany withSignPrice"><span>Precio de la seña: $ {signPrice}</span></p> : <p className="parrafDataCompany withSignPrice"><span>Sin seña</span></p>}
                     {
                         (company.city && company.street && company.number && mode === "in-person") &&

@@ -97,7 +97,7 @@ const CheckoutConfirmAppointment = () => {
                             <li>
                                 <p className="parrafDataCheckout">
                                     <span>Modalidad del turno:</span>
-                                    {service.mode === "in-person" ? "Presencial" : "Virtual"}
+                                    {service.mode === "in-person" ? "Presencial en local" : service.mode === "online" ? "Virtual" : "Presencial a domicilio"}
                                 </p>
                             </li>
                         </ul>
