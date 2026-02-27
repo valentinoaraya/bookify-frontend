@@ -59,7 +59,16 @@ const ServiceToSchedulePanel: React.FC<Props> = ({ serviceToSchedule, setService
                 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
 
             days.push({
-                date: date.toISOString().split('T')[0],
+                date: new Intl.DateTimeFormat('es-AR', {
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit',
+                    timeZone: 'America/Argentina/Buenos_Aires'
+                })
+                    .format(date)
+                    .split('/')
+                    .reverse()
+                    .join('-'),
                 dayName: dayNames[date.getDay()],
                 dayNumber: date.getDate(),
                 month: monthNames[date.getMonth()]

@@ -82,8 +82,6 @@ const AppointmentCard: React.FC<Props> = ({ appointment, onCancelAppointment }) 
         }
     }
 
-    console.log(appointment)
-
     return (
         <>
             <div className="card-appointment-container">
