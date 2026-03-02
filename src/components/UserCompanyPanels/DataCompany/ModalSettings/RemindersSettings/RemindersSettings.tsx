@@ -45,7 +45,6 @@ const RemindersSettings: React.FC<Props> = ({ data }) => {
         }
 
         const updatedCompany = {
-            ...data,
             reminders: [...data.reminders, reminder]
         }
         const response = await put(urlUpdateCompany, updatedCompany)
@@ -129,10 +128,14 @@ const RemindersSettings: React.FC<Props> = ({ data }) => {
                                         </tr>
                                     </>
                                 ) : (
-                                    <tr>
-                                        <td >No hay recordatorios agregados</td>
-                                        <td colSpan={2} className="add-reminder-td" onClick={() => setIsOpen(true)}>+ Agregar recordatorio</td>
-                                    </tr>
+                                    <>
+                                        <tr>
+                                            <td >No hay recordatorios agregados</td>
+                                        </tr>
+                                        <tr>
+                                            <td colSpan={2} className="add-reminder-td" onClick={() => setIsOpen(true)}>+ Agregar recordatorio</td>
+                                        </tr>
+                                    </>
                                 )}
                             </tbody>
                         </table>
