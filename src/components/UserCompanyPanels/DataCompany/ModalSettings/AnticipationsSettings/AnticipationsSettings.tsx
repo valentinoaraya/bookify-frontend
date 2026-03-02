@@ -36,7 +36,6 @@ const AnticipationsSettings: React.FC<Props> = ({ data }) => {
 
     const handleSave = async () => {
         const payload = {
-            ...data,
             cancellationAnticipationHours: form.cancellationAnticipationHours,
             bookingAnticipationHours: form.bookingAnticipationHours,
             slotsVisibilityDays: form.slotsVisibilityDays,

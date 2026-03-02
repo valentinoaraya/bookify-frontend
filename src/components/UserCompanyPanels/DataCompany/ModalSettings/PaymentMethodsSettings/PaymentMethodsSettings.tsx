@@ -2,6 +2,7 @@ import "./PaymentMethodsSettings.css"
 import { Company } from "../../../../../types";
 import MercadoPagoLogo from "../../../../../assets/images/mp-logo.webp"
 import PayPalLogo from "../../../../../assets/images/pp-logo.webp"
+import ModoLogo from "../../../../../assets/images/md-logo.webp"
 import { confirmDelete } from "../../../../../utils/alerts";
 import { notifyError } from "../../../../../utils/notifications";
 import { BACKEND_API_URL } from "../../../../../config";
@@ -118,6 +119,18 @@ const PaymentMethodsSettings: React.FC<Props> = ({ data }) => {
                         <div>
                             <h3>PayPal</h3>
                             <p>Permite cobrar señas en dólares.</p>
+                        </div>
+                    </div>
+                    <p className="pComingSoon">Próximamente</p>
+                </div>
+                <div className="divMethod disabled">
+                    <div className="divMethodInfo">
+                        <div>
+                            <img className="logo-pay-method" src={ModoLogo} alt="Logo Modo" />
+                        </div>
+                        <div>
+                            <h3>MODO</h3>
+                            <p>Permite cobrar señas en pesos.</p>
                         </div>
                     </div>
                     <p className="pComingSoon">Próximamente</p>
