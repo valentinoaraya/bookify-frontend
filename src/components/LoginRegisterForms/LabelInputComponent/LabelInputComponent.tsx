@@ -46,7 +46,7 @@ const LabelInputComponent: React.FC<LabelInputComponentProps> = ({ label, type, 
                         <p className="emailWarningParagraph">
                             Asegurate de escribir correctamente tu dirección de correo.
                             {
-                                location === "/register/company" ?
+                                location === "/register" || location === "/register/company" ?
                                     ""
                                     :
                                     "Si está mal escrita no podrás recibir la confirmación del turno."

@@ -18,7 +18,7 @@ type Action =
     | { type: "DELETE_APPOINTMENT"; payload: string }
     | { type: "SET_LOADING"; payload: boolean }
     | { type: "SET_ERROR"; payload: string | null }
-    | { type: "UPDATE_SERVICE_AVAILABILITY"; payload: { serviceId: string; availableAppointments: any[] } };
+    | { type: "UPDATE_SERVICE_AVAILABILITY"; payload: { serviceId: string; availableAppointments: any[]; slots?: any[] } };
 
 const initialState: Company = {
     type: "company",
@@ -28,6 +28,7 @@ const initialState: Company = {
     street: "",
     number: "",
     email: "",
+    payer_email: "",
     phone: "",
     company_id: "",
     services: [],
@@ -37,12 +38,13 @@ const initialState: Company = {
     slotsVisibilityDays: 7,
     scheduledAppointments: [],
     connectedWithMP: false,
-    suscription: {
-        suscription_id: "",
+    subscription: {
+        id: "",
         plan: "individual",
-        status_suscription: "pending",
-        next_payment_date: undefined,
-        start_date: undefined,
+        status: "pending",
+        mpPreapprovalId: "",
+        nextPaymentDate: undefined,
+        startDate: undefined,
     }
 };
 
@@ -61,11 +63,27 @@ interface CompanyContextActions {
     updateAppointments: (appointment: Appointment) => void;
     addAppointment: (appointment: Appointment) => void;
     deleteAppointment: (appointmentAndService: string) => void;
-    updateServiceAvailability: (serviceId: string, availableAppointments: any[]) => void;
+    updateServiceAvailability: (serviceId: string, availableAppointments: any[], slots?: any[]) => void;
     clearError: () => void;
 }
 
 type CompanyContextType = CompanyContextState & CompanyContextActions;
+
+const resolveAppointmentService = (appointment: Appointment): Service | undefined => {
+    if (appointment.service) return appointment.service
+    if (appointment.serviceId && typeof appointment.serviceId === "object") {
+        return appointment.serviceId as Service
+    }
+    return undefined
+}
+
+const resolveAppointmentServiceId = (appointment: Appointment): string => {
+    if (typeof appointment.serviceId === "string") return appointment.serviceId
+    if (appointment.serviceId && typeof appointment.serviceId === "object") {
+        return appointment.serviceId._id
+    }
+    return appointment.service?._id ?? ""
+}
 
 const companyReducer = (state: Company, action: Action): Company => {
     switch (action.type) {
@@ -96,14 +114,26 @@ const companyReducer = (state: Company, action: Action): Company => {
         case "UPDATE_APPOINTMENTS":
             return { ...state, scheduledAppointments: state.scheduledAppointments.map(a => a._id === action.payload._id ? action.payload : a) };
 
-        case "ADD_APPOINTMENT":
+        case "ADD_APPOINTMENT": {
             notifySuccess(`${action.payload.name} ${action.payload.lastName} acaba de agendar un nuevo turno`, true)
-            const newArrayServices = state.services.map(s => s._id === action.payload.serviceId._id ? action.payload.serviceId : s)
+            const service = resolveAppointmentService(action.payload)
+            const serviceId = resolveAppointmentServiceId(action.payload)
+            const newArrayServices = service
+                ? state.services.map(s => s._id === service._id ? service : s)
+                : state.services
             return {
                 ...state,
-                scheduledAppointments: [...state.scheduledAppointments, action.payload],
+                scheduledAppointments: [
+                    ...state.scheduledAppointments,
+                    {
+                        ...action.payload,
+                        serviceId: service ?? serviceId,
+                        service,
+                    },
+                ],
                 services: newArrayServices
             };
+        }
 
         case "DELETE_APPOINTMENT":
             return {
@@ -123,7 +153,11 @@ const companyReducer = (state: Company, action: Action): Company => {
                 ...state,
                 services: state.services.map(service =>
                     service._id === action.payload.serviceId
-                        ? { ...service, availableAppointments: action.payload.availableAppointments }
+                        ? {
+                            ...service,
+                            availableAppointments: action.payload.availableAppointments,
+                            ...(action.payload.slots ? { slots: action.payload.slots } : {}),
+                        }
                         : service
                 )
             };
@@ -218,10 +252,10 @@ export const CompanyProvider: React.FC<{ children: ReactNode }> = ({ children })
         dispatch({ type: "DELETE_APPOINTMENT", payload: appointemntId });
     }, []);
 
-    const updateServiceAvailability = useCallback((serviceId: string, availableAppointments: any[]) => {
+    const updateServiceAvailability = useCallback((serviceId: string, availableAppointments: any[], slots?: any[]) => {
         dispatch({
             type: "UPDATE_SERVICE_AVAILABILITY",
-            payload: { serviceId, availableAppointments }
+            payload: { serviceId, availableAppointments, slots }
         });
     }, []);
 
@@ -233,10 +267,6 @@ export const CompanyProvider: React.FC<{ children: ReactNode }> = ({ children })
         if (!token) return;
 
         connectSocket(token);
-
-        const joinRoom = () => {
-            socket.emit("joinCompany", state._id)
-        }
 
         const handleServiceAdded = (service: Service) => {
             dispatch({ type: "ADD_SERVICE", payload: service });
@@ -254,20 +284,26 @@ export const CompanyProvider: React.FC<{ children: ReactNode }> = ({ children })
             dispatch({ type: "ADD_APPOINTMENT", payload: appointment });
         };
 
-        const handleAppointmentDeleted = (appointmentAndService: { appointment: Appointment, service: Service }) => {
-            notifyError(`${appointmentAndService.appointment.name} ${appointmentAndService.appointment.lastName} ha cancelado un turno`, true)
-            dispatch({ type: "DELETE_APPOINTMENT_FROM_CANCEL", payload: appointmentAndService });
+        const handleAppointmentDeleted = (payload: { appointment: Appointment, service: Service, serviceId?: string }) => {
+            notifyError(`${payload.appointment.name} ${payload.appointment.lastName} ha cancelado un turno`, true)
+            dispatch({ type: "DELETE_APPOINTMENT_FROM_CANCEL", payload: { appointment: payload.appointment, service: payload.service } });
         };
 
         const handleAppointmentUpdated = (appointment: Appointment) => {
             dispatch({ type: "UPDATE_APPOINTMENTS", payload: appointment });
         };
 
-        const handleAvailabilityUpdated = (data: { serviceId: string; availableAppointments: any[] }) => {
-            dispatch({ type: "UPDATE_SERVICE_AVAILABILITY", payload: { serviceId: data.serviceId, availableAppointments: data.availableAppointments } });
+        const handleAvailabilityUpdated = (data: { serviceId: string; availableAppointments: any[]; slots?: any[] }) => {
+            dispatch({
+                type: "UPDATE_SERVICE_AVAILABILITY",
+                payload: {
+                    serviceId: data.serviceId,
+                    availableAppointments: data.availableAppointments,
+                    slots: data.slots,
+                }
+            });
         };
 
-        socket.on("connect", joinRoom)
         socket.on("company:service-added", handleServiceAdded);
         socket.on("company:service-deleted", handleServiceDeleted);
         socket.on("company:service-updated", handleServiceUpdated);
@@ -277,7 +313,6 @@ export const CompanyProvider: React.FC<{ children: ReactNode }> = ({ children })
         socket.on("company:availability-updated", handleAvailabilityUpdated);
 
         return () => {
-            socket.off("connect", joinRoom)
             socket.off("company:service-added", handleServiceAdded);
             socket.off("company:service-deleted", handleServiceDeleted);
             socket.off("company:service-updated", handleServiceUpdated);
@@ -286,6 +321,21 @@ export const CompanyProvider: React.FC<{ children: ReactNode }> = ({ children })
             socket.off("company:appointment-updated", handleAppointmentUpdated);
             socket.off("company:availability-updated", handleAvailabilityUpdated);
             disconnectSocket();
+        };
+    }, [token]);
+
+    useEffect(() => {
+        if (!token || !state._id) return;
+
+        const joinRoom = () => {
+            socket.emit("joinCompany", state._id);
+        };
+
+        joinRoom();
+        socket.on("connect", joinRoom);
+
+        return () => {
+            socket.off("connect", joinRoom);
         };
     }, [token, state._id]);
 

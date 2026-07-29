@@ -17,14 +17,16 @@ const isAppointmentDatePassed = (appointmentDate: string): boolean => {
 
 const CancelAppointment = () => {
 
-    const { appointmentId } = useParams()
+    // Puede ser el token firmado del email o, en links viejos, el id del turno.
+    const { appointmentRef } = useParams()
     const { error, isLoading, get } = useAuthenticatedGet()
     const { error: errorCancel, isLoading: isCancelling, delete: del } = useAuthenticatedDelete()
-    const urlGetAppointment = `${BACKEND_API_URL}/appointments/get-appointment/${appointmentId}`
-    const urlDeleteAppointment = `${BACKEND_API_URL}/appointments/cancel-appointment/${appointmentId}`
+    const urlGetAppointment = `${BACKEND_API_URL}/appointments/get-appointment/${appointmentRef}`
+    const urlDeleteAppointment = `${BACKEND_API_URL}/appointments/cancel-appointment/${appointmentRef}`
 
     const [data, setData] = useState<any>(null)
     const [finalized, setFinalized] = useState(false)
+    const [emailConfirmation, setEmailConfirmation] = useState("")
 
     useEffect(() => {
         const fetchAppointment = async () => {
@@ -36,9 +38,14 @@ const CancelAppointment = () => {
 
         fetchAppointment()
 
-    }, [appointmentId])
+    }, [appointmentRef])
 
     const handleCancelAppointment = async () => {
+        if (data.requiresEmailConfirmation && !emailConfirmation.trim()) {
+            notifyError("Ingresá el email con el que reservaste el turno.")
+            return
+        }
+
         const confirm = await confirmDelete({
             question: "¿Seguro que desea cancelar el turno?",
             icon: "warning",
@@ -48,13 +55,7 @@ const CancelAppointment = () => {
         })
         if (confirm) {
             const response = await del(urlDeleteAppointment, {
-                dataUser: {
-                    name: data.name,
-                    lastName: data.lastName,
-                    dni: data.dni,
-                    email: data.email,
-                    phone: data.phone,
-                }
+                dataUser: { email: emailConfirmation.trim() }
             }, { skipAuth: true })
 
             if (response?.data) {
@@ -84,6 +85,9 @@ const CancelAppointment = () => {
             text="Cargando información del turno..."
         />
     )
+
+    const isAlreadyClosed = Boolean(data?.status) && data.status !== "scheduled"
+    const canCancel = Boolean(data) && !isAlreadyClosed && !isAppointmentDatePassed(data.date)
 
     return (
         <div className="cancel-appointment-container">
@@ -149,8 +153,30 @@ const CancelAppointment = () => {
                                         </div>
                                     )}
 
+                                    {data?.requiresEmailConfirmation && canCancel && (
+                                        <div className="email-confirmation">
+                                            <label htmlFor="emailConfirmation">
+                                                Para continuar, confirmá el email con el que reservaste el turno
+                                                {data?.emailHint ? ` (${data.emailHint})` : ""}:
+                                            </label>
+                                            <input
+                                                id="emailConfirmation"
+                                                type="email"
+                                                value={emailConfirmation}
+                                                onChange={(e) => setEmailConfirmation(e.target.value)}
+                                                placeholder="tu@email.com"
+                                                autoComplete="email"
+                                            />
+                                        </div>
+                                    )}
+
                                     <div className="action-buttons">
-                                        {isAppointmentDatePassed(data?.date) ? (
+                                        {isAlreadyClosed ? (
+                                            <div className="passed-appointment-notice">
+                                                <p>ℹ️ <strong>Este turno ya no está agendado</strong></p>
+                                                <p>Fue cancelado o ya fue atendido, así que no hay nada que cancelar</p>
+                                            </div>
+                                        ) : isAppointmentDatePassed(data?.date) ? (
                                             <div className="passed-appointment-notice">
                                                 <p>⏰ <strong>Este turno ya pasó</strong></p>
                                                 <p>No se puede cancelar un turno que ya se realizó</p>

@@ -106,6 +106,34 @@
     line-height: 1.4;
 }
 
+.email-confirmation {
+    margin: 1.5rem 0;
+    text-align: left;
+}
+
+.email-confirmation label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+    line-height: 1.4;
+    color: #495057;
+}
+
+.email-confirmation input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0.75rem 1rem;
+    border: 1px solid #ced4da;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-family: inherit;
+}
+
+.email-confirmation input:focus {
+    outline: none;
+    border-color: #007bff;
+}
+
 
 .passed-appointment-notice p:first-child {
     margin: 0 0 0.5rem 0;

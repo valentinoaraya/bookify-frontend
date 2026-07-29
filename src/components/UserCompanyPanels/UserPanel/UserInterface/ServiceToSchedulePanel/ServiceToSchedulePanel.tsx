@@ -15,6 +15,7 @@ import LoadingSpinner from "../../../../../common/LoadingSpinner/LoadingSpinner"
 import { useAuthenticatedGet, useAuthenticatedPost } from "../../../../../hooks/useAuthenticatedFetch";
 import DayCard from "./DayCard";
 import TimeSlotCard from "./TimeSlotCard";
+import { getServiceSlots } from "../../../../../utils/cleanAppointmentsArray";
 
 interface Props {
     slotsVisibilityDays: number;
@@ -81,22 +82,35 @@ const ServiceToSchedulePanel: React.FC<Props> = ({ serviceToSchedule, setService
     const getTimeSlotsForDay = (dayDate: string) => {
         if (!serviceToScheduleData) return []
 
-        const dayAppointments = serviceToScheduleData.availableAppointments.filter(
+        const slots = getServiceSlots(serviceToScheduleData)
+        const dayAppointments = slots.filter(
             appointment => appointment.datetime.startsWith(dayDate)
         )
+
+        // Los turnos retenidos por alguien que está pagando la seña no están
+        // realmente disponibles todavía.
+        const now = new Date()
+        const pendingByDatetime = (serviceToScheduleData.pendingAppointments || [])
+            .filter(pending => new Date(pending.expiresAt) > now)
+            .reduce<Record<string, number>>((acc, pending) => {
+                const key = new Date(pending.datetime).getTime()
+                acc[key] = (acc[key] ?? 0) + 1
+                return acc
+            }, {})
 
         return dayAppointments.map(appointment => {
             const date = new Date(appointment.datetime)
             const time = `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`
 
-            const availablePlaces = appointment.capacity - appointment.taken
+            const pendingCount = pendingByDatetime[date.getTime()] ?? 0
+            const availablePlaces = appointment.capacity - appointment.taken - pendingCount
 
             return {
                 datetime: appointment.datetime,
                 time,
                 availablePlaces,
                 totalCapacity: appointment.capacity,
-                isAvailable: availablePlaces > 0 && new Date(appointment.datetime) > new Date()
+                isAvailable: availablePlaces > 0 && date > now
             }
         }).sort((a, b) => a.time.localeCompare(b.time))
     }

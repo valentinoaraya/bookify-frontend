@@ -1,5 +1,5 @@
 import './App.css'
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import Home from './components/Home/Home.tsx'
 import FormLogin from './components/LoginRegisterForms/FormLogin/FormLogin.tsx'
 import FormRegister from './components/LoginRegisterForms/FormRegister/FormRegister.tsx'
@@ -21,9 +21,11 @@ function App() {
           <Routes>
             <Route path='/' element={<Home />} />
             <Route path='/panel/mercadopago-success' element={<Panel />} />
+            <Route path='/panel/mercadopago-error' element={<Panel />} />
             <Route path='/login/:loginTo' element={<FormLogin />} />
-            <Route path='/cancel/:appointmentId' element={<CancelAppointment />} />
-            <Route path='/register/:registerTo' element={<FormRegister />} />
+            <Route path='/cancel/:appointmentRef' element={<CancelAppointment />} />
+            <Route path='/register' element={<FormRegister />} />
+            <Route path='/register/:registerTo' element={<Navigate to="/register" replace />} />
             <Route path='/c/:company_id' element={
               <UserProvider>
                 <UserPanel />

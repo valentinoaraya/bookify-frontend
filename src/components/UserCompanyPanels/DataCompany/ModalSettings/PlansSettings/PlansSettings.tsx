@@ -28,7 +28,7 @@ const PlansSettings: React.FC<Props> = ({ data, setIsModalPlansOpen, setSelected
     }
 
     const handleOpenModal = (planId: string) => {
-        if (planId === data.suscription.plan) {
+        if (planId === data.subscription?.plan) {
             return
         }
         setSelectedPlanId(planId)
@@ -46,7 +46,7 @@ const PlansSettings: React.FC<Props> = ({ data, setIsModalPlansOpen, setSelected
         })
 
         if (desicion) {
-            const url = `${BACKEND_API_URL}/suscriptions/cancel/${data.suscription.suscription_id}`
+            const url = `${BACKEND_API_URL}/suscriptions/cancel/${data.subscription?.mpPreapprovalId}`
             const response = await del(url, { companyId: data._id }, { skipAuth: false })
 
             if (response.data && response.data.data === "Suscription cancelled") {
@@ -80,7 +80,7 @@ const PlansSettings: React.FC<Props> = ({ data, setIsModalPlansOpen, setSelected
                                 planName={p.name}
                                 features={p.features}
                                 price={p.price}
-                                isSelected={p.id === data.suscription.plan}
+                                isSelected={p.id === data.subscription?.plan}
                                 onClick={() => handleOpenModal(p.id)}
                                 isComingSoon={p.id === "team"}
                                 isSettings

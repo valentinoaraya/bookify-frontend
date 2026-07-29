@@ -33,8 +33,20 @@
     stroke: var(--success, #22c55e);
 }
 
+.mp-icon-bg-error {
+    stroke: var(--danger, #ef4444);
+}
+
 .mp-icon-check {
     fill: var(--success, #22c55e);
+}
+
+.mp-icon-error {
+    fill: var(--danger, #ef4444);
+}
+
+.mp-error .mp-success-title {
+    color: var(--danger, #ef4444);
 }
 
 .mp-success-title {

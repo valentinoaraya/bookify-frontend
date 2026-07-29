@@ -26,7 +26,7 @@ const Home = () => {
                     </Button>
                 </Link>
                 <p className="pDescription">Para gestionar los turnos de tus clientes.</p>
-                <Link className="linkButton" to={"/register/company"}>
+                <Link className="linkButton" to={"/register"}>
                     <Button
                         reverse
                         padding="1.2rem"

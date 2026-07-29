@@ -89,10 +89,10 @@ const FormLogin = () => {
                     Iniciar sesión
                 </Button>
                 {
-                    loginTo !== "company" &&
+                    loginTo === "company" &&
                     <div className="divLinkForm">
                         <p className="pDescriptionForm">¿No tienes cuenta?</p>
-                        <Link className="linkForm" to={"/register/" + loginTo}>
+                        <Link className="linkForm" to="/register">
                             <p>Regístrate ahora.</p>
                         </Link>
                     </div>

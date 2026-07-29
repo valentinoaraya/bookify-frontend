@@ -99,7 +99,13 @@ const HistoryAppointmentItem: React.FC<Props> = ({ appointment, setFilteredAppoi
             </div>
             <div className="history-appointment-details">
                 <div className="history-service-info">
-                    <h4 className="history-service-title">{appointment.serviceInfo?.title ? appointment.serviceInfo.title : appointment.serviceId.title}</h4>
+                    <h4 className="history-service-title">{
+                        appointment.serviceInfo?.title
+                            ? appointment.serviceInfo.title
+                            : typeof appointment.serviceId === "object"
+                                ? appointment.serviceId.title
+                                : ""
+                    }</h4>
                     <div className={`appointment-mode ${appointment.mode === "online" ? "virtual" : "presencial"}`}>
                         <span className="appointment-mode-dot"></span>
                         <span className="appointment-mode-label">Modalidad</span>

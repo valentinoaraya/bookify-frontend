@@ -1,6 +1,6 @@
 import "./CalendarServicePanel.css"
 import Title from "../../../../../common/Title/Title";
-import { type View, type AvailableAppointmentWithPendings } from "../../../../../types";
+import { type View, type AvailableAppointmentWithPendings, type AvailableAppointment } from "../../../../../types";
 import Button from "../../../../../common/Button/Button";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid/index.js"
@@ -11,7 +11,7 @@ import { notifyError, notifySuccess } from "../../../../../utils/notifications";
 import { parseDateToString } from "../../../../../utils/parseDateToString";
 import { CompanyContext } from "../../../../../contexts/CompanyContext";
 import { CalendarCheckIcon } from "../../../../../common/Icons/Icons";
-import { generateAvailableAppointmentsArray, generateScheudledAppointmentArray } from "../../../../../utils/cleanAppointmentsArray";
+import { generateCalendarEventsFromService, getServiceSlots } from "../../../../../utils/cleanAppointmentsArray";
 import ModalDisponibility from "./ModalDisponibility/ModalDisponibility";
 import { useAuthenticatedPost } from "../../../../../hooks/useAuthenticatedFetch";
 
@@ -35,14 +35,20 @@ const CalendarServicePanel: React.FC<Props> = ({ serviceId, setActiveView }) => 
     const { isLoading, error, post } = useAuthenticatedPost()
     const urlEnableAppointments = `${BACKEND_API_URL}/services/enable-appointments/${serviceId}`
 
-    const arrayEvents = generateAvailableAppointmentsArray(service.availableAppointments, service.pendingAppointments)
-    const arrayEventsScheduled = generateScheudledAppointmentArray(service.scheduledAppointments, service.availableAppointments)
+    const { available: arrayEvents, scheduled: arrayEventsScheduled } =
+        generateCalendarEventsFromService(service)
+    const serviceSlots = getServiceSlots(service)
 
     const onSubmitForm = async (data: { [key: string]: any }) => {
         const response = await post(urlEnableAppointments, data)
         setIsModalOpen(false)
         if (response.data) {
-            const serviceUpdated = { ...service, availableAppointments: [...service.availableAppointments, ...response.data.data] }
+            const newSlots = response.data.data as AvailableAppointment[]
+            const serviceUpdated = {
+                ...service,
+                availableAppointments: [...serviceSlots, ...newSlots],
+                slots: [...(service.slots || serviceSlots), ...newSlots],
+            }
             updateServices(serviceUpdated)
             notifySuccess("Turnos habilitados correctamente.")
         }
@@ -54,10 +60,13 @@ const CalendarServicePanel: React.FC<Props> = ({ serviceId, setActiveView }) => 
 
     const onClickAppointment = (date: Date) => {
         const { stringDate, time } = parseDateToString(date)
-        const appointment = service.availableAppointments.find(app => app.datetime === `${stringDate} ${time}`)
-        const scheduleds = service.scheduledAppointments.filter(date => date === `${stringDate} ${time}`).length
-        const pendings = service.pendingAppointments.filter(p => p.datetime === `${stringDate} ${time}`).length
-        setAppointment(appointment ? { ...appointment, pendings } : { datetime: `${stringDate} ${time}`, capacity: 0, taken: scheduleds, pendings })
+        const datetimeKey = `${stringDate} ${time}`
+        const appointment = serviceSlots.find(app => app.datetime === datetimeKey)
+        const scheduleds = (service.scheduledAppointments || []).filter(d => d === datetimeKey).length
+            || (service.slots || []).find(s => s.datetime === datetimeKey)?.taken
+            || 0
+        const pendings = (service.pendingAppointments || []).filter(p => p.datetime === datetimeKey).length
+        setAppointment(appointment ? { ...appointment, pendings } : { datetime: datetimeKey, capacity: 0, taken: scheduleds, pendings })
         setIsModalDisponibilityOpen(true)
     }
 

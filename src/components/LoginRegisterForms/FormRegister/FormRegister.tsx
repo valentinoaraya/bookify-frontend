@@ -1,4 +1,4 @@
-import { useParams, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import "./FormRegister.css"
 import { useDataForm } from "../../../hooks/useDataForm.ts";
 import Title from "../../../common/Title/Title.tsx";
@@ -15,12 +15,9 @@ import PlanCard from "../PlanCard/PlanCard.tsx";
 import { ArrowReturnIcon } from "../../../common/Icons/Icons.tsx";
 
 const FormRegister = () => {
-
-    const { registerTo } = useParams();
     const navigate = useNavigate();
     const { dataForm, handleChange } = useDataForm({
         name: "",
-        lastName: "",
         email: "",
         phone: "",
         province: "",
@@ -33,38 +30,40 @@ const FormRegister = () => {
         payer_email: ""
     })
 
-    const { isLoading, error, post } = useAuthenticatedPost()
-
-    if (error) {
-        console.error(error)
-        notifyError("Error del servidor: Inténtalo de nuevo más tarde")
-    }
+    const { isLoading, post } = useAuthenticatedPost()
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (dataForm.password !== dataForm.confirmPassword) return notifyError("Las contraseñas no coinciden")
+        if (dataForm.password !== dataForm.confirmPassword) {
+            return notifyError("Las contraseñas no coinciden")
+        }
 
-        if (registerTo === "company" && !dataForm.plan) {
+        if (!dataForm.plan) {
             return notifyError("Por favor selecciona un plan")
         }
 
-        const url = `${BACKEND_API_URL}/${registerTo === "user" ? "users" : "companies"}/register`;
+        const url = `${BACKEND_API_URL}/companies/register`;
         const response = await post(url, dataForm, { skipAuth: true });
 
         if (response.error) {
             notifyError(response.error)
+            return
         }
 
-        if (response.data.data.init_point) {
-            setTokens({
-                access_token: response.data.data.access_token,
-                refresh_token: response.data.data.refresh_token
-            });
-            window.location.href = response.data.data.init_point
+        const initPoint = response.data?.data?.init_point
+        if (!initPoint) {
+            notifyError("No pudimos iniciar el pago. Intentá de nuevo o contactá soporte.")
+            return
         }
+
+        setTokens({
+            access_token: response.data.data.access_token,
+            refresh_token: response.data.data.refresh_token
+        });
+        window.location.href = initPoint
     }
 
-    const plans = registerTo === "company" ? [
+    const plans = [
         {
             name: "Plan Individual",
             value: "individual",
@@ -105,7 +104,7 @@ const FormRegister = () => {
             ],
             isComingSoon: true
         }
-    ] : [];
+    ];
 
     const handleGoBack = () => {
         navigate(-1);
@@ -118,34 +117,32 @@ const FormRegister = () => {
                 <ArrowReturnIcon width="20" height="20" fill="var(--azul-oscuro)" />
                 <span>Volver</span>
             </button>
-            <Title textAlign="center">Registrarse como {registerTo === "user" ? "usuario" : "empresa"}</Title>
+            <Title textAlign="center">Registrarse como empresa</Title>
 
-            {registerTo === "company" && (
-                <div className="plans-container">
-                    <h2 className="plans-title">Elige tu plan</h2>
-                    <div className="plans-grid">
-                        {plans.map((plan, index) => (
-                            <PlanCard
-                                key={index}
-                                planName={plan.name}
-                                price={plan.price}
-                                features={plan.features}
-                                isSelected={dataForm.plan === plan.value}
-                                onClick={() => handleChange({
-                                    target: {
-                                        name: "plan",
-                                        value: plan.value
-                                    }
-                                } as any)}
-                                isComingSoon={plan.isComingSoon}
-                            />
-                        ))}
-                    </div>
+            <div className="plans-container">
+                <h2 className="plans-title">Elige tu plan</h2>
+                <div className="plans-grid">
+                    {plans.map((plan, index) => (
+                        <PlanCard
+                            key={index}
+                            planName={plan.name}
+                            price={plan.price}
+                            features={plan.features}
+                            isSelected={dataForm.plan === plan.value}
+                            onClick={() => handleChange({
+                                target: {
+                                    name: "plan",
+                                    value: plan.value
+                                }
+                            } as React.ChangeEvent<HTMLInputElement>)}
+                            isComingSoon={plan.isComingSoon}
+                        />
+                    ))}
                 </div>
-            )}
+            </div>
 
             <form className="formRegister" onSubmit={handleSubmit}>
-                <div className={registerTo === "company" ? "horizontalForm" : ""}>
+                <div className="horizontalForm">
                     <div className="divHalf divFirstHalf">
                         <LabelInputComponent
                             label="Nombre:"
@@ -155,41 +152,25 @@ const FormRegister = () => {
                             required={true}
                             onChange={handleChange}
                         />
-                        {
-                            registerTo === "user" &&
-                            <LabelInputComponent
-                                label="Apellido:"
-                                type="text"
-                                name="lastName"
-                                value={dataForm["lastName"]}
-                                required={true}
-                                onChange={handleChange}
-                            />
-                        }
-                        {
-                            registerTo === "company" &&
-                            <>
-                                <LabelSelectComponent
-                                    onChange={handleChange}
-                                />
-                                <LabelInputComponent
-                                    label="Calle:"
-                                    type="text"
-                                    name="street"
-                                    value={dataForm["street"]}
-                                    required={true}
-                                    onChange={handleChange}
-                                />
-                                <LabelInputComponent
-                                    label="Número de calle:"
-                                    type="text"
-                                    name="number"
-                                    value={dataForm["number"]}
-                                    required={true}
-                                    onChange={handleChange}
-                                />
-                            </>
-                        }
+                        <LabelSelectComponent
+                            onChange={handleChange}
+                        />
+                        <LabelInputComponent
+                            label="Calle:"
+                            type="text"
+                            name="street"
+                            value={dataForm["street"]}
+                            required={true}
+                            onChange={handleChange}
+                        />
+                        <LabelInputComponent
+                            label="Número de calle:"
+                            type="text"
+                            name="number"
+                            value={dataForm["number"]}
+                            required={true}
+                            onChange={handleChange}
+                        />
                     </div>
                     <div className="divHalf divSecondHalf">
                         <LabelInputComponent
@@ -251,7 +232,7 @@ const FormRegister = () => {
                 </Button>
                 <div className="divLinkForm">
                     <p className="pDescriptionForm">¿Ya tienes cuenta?</p>
-                    <Link className="linkForm" to={"/login/" + registerTo}>
+                    <Link className="linkForm" to="/login/company">
                         <p>Inicia sesión.</p>
                     </Link>
                 </div>

@@ -29,8 +29,6 @@ const CheckoutConfirmAppointment = () => {
     const handleBuy = async () => {
         const response = await post(urlCreatePreference, {
             serviceId: service.serviceId,
-            title: `Seña de turno para ${service.title}`,
-            price: service.signPrice,
             date: date,
             dataUser
         }, { skipAuth: true })

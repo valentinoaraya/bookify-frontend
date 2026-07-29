@@ -1,5 +1,6 @@
 import { type Service, type CompanyToUser } from "../../../../../types";
 import ResultCard from "../../../../Cards/ResultCard/ResultCard";
+import { getServiceSlots } from "../../../../../utils/cleanAppointmentsArray";
 import "./ResultsPanel.css"
 
 interface Props {
@@ -24,7 +25,7 @@ const ResultsPanel: React.FC<Props> = ({ results, setServiceToSchedule, company 
                                     key={service._id}
                                     _id={service._id}
                                     company={company}
-                                    availableAppointments={service.availableAppointments}
+                                    availableAppointments={getServiceSlots(service)}
                                     description={service.description}
                                     duration={service.duration}
                                     price={service.price}

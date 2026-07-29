@@ -8,6 +8,7 @@ import { notifyError } from "../../../../../utils/notifications";
 import ModalForm from "../../../../ModalForm/ModalForm";
 import { CompanyContext } from "../../../../../contexts/CompanyContext";
 import { useAuthenticatedPost } from "../../../../../hooks/useAuthenticatedFetch";
+import { getServiceSlots, slotsToScheduledDates } from "../../../../../utils/cleanAppointmentsArray";
 
 interface Props {
     companyServices: Service[]
@@ -81,6 +82,11 @@ const ServicesPanel: React.FC<Props> = ({ companyServices, connectedWithMP, comp
                     <div className="divListContainerServicePanel">
                         {
                             companyServices.map(service => {
+                                const slots = getServiceSlots(service)
+                                const scheduledCount =
+                                    service.slots && service.slots.length > 0
+                                        ? slotsToScheduledDates(service.slots).length
+                                        : (service.scheduledAppointments || []).length
                                 return <ServiceCard
                                     key={service._id}
                                     id={service._id}
@@ -93,8 +99,8 @@ const ServicesPanel: React.FC<Props> = ({ companyServices, connectedWithMP, comp
                                     connectedWithMP={connectedWithMP}
                                     mode={service.mode}
                                     active={service.active}
-                                    availableAppointmentsLenght={service.availableAppointments.reduce((acc, appointment) => acc + appointment.capacity - appointment.taken, 0)}
-                                    scheduledAppointmentsLenght={service.scheduledAppointments.length}
+                                    availableAppointmentsLenght={slots.reduce((acc, appointment) => acc + appointment.capacity - appointment.taken, 0)}
+                                    scheduledAppointmentsLenght={scheduledCount}
                                     onDeleteService={onDeleteService}
                                     onUpdateService={(data) => onUpdateService(data)}
                                     onRedirectToCalendar={(id: string, view: View) => handleChangeToCalendar(id, view)}

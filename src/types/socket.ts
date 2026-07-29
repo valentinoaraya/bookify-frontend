@@ -9,11 +9,19 @@ export interface ServerToClientEvents {
 
     // Eventos de citas
     "company:appointment-added": (appointment: Appointment) => void;
-    "company:appointment-deleted": (appointmentId: string) => void;
+    "company:appointment-deleted": (payload: {
+        appointment: Appointment;
+        service: Service;
+        serviceId?: string;
+    }) => void;
     "company:appointment-updated": (appointment: Appointment) => void;
 
     // Eventos de disponibilidad
-    "company:availability-updated": (data: { serviceId: string; availableAppointments: any[] }) => void;
+    "company:availability-updated": (data: {
+        serviceId: string;
+        availableAppointments: any[];
+        slots?: any[];
+    }) => void;
 
     // Eventos de notificaciones
     "company:notification": (message: string) => void;
@@ -37,7 +45,11 @@ export interface ClientToServerEvents {
     "appointment:delete": (appointmentId: string) => void;
 
     // Eventos de disponibilidad
-    "availability:update": (data: { serviceId: string; availableAppointments: any[] }) => void;
+    "availability:update": (data: {
+        serviceId: string;
+        availableAppointments: any[];
+        slots?: any[];
+    }) => void;
 }
 
 // Tipos para los datos de autenticación del socket
@@ -50,4 +62,4 @@ export interface SocketResponse<T = any> {
     success: boolean;
     data?: T;
     error?: string;
-} 
+}

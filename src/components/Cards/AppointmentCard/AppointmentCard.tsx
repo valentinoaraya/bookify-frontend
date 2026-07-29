@@ -111,7 +111,11 @@ const AppointmentCard: React.FC<Props> = ({ appointment, onCancelAppointment }) 
                         </div>
                         <div className="card-appointment-details">
                             <div className="card-service-info">
-                                <h4 className="card-service-title">{appointment.serviceId.title}</h4>
+                                <h4 className="card-service-title">{
+                                    typeof appointment.serviceId === "object"
+                                        ? appointment.serviceId.title
+                                        : appointment.service?.title
+                                }</h4>
                                 <div className={`appointment-mode ${appointment.mode === "online" ? "virtual" : "presencial"}`}>
                                     <span className="appointment-mode-dot"></span>
                                     <span className="appointment-mode-label">Modalidad</span>
@@ -137,7 +141,11 @@ const AppointmentCard: React.FC<Props> = ({ appointment, onCancelAppointment }) 
                     </div>
                     <div className="card-appointment-details desktop">
                         <div className="card-service-info">
-                            <h4 className="card-service-title">{appointment.serviceId.title}</h4>
+                            <h4 className="card-service-title">{
+                                typeof appointment.serviceId === "object"
+                                    ? appointment.serviceId.title
+                                    : appointment.service?.title
+                            }</h4>
                             <div className={`appointment-mode ${appointment.mode === "online" ? "virtual" : "presencial"}`}>
                                 <span className="appointment-mode-dot"></span>
                                 <span className="appointment-mode-label">Modalidad</span>

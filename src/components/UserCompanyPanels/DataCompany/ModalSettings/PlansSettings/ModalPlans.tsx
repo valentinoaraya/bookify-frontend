@@ -68,7 +68,7 @@ const ModalPlans: React.FC<Props> = ({ data, isModalPlansOpen, setIsModalPlansOp
         }
 
         const planOrder = ["individual", "individual_plus", "team"]
-        const currentIndex = planOrder.indexOf(data.suscription.plan)
+        const currentIndex = planOrder.indexOf(data.subscription?.plan ?? "")
         const newIndex = planOrder.indexOf(selectedPlanId)
 
         if (newIndex === -1) {
@@ -80,7 +80,7 @@ const ModalPlans: React.FC<Props> = ({ data, isModalPlansOpen, setIsModalPlansOp
 
         try {
             const response = await post(
-                `${BACKEND_API_URL}/suscriptions/${changeType}/${data.suscription.suscription_id}`,
+                `${BACKEND_API_URL}/suscriptions/${changeType}/${data.subscription?.mpPreapprovalId}`,
                 {
                     companyId: data._id,
                     newPlan: selectedPlanId,
