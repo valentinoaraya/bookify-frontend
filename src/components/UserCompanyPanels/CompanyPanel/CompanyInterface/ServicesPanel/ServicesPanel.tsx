@@ -2,12 +2,13 @@ import "./ServicesPanel.css"
 import Title from "../../../../../common/Title/Title";
 import { type Service, type View } from "../../../../../types";
 import ServiceCard from "../../../../Cards/ServiceCard/ServiceCard";
-import { useContext, useState } from "react";
-import { BACKEND_API_URL } from "../../../../../config";
+import { useState } from "react";
+import { createService } from "@/shared/api/services";
 import { notifyError } from "../../../../../utils/notifications";
 import ModalForm from "../../../../ModalForm/ModalForm";
-import { CompanyContext } from "../../../../../contexts/CompanyContext";
-import { useAuthenticatedPost } from "../../../../../hooks/useAuthenticatedFetch";
+import { useCompany } from "../../../../../hooks/useCompany";
+import { getServiceFormInputs } from "@/features/company-panel/services/serviceFormInputs";
+import { getServiceSlots, slotsToScheduledDates } from "../../../../../utils/cleanAppointmentsArray";
 
 interface Props {
     companyServices: Service[]
@@ -19,24 +20,22 @@ interface Props {
 
 const ServicesPanel: React.FC<Props> = ({ companyServices, connectedWithMP, companyPlan, onDeleteService, handleChangeToCalendar }) => {
 
-    const { updateServices, addService } = useContext(CompanyContext)
+    const { updateServices, addService } = useCompany()
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
-
-    const { isLoading, error, post } = useAuthenticatedPost()
-    const urlCreateService = `${BACKEND_API_URL}/services/create-service`
-
-    if (error) {
-        console.error(error)
-        notifyError('Error del servidor: Inténtalo de nuevo más tarde')
-    }
+    const [isLoading, setIsLoading] = useState(false)
 
     const handleAddService = async (data: { [key: string]: any }) => {
-        const response = await post(urlCreateService, data)
-        setIsModalOpen(false)
-        if (response?.data) addService(response.data.data)
-        if (response?.error) {
-            console.error(response.error)
-            notifyError("Error al crear el servicio")
+        setIsLoading(true)
+        try {
+            const response = await createService(data)
+            setIsModalOpen(false)
+            if (response?.data) addService(response.data.data)
+            if (response?.error) {
+                console.error(response.error)
+                notifyError("Error al crear el servicio")
+            }
+        } finally {
+            setIsLoading(false)
         }
     }
 
@@ -81,6 +80,11 @@ const ServicesPanel: React.FC<Props> = ({ companyServices, connectedWithMP, comp
                     <div className="divListContainerServicePanel">
                         {
                             companyServices.map(service => {
+                                const slots = getServiceSlots(service)
+                                const scheduledCount =
+                                    service.slots && service.slots.length > 0
+                                        ? slotsToScheduledDates(service.slots).length
+                                        : (service.scheduledAppointments || []).length
                                 return <ServiceCard
                                     key={service._id}
                                     id={service._id}
@@ -93,8 +97,8 @@ const ServicesPanel: React.FC<Props> = ({ companyServices, connectedWithMP, comp
                                     connectedWithMP={connectedWithMP}
                                     mode={service.mode}
                                     active={service.active}
-                                    availableAppointmentsLenght={service.availableAppointments.reduce((acc, appointment) => acc + appointment.capacity - appointment.taken, 0)}
-                                    scheduledAppointmentsLenght={service.scheduledAppointments.length}
+                                    availableAppointmentsLenght={slots.reduce((acc, appointment) => acc + appointment.capacity - appointment.taken, 0)}
+                                    scheduledAppointmentsLenght={scheduledCount}
                                     onDeleteService={onDeleteService}
                                     onUpdateService={(data) => onUpdateService(data)}
                                     onRedirectToCalendar={(id: string, view: View) => handleChangeToCalendar(id, view)}
@@ -106,19 +110,7 @@ const ServicesPanel: React.FC<Props> = ({ companyServices, connectedWithMP, comp
             <ModalForm
                 title="Agregar servicio"
                 isOpen={isModalOpen}
-                inputs={[
-                    { type: "text", name: "title", placeholder: "Título", label: "Título" },
-                    { type: "text", name: "description", placeholder: "Descripción", label: "Descripción" },
-                    { type: "number", name: "price", placeholder: "Precio", label: "Precio" },
-                    { type: "select", name: "mode", label: "Modalidad", selectOptions: [{ label: "Presencial en local", value: "in-person" }, { label: "Virtual", value: "online" }, { label: "Presencial a domicilio", value: "in-person-at-home" }] },
-                    { type: "number", name: "duration", placeholder: "Duración", label: "Duración (en minutos)" },
-                    { type: "number", name: "capacityPerShift", placeholder: "Capacidad de personas por turno", label: "Capacidad de personas por turno" },
-                    connectedWithMP ?
-                        { type: "number", name: "signPrice", placeholder: "Precio de la seña", label: "Precio de la seña (Si no quieres cobrar señas para tus turnos deja '0')" }
-                        :
-                        { type: "none", name: "notConnectedWithMP", placeholder: "No puede cobrar señas", label: "Si quiere cobrar señas, vincule su cuenta de Mercado Pago." }
-
-                ]}
+                inputs={getServiceFormInputs({ connectedWithMP })}
                 initialData={{ title: "", description: "", price: 0, duration: 0, signPrice: 0, capacityPerShift: 1, mode: "in-person" }}
                 onClose={() => setIsModalOpen(false)}
                 onSubmitForm={(data) => handleAddService(data)}

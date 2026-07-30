@@ -5,11 +5,10 @@ import Button from "../../../../../common/Button/Button"
 import { UserXIcon } from "../../../../../common/Icons/Icons"
 import { confirmDelete } from "../../../../../utils/alerts"
 import { plans } from "../../../../../utils/plans"
-import { useAuthenticatedDelete } from "../../../../../hooks/useAuthenticatedFetch"
-import { notifyError } from "../../../../../utils/notifications"
-import { BACKEND_API_URL } from "../../../../../config"
+import { cancelSubscription } from "@/shared/api/subscriptions"
 import LoadingModal from "../../../../../common/LoadingModal/LoadingModal"
 import { useNavigate } from "react-router-dom"
+import { useState } from "react"
 
 interface Props {
     data: Company
@@ -19,16 +18,11 @@ interface Props {
 
 const PlansSettings: React.FC<Props> = ({ data, setIsModalPlansOpen, setSelectedPlanId }) => {
 
-    const { isLoading, error, delete: del } = useAuthenticatedDelete()
+    const [isLoading, setIsLoading] = useState(false)
     const navigate = useNavigate()
 
-    if (error) {
-        notifyError("Error al cancelar suscripción")
-        console.log(error)
-    }
-
     const handleOpenModal = (planId: string) => {
-        if (planId === data.suscription.plan) {
+        if (planId === data.subscription?.plan) {
             return
         }
         setSelectedPlanId(planId)
@@ -38,7 +32,7 @@ const PlansSettings: React.FC<Props> = ({ data, setIsModalPlansOpen, setSelected
     const cancelSuscription = async () => {
         const desicion = await confirmDelete({
             question: "¿Seguro que quieres cancelar tu suscripción a Bookify?",
-            mesasge: "Al cancelar tu suscripción, no podrás volver a crear una cuenta con el mismo email utilizado para esta.",
+            message: "Al cancelar tu suscripción, no podrás volver a crear una cuenta con el mismo email utilizado para esta.",
             icon: "warning",
             confirmButtonText: "Aceptar",
             cancelButton: true,
@@ -46,21 +40,28 @@ const PlansSettings: React.FC<Props> = ({ data, setIsModalPlansOpen, setSelected
         })
 
         if (desicion) {
-            const url = `${BACKEND_API_URL}/suscriptions/cancel/${data.suscription.suscription_id}`
-            const response = await del(url, { companyId: data._id }, { skipAuth: false })
+            setIsLoading(true)
+            try {
+                const response = await cancelSubscription(
+                    data.subscription?.mpPreapprovalId ?? "",
+                    { companyId: data._id }
+                )
 
-            if (response.data && response.data.data === "Suscription cancelled") {
-                const decision = await confirmDelete({
-                    question: "Suscripción cancelada",
-                    icon: "success",
-                    cancelButton: false,
-                    confirmButtonText: "Aceptar",
-                    mesasge: "¡Gracias por confiar en nosotros!"
-                })
+                if (response.data && response.data.data === "Suscription cancelled") {
+                    const decision = await confirmDelete({
+                        question: "Suscripción cancelada",
+                        icon: "success",
+                        cancelButton: false,
+                        confirmButtonText: "Aceptar",
+                        message: "¡Gracias por confiar en nosotros!"
+                    })
 
-                if (decision) {
-                    navigate("/")
+                    if (decision) {
+                        navigate("/")
+                    }
                 }
+            } finally {
+                setIsLoading(false)
             }
         }
     }
@@ -80,7 +81,7 @@ const PlansSettings: React.FC<Props> = ({ data, setIsModalPlansOpen, setSelected
                                 planName={p.name}
                                 features={p.features}
                                 price={p.price}
-                                isSelected={p.id === data.suscription.plan}
+                                isSelected={p.id === data.subscription?.plan}
                                 onClick={() => handleOpenModal(p.id)}
                                 isComingSoon={p.id === "team"}
                                 isSettings
@@ -90,7 +91,7 @@ const PlansSettings: React.FC<Props> = ({ data, setIsModalPlansOpen, setSelected
                 </div>
                 <div className="plans-actions">
                     <Button
-                        backgroundColor="#E74C3C"
+                        variant="danger-ghost"
                         width="auto"
                         margin="0"
                         fontSize="1rem"
@@ -100,7 +101,7 @@ const PlansSettings: React.FC<Props> = ({ data, setIsModalPlansOpen, setSelected
                             <UserXIcon
                                 width="18"
                                 height="18"
-                                fill="white"
+                                fill="currentColor"
                             />
                         }
                         onSubmit={cancelSuscription}

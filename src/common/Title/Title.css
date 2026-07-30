@@ -1,14 +1,13 @@
 .title {
-    background: -webkit-linear-gradient(left, var(--azul-clarito), var(--azul-oscuro));
-    background-clip: text;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    font-weight: 900;
-    user-select: none;
+	color: var(--color-primary);
+	font-weight: 900;
+	letter-spacing: -0.025em;
+	line-height: 1.1;
+	user-select: none;
 }
 
 @media (max-width: 685px) {
-    .title {
-        font-size: 1.5rem;
-    }
+	.title {
+		font-size: 1.5rem;
+	}
 }

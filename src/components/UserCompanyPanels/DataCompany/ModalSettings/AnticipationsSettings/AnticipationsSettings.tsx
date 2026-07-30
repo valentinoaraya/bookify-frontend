@@ -1,27 +1,24 @@
 import "./AnticipationsSettings.css"
 import { Company } from "../../../../../types";
-import { useEffect, useState } from "react";
-import { BACKEND_API_URL } from "../../../../../config";
+import { useEffect, useMemo, useState } from "react";
+import { updateCompany } from "@/shared/api/companies";
 import Button from "../../../../../common/Button/Button";
 import { notifyError, notifySuccess } from "../../../../../utils/notifications";
 import { useCompany } from "../../../../../hooks/useCompany";
 import { MemoryIcon } from "../../../../../common/Icons/Icons";
-import { useAuthenticatedPut } from "../../../../../hooks/useAuthenticatedFetch";
 
 interface Props {
     data: Company
 }
 
 const AnticipationsSettings: React.FC<Props> = ({ data }) => {
-
     const { updateCompanyData } = useCompany()
     const [form, setForm] = useState({
         cancellationAnticipationHours: data.cancellationAnticipationHours ?? 24,
         bookingAnticipationHours: data.bookingAnticipationHours ?? 1,
         slotsVisibilityDays: data.slotsVisibilityDays ?? 7,
     })
-    const { isLoading, error, put } = useAuthenticatedPut()
-    const urlUpdateCompany = `${BACKEND_API_URL}/companies/update-company`
+    const [isLoading, setIsLoading] = useState(false)
 
     useEffect(() => {
         setForm({
@@ -31,32 +28,41 @@ const AnticipationsSettings: React.FC<Props> = ({ data }) => {
         })
     }, [data.cancellationAnticipationHours, data.bookingAnticipationHours, data.slotsVisibilityDays])
 
+    const hasChanges = useMemo(() => (
+        form.cancellationAnticipationHours !== (data.cancellationAnticipationHours ?? 24) ||
+        form.bookingAnticipationHours !== (data.bookingAnticipationHours ?? 1) ||
+        form.slotsVisibilityDays !== (data.slotsVisibilityDays ?? 7)
+    ), [
+        form,
+        data.cancellationAnticipationHours,
+        data.bookingAnticipationHours,
+        data.slotsVisibilityDays,
+    ])
+
     const hoursOptions = [0, 1, 2, 4, 6, 12, 24, 48, 72, 96]
     const visibilityDaysOptions = [7, 14, 21, 28, 35, 42, 49, 56, 63, 70, 77, 84]
 
     const handleSave = async () => {
+        if (!hasChanges) return
+
         const payload = {
             cancellationAnticipationHours: form.cancellationAnticipationHours,
             bookingAnticipationHours: form.bookingAnticipationHours,
             slotsVisibilityDays: form.slotsVisibilityDays,
         }
 
-        if (payload.cancellationAnticipationHours === data.cancellationAnticipationHours &&
-            payload.bookingAnticipationHours === data.bookingAnticipationHours &&
-            payload.slotsVisibilityDays === data.slotsVisibilityDays) {
-            notifyError("No hay cambios para guardar.")
-            return
+        setIsLoading(true)
+        try {
+            const response = await updateCompany(payload)
+            if (response.data) {
+                updateCompanyData(response.data.data)
+                notifySuccess("Cambios guardados correctamente.")
+            }
+            if (response.error) notifyError("No se pudieron guardar los cambios. Inténtalo más tarde.")
+        } finally {
+            setIsLoading(false)
         }
-
-        const response = await put(urlUpdateCompany, payload)
-        if (response.data) {
-            updateCompanyData(response.data.data)
-            notifySuccess("Cambios guardados correctamente.")
-        }
-        if (response.error) notifyError("No se pudieron guardar los cambios. Inténtalo más tarde.")
     }
-
-    if (error) notifyError("Error en el servidor. Inténtalo de nuevo más tarde.")
 
     return (
         <div className="anticipationsSettings animation-section">
@@ -79,7 +85,7 @@ const AnticipationsSettings: React.FC<Props> = ({ data }) => {
                         {hoursOptions.map(h => {
                             if (h === 0) {
                                 return <option key={`cancel-${h}`} value={h}>
-                                    {h === 0 && "Sin anticipación"}
+                                    Sin anticipación
                                 </option>
                             }
                             return (
@@ -102,12 +108,12 @@ const AnticipationsSettings: React.FC<Props> = ({ data }) => {
                     >
                         {hoursOptions.map(h => {
                             if (h === 0) {
-                                return <option key={`cancel-${h}`} value={h}>
-                                    {h === 0 && "Sin anticipación"}
+                                return <option key={`booking-${h}`} value={h}>
+                                    Sin anticipación
                                 </option>
                             }
                             return (
-                                <option key={`cancel-${h}`} value={h}>
+                                <option key={`booking-${h}`} value={h}>
                                     {h >= 24 ? `${h / 24} ${h / 24 === 1 ? "día" : "días"} antes` : `${h} ${h === 1 ? "hora" : "horas"} antes`}
                                 </option>
                             )
@@ -137,20 +143,24 @@ const AnticipationsSettings: React.FC<Props> = ({ data }) => {
             </div>
 
             <div className="anticipations-actions">
+                {hasChanges && (
+                    <span className="anticipationsDirtyHint">Hay cambios sin guardar</span>
+                )}
                 <Button
-                    backgroundColor="#1282A2"
+                    variant={hasChanges ? "success" : "neutral"}
                     fontSize="1rem"
                     fontWeight="600"
-                    padding=".5rem 1rem"
+                    padding=".65rem 1.25rem"
                     onSubmit={handleSave}
-                    disabled={isLoading}
+                    disabled={!hasChanges}
+                    loading={isLoading}
                     width="auto"
                     margin="0"
                     iconSVG={
                         <MemoryIcon
                             width="16"
                             height="16"
-                            fill="white"
+                            fill="currentColor"
                         />
                     }
                 >

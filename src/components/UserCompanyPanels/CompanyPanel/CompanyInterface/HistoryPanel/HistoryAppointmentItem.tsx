@@ -1,12 +1,10 @@
 import { Appointment } from "../../../../../types";
-import { useState, useRef, SetStateAction } from "react";
+import { changeAppointmentStatus } from "@/shared/api/appointments";
+import { useState, SetStateAction } from "react";
 import Button from "../../../../../common/Button/Button";
-import { CalendarOutlined } from "@ant-design/icons";
 import isBetween from "dayjs/plugin/isBetween";
 import dayjs from "dayjs";
-import { BACKEND_API_URL } from "../../../../../config";
 import { notifyError, notifySuccess } from "../../../../../utils/notifications";
-import { useAuthenticatedPut } from "../../../../../hooks/useAuthenticatedFetch";
 dayjs.extend(isBetween);
 
 interface Props {
@@ -23,139 +21,205 @@ interface Props {
     }>>
 }
 
-const HistoryAppointmentItem: React.FC<Props> = ({ appointment, setFilteredAppointments, setPendingAppointments, setCopyOfFilteredAppointments, setIsFilteredPendingAppointments, setStatistics }) => {
+const modeLabel: Record<Appointment["mode"], string> = {
+    "in-person": "Presencial",
+    online: "Virtual",
+    "in-person-at-home": "A domicilio",
+}
 
-    const time = dayjs(appointment.date).format("HH:mm");
-    const [menuOpen, setMenuOpen] = useState(false);
-    const [menuPosition, setMenuPosition] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
-    const headerRef = useRef<HTMLDivElement>(null);
-    const isPendingAction = appointment.status === "pending_action";
+const statusLabel = (appointment: Appointment): string => {
+    if (appointment.status === "finished") return "Finalizado"
+    if (appointment.status === "cancelled") {
+        return `Cancelado por ${appointment.cancelledBy === "company" ? "ti" : appointment.name}`
+    }
+    if (appointment.status === "pending_action") return "Pendiente"
+    if (appointment.status === "did_not_attend") return "No asistió"
+    return appointment.status
+}
 
-    const { isLoading, error, put } = useAuthenticatedPut()
-    const urlChangeStatus = `${BACKEND_API_URL}/appointments/change-status`
+const HistoryAppointmentItem: React.FC<Props> = ({
+    appointment,
+    setFilteredAppointments,
+    setPendingAppointments,
+    setCopyOfFilteredAppointments,
+    setIsFilteredPendingAppointments,
+    setStatistics,
+}) => {
+    const time = dayjs(appointment.date).format("HH:mm")
+    const dateLabel = dayjs(appointment.date).format("DD/MM/YYYY")
+    const isPendingAction = appointment.status === "pending_action"
+    const [detailsOpen, setDetailsOpen] = useState(false)
+    const [isLoading, setIsLoading] = useState(false)
 
-    if (error) notifyError("Error en el servidor. Intente más tarde.")
-
-    const handleItemClick = (e: React.MouseEvent<HTMLDivElement>) => {
-        if (!isPendingAction || !headerRef.current) return;
-        const rect = headerRef.current.getBoundingClientRect();
-        const containerRect = e.currentTarget.getBoundingClientRect();
-        const widthMenu = window.innerWidth <= 650 ? 207 : 0
-        const x = rect.right - containerRect.left + 8 - widthMenu;
-        const y = rect.top - containerRect.top - 10;
-        setMenuPosition({ x, y });
-        setMenuOpen((prev) => !prev);
-    };
+    const serviceTitle =
+        appointment.serviceInfo?.title
+            ? appointment.serviceInfo.title
+            : typeof appointment.serviceId === "object"
+                ? appointment.serviceId.title
+                : ""
 
     const handleChangeStatus = async (status: "finished" | "did_not_attend") => {
-        const response = await put(urlChangeStatus, {
-            appointmentId: appointment._id,
-            status
-        })
-        if (response.data) {
-            setFilteredAppointments(prev => prev.map(app => {
-                if (app._id === response.data.data._id) {
-                    return { ...app, status: response.data.data.status }
-                }
-                return app
+        setIsLoading(true)
+        try {
+            const response = await changeAppointmentStatus({
+                appointmentId: appointment._id,
+                status
             })
-            )
-            setCopyOfFilteredAppointments(prev => prev.map(app => {
-                if (app._id === response.data.data._id) {
-                    return { ...app, status: response.data.data.status }
-                }
-                return app
-            })
-            )
-            setPendingAppointments(prev => prev.filter(apt => apt._id !== response.data.data._id))
-            setIsFilteredPendingAppointments(false)
-            if (dayjs(appointment.date).isBetween(dayjs().startOf('month'), dayjs().endOf('month'), null, '[]') && status === "finished") {
-                setStatistics(prev => ({
-                    ...prev,
-                    totalIncome: prev.totalIncome + appointment.price + (appointment.totalPaidAmount || 0)
+            if (response.data) {
+                const updated = response.data.data as Appointment
+                setFilteredAppointments(prev => prev.map(app => {
+                    if (app._id === updated._id) {
+                        return { ...app, status: updated.status }
+                    }
+                    return app
                 }))
+                setCopyOfFilteredAppointments(prev => prev.map(app => {
+                    if (app._id === updated._id) {
+                        return { ...app, status: updated.status }
+                    }
+                    return app
+                }))
+                setPendingAppointments(prev => prev.filter(apt => apt._id !== updated._id))
+                setIsFilteredPendingAppointments(false)
+                if (dayjs(appointment.date).isBetween(dayjs().startOf('month'), dayjs().endOf('month'), null, '[]') && status === "finished") {
+                    setStatistics(prev => ({
+                        ...prev,
+                        totalIncome: prev.totalIncome + appointment.price + (appointment.totalPaidAmount || 0)
+                    }))
+                }
+                notifySuccess("Cambio confirmado.")
             }
-            notifySuccess("Cambio confirmado.")
+            if (response.error) {
+                notifyError(response.error)
+            }
+        } finally {
+            setIsLoading(false)
         }
-        if (response.error) {
-            notifyError(response.error)
-        }
-        setMenuOpen(false)
     }
 
     return (
-        <div
-            className={`history-appointment-item ${appointment.status}`}
-            onClick={handleItemClick}
-            role={isPendingAction ? "button" : undefined}
-        >
-            <div className="history-appointment-header" ref={headerRef}>
-                <div className="history-client-info">
-                    <h3 className="history-client-name">{`${appointment.name} ${appointment.lastName}`}</h3>
-                    <p className="history-client-email">{appointment.email}</p>
-                    {appointment.phone && <p className="history-client-phone">{appointment.phone}</p>}
-                    <p className="card-client-phone">DNI: {appointment.dni}</p>
+        <article className={`historyAgendaRow ${appointment.status} ${detailsOpen ? "is-open" : ""}`}>
+            <div className="historyAgendaRowMain">
+                <div className="historyAgendaWhen">
+                    <time className="historyAgendaTime" dateTime={appointment.date}>
+                        <span className="historyAgendaTimeValue">{time}</span>
+                        <span className="historyAgendaTimeUnit">hs</span>
+                    </time>
+                    <span className="historyAgendaDate">{dateLabel}</span>
                 </div>
-            </div>
-            <div className="history-appointment-details">
-                <div className="history-service-info">
-                    <h4 className="history-service-title">{appointment.serviceInfo?.title ? appointment.serviceInfo.title : appointment.serviceId.title}</h4>
-                    <div className={`appointment-mode ${appointment.mode === "online" ? "virtual" : "presencial"}`}>
-                        <span className="appointment-mode-dot"></span>
-                        <span className="appointment-mode-label">Modalidad</span>
-                        <span className="appointment-mode-value">{appointment.mode === "in-person" ? "Presencial en local" : appointment.mode === "online" ? "Virtual" : "Presencial a domicilio"}</span>
-                    </div>
-                    {appointment.userLocation && <p className="card-service-duration">Domicilio: <span onClick={() => window.open(`https://www.google.com/maps/search/?api=1&query=${appointment.userLocation}`, '_blank')} className="userLocation">{appointment.userLocation}</span></p>}
-                    <p className="history-service-duration">Duración: {appointment.duration} min</p>
-                    <p className="history-service-price">Precio: ${appointment.price}</p>
-                    {appointment.totalPaidAmount && <p className="history-service-sign-price">Seña: ${appointment.totalPaidAmount}</p>}
-                </div>
-            </div>
-            <div className="divStatusAndDate">
-                <div className={`divStatusAppointment ${appointment.status}`}>
-                    {appointment.status === "finished" && "Finalizado"}
-                    {appointment.status === "cancelled" && `Cancelado por ${appointment.cancelledBy === "company" ? "ti" : appointment.name}`}
-                    {appointment.status === "pending_action" && "Pendiente de acción"}
-                    {appointment.status === "did_not_attend" && "No asistió"}
-                </div>
-                <div className="history-date-time-info">
-                    <p className="history-appointment-date">
-                        <CalendarOutlined /> {dayjs(appointment.date).format("DD/MM/YYYY")} {time}
+
+                <div className="historyAgendaClient">
+                    <h3 className="historyAgendaClientName">
+                        {appointment.name} {appointment.lastName}
+                    </h3>
+                    <p className="historyAgendaMeta">
+                        <span className="historyAgendaService">{serviceTitle}</span>
+                        <span className="historyAgendaDot" aria-hidden="true">·</span>
+                        <span className={`historyAgendaMode historyAgendaMode--${appointment.mode === "online" ? "online" : "presencial"}`}>
+                            {modeLabel[appointment.mode]}
+                        </span>
+                        <span className="historyAgendaDot" aria-hidden="true">·</span>
+                        <span>{appointment.duration} min</span>
                     </p>
+                </div>
+
+                <div className="historyAgendaRight">
+                    <span className={`divStatusAppointment ${appointment.status}`}>
+                        {statusLabel(appointment)}
+                    </span>
+
+                    {isPendingAction && (
+                        <div className="historyAgendaPendingActions">
+                            <Button
+                                margin="0"
+                                padding="0.4rem 0.75rem"
+                                fontWeight="600"
+                                fontSize="0.82rem"
+                                onSubmit={() => handleChangeStatus("finished")}
+                                variant="success"
+                                width="auto"
+                                loading={isLoading}
+                            >
+                                Finalizó
+                            </Button>
+                            <Button
+                                margin="0"
+                                padding="0.4rem 0.75rem"
+                                fontWeight="600"
+                                fontSize="0.82rem"
+                                variant="neutral"
+                                width="auto"
+                                loading={isLoading}
+                                onSubmit={() => handleChangeStatus("did_not_attend")}
+                            >
+                                No asistió
+                            </Button>
+                        </div>
+                    )}
+
+                    <button
+                        type="button"
+                        className="historyAgendaToggle"
+                        aria-expanded={detailsOpen}
+                        aria-label={detailsOpen ? "Ocultar detalles" : "Ver detalles"}
+                        onClick={() => setDetailsOpen((open) => !open)}
+                    >
+                        {detailsOpen ? "Menos" : "Detalles"}
+                        <span className={`historyAgendaChevron ${detailsOpen ? "is-open" : ""}`} aria-hidden="true" />
+                    </button>
                 </div>
             </div>
 
-            {isPendingAction && menuOpen && (
-                <div
-                    className="history-appointment-menu animation-section-buttons"
-                    style={{ top: `${menuPosition.y}px`, left: `${menuPosition.x}px` }}
-                    onClick={(e) => e.stopPropagation()}
-                >
-                    <Button
-                        margin="0"
-                        padding="6px 10px"
-                        fontWeight="600"
-                        onSubmit={() => handleChangeStatus("finished")}
-                        backgroundColor="#3f9f0f"
-                        width="auto"
-                        disabled={isLoading}
-                    >
-                        Finalizó
-                    </Button>
-                    <Button
-                        margin="0"
-                        padding="6px 10px"
-                        fontWeight="600"
-                        backgroundColor="grey"
-                        width="auto"
-                        disabled={isLoading}
-                        onSubmit={() => handleChangeStatus("did_not_attend")}
-                    >
-                        No asistió
-                    </Button>
+            {detailsOpen && (
+                <div className="historyAgendaDetails">
+                    <dl className="historyAgendaDetailsGrid">
+                        <div>
+                            <dt>Email</dt>
+                            <dd>{appointment.email}</dd>
+                        </div>
+                        {appointment.phone && (
+                            <div>
+                                <dt>Teléfono</dt>
+                                <dd>{appointment.phone}</dd>
+                            </div>
+                        )}
+                        <div>
+                            <dt>DNI</dt>
+                            <dd>{appointment.dni}</dd>
+                        </div>
+                        <div>
+                            <dt>Precio</dt>
+                            <dd>${appointment.price}</dd>
+                        </div>
+                        {appointment.totalPaidAmount != null && appointment.totalPaidAmount > 0 && (
+                            <div>
+                                <dt>Seña</dt>
+                                <dd>${appointment.totalPaidAmount}</dd>
+                            </div>
+                        )}
+                        {appointment.userLocation && (
+                            <div className="historyAgendaDetailsFull">
+                                <dt>Domicilio</dt>
+                                <dd>
+                                    <button
+                                        type="button"
+                                        className="historyAgendaLocation"
+                                        onClick={() =>
+                                            window.open(
+                                                `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(appointment.userLocation!)}`,
+                                                "_blank"
+                                            )
+                                        }
+                                    >
+                                        {appointment.userLocation}
+                                    </button>
+                                </dd>
+                            </div>
+                        )}
+                    </dl>
                 </div>
             )}
-        </div>
+        </article>
     );
 };
 

@@ -1,5 +1,6 @@
 import { type Service, type CompanyToUser } from "../../../../../types";
 import ResultCard from "../../../../Cards/ResultCard/ResultCard";
+import { getServiceSlots } from "../../../../../utils/cleanAppointmentsArray";
 import "./ResultsPanel.css"
 
 interface Props {
@@ -9,35 +10,33 @@ interface Props {
 }
 
 const ResultsPanel: React.FC<Props> = ({ results, setServiceToSchedule, company }) => {
+    if (!results || results.length === 0) {
+        return (
+            <div className="noServicesAppointmentsUser">
+                <h3>No hay servicios disponibles</h3>
+                <p>Esta empresa todavía no publicó servicios para reservar.</p>
+            </div>
+        )
+    }
+
     return (
-        <>
-            {
-                results?.length === 0 ?
-                    <div className="noServicesAppointmentsUser">
-                        <h3>No se encontraron resultados</h3>
-                    </div>
-                    :
-                    <div className="resultCardsContainer divListContainerResultsPanel">
-                        {
-                            results?.map(service => {
-                                return <ResultCard
-                                    key={service._id}
-                                    _id={service._id}
-                                    company={company}
-                                    availableAppointments={service.availableAppointments}
-                                    description={service.description}
-                                    duration={service.duration}
-                                    price={service.price}
-                                    title={service.title}
-                                    signPrice={service.signPrice}
-                                    mode={service.mode}
-                                    setServiceToSchedule={setServiceToSchedule}
-                                />
-                            })
-                        }
-                    </div>
-            }
-        </>
+        <div className="resultCardsContainer">
+            {results.map(service => (
+                <ResultCard
+                    key={service._id}
+                    _id={service._id}
+                    company={company}
+                    availableAppointments={getServiceSlots(service)}
+                    description={service.description}
+                    duration={service.duration}
+                    price={service.price}
+                    title={service.title}
+                    signPrice={service.signPrice}
+                    mode={service.mode}
+                    setServiceToSchedule={setServiceToSchedule}
+                />
+            ))}
+        </div>
     );
 }
 

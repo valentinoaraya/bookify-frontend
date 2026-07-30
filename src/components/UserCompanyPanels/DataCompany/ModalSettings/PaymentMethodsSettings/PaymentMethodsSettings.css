@@ -11,7 +11,7 @@
 
 .header-settings {
     strong {
-        color: var(--azul-clarito);
+        color: var(--color-primary);
     }
 }
 
@@ -19,19 +19,20 @@
     display: flex;
     align-items: center;
     gap: 1rem;
-    margin-bottom: 1rem;
-    padding: 1rem;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    background-color: #f9f9f9;
+    margin-bottom: .75rem;
+    padding: 1rem 1.15rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background-color: var(--color-surface-muted);
     cursor: pointer;
-    transition: all .2s ease;
+    transition: background-color var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast);
     user-select: none;
 }
 
 .divMethod:hover {
-    background-color: #e6f7ff;
-    border-color: var(--azul-clarito);
+    background-color: var(--brand-50);
+    border-color: var(--color-primary);
+    box-shadow: var(--shadow-sm);
 }
 
 .divMethodInfo {
@@ -41,6 +42,11 @@
     flex-grow: 1;
 }
 
+.divMethodInfo p {
+    color: var(--color-text-muted);
+    font-size: 0.95rem;
+}
+
 .logo-pay-method {
     width: 40px;
     height: 40px;
@@ -48,52 +54,122 @@
 }
 
 .connected {
-    border: 2px solid rgb(21, 187, 21);
+    border-color: var(--success-500);
+    background-color: var(--success-50);
 }
 
 .divMethod.connected:hover {
-    background-color: #effde8;
-    border-color: rgb(21, 187, 21);
+    background-color: var(--success-50);
+    border-color: var(--success-600);
 }
 
 .connectedText {
-    color: rgb(21, 187, 21);
+    color: var(--success-700);
     font-weight: 600;
 }
 
-.divQuestions {
-    justify-self: flex-end;
-    border-top: 1px solid #ccc;
-    padding-top: 1rem;
+.faqSection {
+    border-top: 1px solid var(--color-border);
+    padding-top: 1.25rem;
+    margin-top: 1.5rem;
 }
 
-.divAnswers {
-    max-height: 0;
+.faqSectionTitle {
+    margin: 0 0 0.85rem 0;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--color-text);
+}
+
+.faqList {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.faqItem {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
     overflow: hidden;
-    transition: max-height 0.35s ease-in-out, opacity 0.35s ease-in-out;
-    opacity: 0;
-    padding: 0 12px;
+    transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
 }
 
-.divAnswers p {
-    margin: 8px 0;
+.faqItem.is-open {
+    border-color: var(--color-primary-border);
+    box-shadow: var(--shadow-xs);
 }
 
-.divAnswers.active-answer {
-    max-height: 500px;
-    opacity: 1;
-    padding: 0 1rem 1rem 1rem;
+.faqItemHeading {
+    margin: 0;
 }
 
-.question {
+.faqTrigger {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.9rem 1rem;
+    border: none;
+    background: transparent;
+    font-family: inherit;
+    font-size: 0.95rem;
     font-weight: 600;
+    color: var(--color-text);
+    text-align: left;
     cursor: pointer;
-    margin-bottom: 0.5rem;
+    transition: color var(--transition-fast), background-color var(--transition-fast);
 }
 
-.question:hover {
-    color: var(--azul-clarito);
-    transition: all .2s ease;
+.faqTrigger:hover {
+    color: var(--color-primary);
+    background: var(--color-surface-muted);
+}
+
+.faqItem.is-open .faqTrigger {
+    color: var(--color-primary-strong);
+}
+
+.faqChevron {
+    width: 0.5rem;
+    height: 0.5rem;
+    flex-shrink: 0;
+    border-right: 2px solid currentColor;
+    border-bottom: 2px solid currentColor;
+    transform: rotate(45deg);
+    transition: transform var(--transition-fast);
+}
+
+.faqItem.is-open .faqChevron {
+    transform: rotate(225deg);
+}
+
+.faqPanel {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.28s var(--ease-out);
+}
+
+.faqItem.is-open .faqPanel {
+    grid-template-rows: 1fr;
+}
+
+.faqPanelInner {
+    overflow: hidden;
+    min-height: 0;
+}
+
+.faqPanelInner p {
+    margin: 0;
+    padding: 0 1rem 0.85rem 1rem;
+    color: var(--color-text-muted);
+    font-size: 0.9rem;
+    line-height: 1.6;
+}
+
+.faqPanelInner p + p {
+    padding-top: 0;
 }
 
 .divMethod.disabled {
@@ -102,68 +178,55 @@
 }
 
 .divMethod.disabled:hover {
-    background-color: #f9f9f9;
-    border-color: #ccc;
+    background-color: var(--color-surface-muted);
+    border-color: var(--color-border);
+    box-shadow: none;
 }
 
 .pComingSoon {
     font-style: italic;
-    color: gray;
+    color: var(--color-text-subtle);
     font-weight: 600;
 }
 
 .connectButton {
-    background: linear-gradient(135deg, #00a650 0%, #00d4aa 100%);
-    border: none;
-    border-radius: 8px;
-    padding: 0.75rem 1.5rem;
-    color: white;
-    font-weight: 600;
-    font-size: 0.95rem;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 2px 8px rgba(0, 166, 80, 0.2);
+    position: relative;
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    position: relative;
-    overflow: hidden;
+    padding: 0.7rem 1.3rem;
+    background: #00a650;
+    border: none;
+    border-radius: var(--radius-md);
+    color: #fff;
+    font-family: inherit;
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0, 166, 80, 0.2);
+    transition: transform var(--transition-fast), box-shadow var(--transition-fast), background-color var(--transition-fast);
 }
 
-.connectButton:hover {
+.connectButton:hover:not(:disabled) {
     transform: translateY(-2px);
-    box-shadow: 0 4px 16px rgba(0, 166, 80, 0.3);
-    background: linear-gradient(135deg, #00b865 0%, #00e6c3 100%);
+    background: #009345;
+    box-shadow: 0 8px 20px rgba(0, 166, 80, 0.28);
 }
 
-.connectButton:active {
+.connectButton:active:not(:disabled) {
     transform: translateY(0);
     box-shadow: 0 2px 8px rgba(0, 166, 80, 0.2);
 }
 
 .connectButton:disabled {
-    background: #ccc;
+    background: var(--neutral-200);
+    color: var(--color-text-subtle);
     cursor: not-allowed;
     transform: none;
     box-shadow: none;
 }
 
-.connectButton::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-    transition: left 0.5s;
-}
-
-.connectButton:hover::before {
-    left: 100%;
-}
-
-.buttonIcon {
+.connectButton .buttonIcon {
     width: 16px;
     height: 16px;
 }
@@ -178,7 +241,7 @@
 @media (max-width: 785px) {
     .divMethodInfo {
         p {
-            font-size: 1rem;
+            font-size: 0.9rem;
         }
     }
 }

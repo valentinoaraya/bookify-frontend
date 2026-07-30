@@ -4,19 +4,26 @@ import { EmailIcon } from "../../../../../common/Icons/Icons";
 import WhatsAppLogo from "../../../../../assets/images/wsp-logo.webp"
 import ModalAddReminder from "./ModalAddReminder/ModalAddReminder";
 import { useState } from "react";
-import { BACKEND_API_URL } from "../../../../../config";
-import { notifyError } from "../../../../../utils/notifications";
+import { updateCompany } from "@/shared/api/companies";
+import { notifyError, notifySuccess } from "../../../../../utils/notifications";
 import { useCompany } from "../../../../../hooks/useCompany";
-import { useAuthenticatedPut } from "../../../../../hooks/useAuthenticatedFetch";
 
 interface Props {
     data: Company
 }
 
+const formatHoursBefore = (hoursBefore: number) => {
+    if (hoursBefore >= 24) {
+        const days = hoursBefore / 24
+        return `${days} ${days === 1 ? "día" : "días"} antes`
+    }
+    return `${hoursBefore} ${hoursBefore === 1 ? "hora" : "horas"} antes`
+}
+
 const RemindersSettings: React.FC<Props> = ({ data }) => {
     const [isOpen, setIsOpen] = useState(false)
-    const { isLoading, error, put } = useAuthenticatedPut()
-    const urlUpdateCompany = `${BACKEND_API_URL}/companies/update-company`
+    const [isLoading, setIsLoading] = useState(false)
+    const [deletingIndex, setDeletingIndex] = useState<number | null>(null)
     const { updateCompanyData } = useCompany()
 
     const handleSubmit = async (reminder: {
@@ -47,17 +54,43 @@ const RemindersSettings: React.FC<Props> = ({ data }) => {
         const updatedCompany = {
             reminders: [...data.reminders, reminder]
         }
-        const response = await put(urlUpdateCompany, updatedCompany)
-        if (response.data) {
-            updateCompanyData(response.data.data)
-            setIsOpen(false)
-        }
-        if (response.error) {
-            notifyError("No se pudo agregar el recordatorio. Inténtalo de nuevo más tarde.")
+        setIsLoading(true)
+        try {
+            const response = await updateCompany(updatedCompany)
+            if (response.data) {
+                updateCompanyData(response.data.data)
+                setIsOpen(false)
+                notifySuccess("Recordatorio agregado")
+            }
+            if (response.error) {
+                notifyError("No se pudo agregar el recordatorio. Inténtalo de nuevo más tarde.")
+            }
+        } finally {
+            setIsLoading(false)
         }
     }
 
-    if (error) notifyError("Error en el servidor. Inténtalo de nuevo más tarde.")
+    const handleDelete = async (index: number) => {
+        setDeletingIndex(index)
+        setIsLoading(true)
+        try {
+            const updatedCompany = {
+                ...data,
+                reminders: data.reminders.filter((_, i) => i !== index)
+            }
+            const response = await updateCompany(updatedCompany)
+            if (response.data) {
+                updateCompanyData(response.data.data)
+                notifySuccess("Recordatorio eliminado")
+            }
+            if (response.error) {
+                notifyError("No se pudo eliminar el recordatorio. Inténtalo de nuevo más tarde.")
+            }
+        } finally {
+            setIsLoading(false)
+            setDeletingIndex(null)
+        }
+    }
 
     return (
         <div className="animation-section">
@@ -71,74 +104,72 @@ const RemindersSettings: React.FC<Props> = ({ data }) => {
                         <EmailIcon
                             width="32"
                             height="32"
-                            fill="#4a90e2"
+                            fill="#1282A2"
                         />
                         <div>
                             <h3 className="reminder-title">Recordatorios por email</h3>
                             <p className="reminder-p">Envía recordatorios por email a tus clientes antes de sus turnos.</p>
                         </div>
                     </div>
-                    <div className="table-reminders-container">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Recordar</th>
-                                    <th>Servicios afectados</th>
-                                    <th>Eliminar</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {data.reminders && data.reminders.length > 0 ? (
-                                    <>
-                                        {
-                                            data.reminders.map((reminder, index) => (
-                                                <tr key={index}>
-                                                    <td>
-                                                        {
-                                                            reminder.hoursBefore >= 24
-                                                                ? `${reminder.hoursBefore / 24} ${reminder.hoursBefore / 24 === 1 ? "día" : "días"} antes`
-                                                                : `${reminder.hoursBefore} ${reminder.hoursBefore === 1 ? "hora" : "horas"} antes`
-                                                        }
-                                                    </td>
-                                                    <td>
-                                                        {reminder.services && reminder.services.length > 0
-                                                            ? reminder.services.map(service => service.title).join(", ")
-                                                            : "No hay servicios afectados"}
-                                                    </td>
-                                                    <td>
-                                                        <button className="delete-reminder-button" onClick={async () => {
-                                                            const updatedCompany = {
-                                                                ...data,
-                                                                reminders: data.reminders.filter((_, i) => i !== index)
-                                                            }
-                                                            const response = await put(urlUpdateCompany, updatedCompany)
-                                                            if (response.data) {
-                                                                updateCompanyData(response.data.data)
-                                                            }
-                                                            if (response.error) {
-                                                                notifyError("No se pudo eliminar el recordatorio. Inténtalo de nuevo más tarde.")
-                                                            }
-                                                        }}>Eliminar</button>
-                                                    </td>
-                                                </tr>
-                                            ))
-                                        }
-                                        <tr>
-                                            <td colSpan={3} className="add-reminder-td" onClick={() => setIsOpen(true)}>+ Agregar recordatorio</td>
-                                        </tr>
-                                    </>
-                                ) : (
-                                    <>
-                                        <tr>
-                                            <td >No hay recordatorios agregados</td>
-                                        </tr>
-                                        <tr>
-                                            <td colSpan={2} className="add-reminder-td" onClick={() => setIsOpen(true)}>+ Agregar recordatorio</td>
-                                        </tr>
-                                    </>
-                                )}
-                            </tbody>
-                        </table>
+
+                    <div className="remindersList">
+                        {data.reminders && data.reminders.length > 0 ? (
+                            data.reminders.map((reminder, index) => (
+                                <article key={`${reminder.hoursBefore}-${index}`} className="reminderCard">
+                                    <div className="reminderCardMain">
+                                        <div className="reminderCardWhen">
+                                            <span className="reminderCardWhenLabel">Se envía</span>
+                                            <strong className="reminderCardWhenValue">
+                                                {formatHoursBefore(reminder.hoursBefore)}
+                                            </strong>
+                                        </div>
+                                        <div className="reminderCardServices">
+                                            <span className="reminderCardServicesLabel">Servicios</span>
+                                            <div className="reminderCardChips">
+                                                {reminder.services && reminder.services.length > 0 ? (
+                                                    reminder.services.map((service) => (
+                                                        <span key={service._id} className="reminderChip">
+                                                            {service.title}
+                                                        </span>
+                                                    ))
+                                                ) : (
+                                                    <span className="reminderChip is-empty">Sin servicios</span>
+                                                )}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button
+                                        type="button"
+                                        className="reminderDelete"
+                                        disabled={isLoading}
+                                        onClick={() => handleDelete(index)}
+                                    >
+                                        {deletingIndex === index ? "Eliminando..." : "Eliminar"}
+                                    </button>
+                                </article>
+                            ))
+                        ) : (
+                            <div className="remindersEmpty">
+                                <p>Todavía no tenés recordatorios configurados.</p>
+                            </div>
+                        )}
+
+                        <button
+                            type="button"
+                            className="reminderAdd"
+                            onClick={() => setIsOpen(true)}
+                            disabled={isLoading || isOpen}
+                        >
+                            + Agregar recordatorio
+                        </button>
+
+                        <ModalAddReminder
+                            isLoading={isLoading}
+                            onSubmit={handleSubmit}
+                            services={data.services}
+                            isOpen={isOpen}
+                            setIsOpen={setIsOpen}
+                        />
                     </div>
                 </div>
                 <div className="reminders-whatsapp div-reminders-wsp-coming-soon">
@@ -151,13 +182,6 @@ const RemindersSettings: React.FC<Props> = ({ data }) => {
                     </div>
                 </div>
             </div>
-            <ModalAddReminder
-                isLoading={isLoading}
-                onSubmit={handleSubmit}
-                services={data.services}
-                isOpen={isOpen}
-                setIsOpen={setIsOpen}
-            />
         </div>
     );
 }

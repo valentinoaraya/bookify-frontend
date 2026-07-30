@@ -1,25 +1,31 @@
 .mp-success-panel {
     min-height: 100vh;
+    width: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
+    padding: 1.5rem;
+    box-sizing: border-box;
 }
 
 .mp-success-card {
     width: 100%;
-    max-width: 520px;
-    background: var(--gris);
-    border-radius: 16px;
-    padding: 28px;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    max-width: 480px;
+    box-sizing: border-box;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-xl);
+    padding: 2.5rem 2rem;
+    box-shadow: var(--shadow-lg);
     text-align: center;
-    color: var(--text, #e6e8eb);
+    color: var(--color-text);
+    animation: bk-rise-in 0.35s var(--ease-out);
 }
 
 .mp-success-icon {
     width: 64px;
     height: 64px;
-    margin: 0 auto 12px auto;
+    margin: 0 auto 1rem auto;
 }
 
 .mp-success-icon svg {
@@ -30,26 +36,40 @@
 
 .mp-icon-bg {
     fill: transparent;
-    stroke: var(--success, #22c55e);
+    stroke: var(--color-success);
+}
+
+.mp-icon-bg-error {
+    stroke: var(--color-danger);
 }
 
 .mp-icon-check {
-    fill: var(--success, #22c55e);
+    fill: var(--color-success);
+}
+
+.mp-icon-error {
+    fill: var(--color-danger);
 }
 
 .mp-success-title {
-    margin: 8px 0 6px 0;
-    font-size: 24px;
-    line-height: 1.2;
-    color: var(--azul-clarito);
+    margin: 0.5rem 0 0.5rem 0;
+    font-size: 1.5rem;
+    font-weight: 800;
+    letter-spacing: -0.025em;
+    line-height: 1.25;
+    color: var(--success-700);
+}
+
+.mp-error .mp-success-title {
+    color: var(--danger-700);
 }
 
 .mp-success-text {
-    margin: 0 auto 20px auto;
+    margin: 0 auto 1.5rem auto;
     max-width: 44ch;
-    font-size: 14px;
+    font-size: 0.92rem;
     line-height: 1.6;
-    color: grey;
+    color: var(--color-text-muted);
 }
 
 .mp-success-button {
@@ -58,39 +78,36 @@
     align-items: center;
     justify-content: center;
     gap: 8px;
-    padding: 12px 16px;
-    border-radius: 10px;
-    border: 1px solid var(--primary-border, --azul-clarito);
-    background: var(--azul-clarito);
-    color: #ffffff;
+    padding: 0.85rem 1rem;
+    box-sizing: border-box;
+    border-radius: var(--radius-md);
+    border: 1px solid transparent;
+    background: var(--color-primary);
+    color: var(--color-text-inverse);
+    font-family: inherit;
     font-weight: 600;
-    font-size: 14px;
+    font-size: 0.95rem;
     cursor: pointer;
-    transition: transform 0.06s ease, box-shadow 0.2s ease, background 0.2s ease;
-    box-shadow: 0 4px 14px rgba(59, 130, 246, 0.25);
+    box-shadow: var(--shadow-xs);
+    transition: transform var(--transition-fast), box-shadow var(--transition-fast), filter var(--transition-fast);
 }
 
 .mp-success-button:hover {
-    background: var(--azul-oscuro);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-brand);
+    filter: brightness(1.05);
 }
 
 .mp-success-button:active {
-    transform: translateY(1px);
+    transform: translateY(0);
 }
 
-@media (prefers-color-scheme: light) {
-    .mp-success-panel {
-        background: var(--bg, #f4f6f8);
-    }
-
+@media (max-width: 560px) {
     .mp-success-card {
-        background: var(--surface, #ffffff);
-        border-color: var(--border, #e6e8eb);
-        box-shadow: 0 8px 28px rgba(16, 24, 40, 0.12);
-        color: var(--text, #1f2937);
+        padding: 2rem 1.25rem;
     }
 
-    .mp-success-text {
-        color: var(--muted, #4b5563);
+    .mp-success-title {
+        font-size: 1.3rem;
     }
 }

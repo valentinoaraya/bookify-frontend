@@ -1,48 +1,30 @@
 import "./CheckoutConfirmAppointment.css"
 import { useLocation, useNavigate } from "react-router-dom";
 import Title from "../../common/Title/Title";
-import { BACKEND_API_URL, PUBLIC_KEY_MP } from "../../config";
-import { notifyError } from "../../utils/notifications";
 import { ToastContainer } from "react-toastify";
 import Button from "../../common/Button/Button";
-import { initMercadoPago } from "@mercadopago/sdk-react";
 import { formatDate } from "../../utils/formatDate";
-import { useAuthenticatedPost } from "../../hooks/useAuthenticatedFetch";
+import { useCheckoutPreference } from "@/features/checkout/hooks/useCheckoutPreference";
 
 const CheckoutConfirmAppointment = () => {
-
-    initMercadoPago(PUBLIC_KEY_MP)
 
     const location = useLocation()
     const navigate = useNavigate()
     const { date, service, dataUser, cancellationAnticipationHours } = location.state
 
-    const { isLoading, error, post } = useAuthenticatedPost()
-    const urlCreatePreference = `${BACKEND_API_URL}/mercadopago/create-preference/${service.companyId}`
+    const { isLoading, buy } = useCheckoutPreference()
 
     if (!date || !service || !dataUser) return <h2>Checkout no disponible.</h2>
     const hour = date.split(" ")[1]
     const formattedDate = formatDate(date.split(" ")[0])
 
-    if (error) notifyError("Error del servidor. Inténtelo de nuevo más tarde.")
-
-    const handleBuy = async () => {
-        const response = await post(urlCreatePreference, {
+    const handleBuy = () => {
+        buy({
+            companyId: service.companyId,
             serviceId: service.serviceId,
-            title: `Seña de turno para ${service.title}`,
-            price: service.signPrice,
-            date: date,
-            dataUser
-        }, { skipAuth: true })
-
-        if (response.data.init_point) {
-            sessionStorage.setItem("paymentInProcess", "true")
-            window.location.href = response.data.init_point
-        }
-        if (response.error) {
-            console.error(response.error)
-            notifyError(response.error)
-        }
+            date,
+            dataUser,
+        })
     }
 
     const handleGoBack = () => {
@@ -107,7 +89,7 @@ const CheckoutConfirmAppointment = () => {
                 <div className="checkoutButtonContainer">
                     <Button
                         onSubmit={handleBuy}
-                        disabled={isLoading}
+                        loading={isLoading}
                     >
                         {isLoading ? "Procesando..." : "Pagar seña con Mercado Pago"}
                     </Button>

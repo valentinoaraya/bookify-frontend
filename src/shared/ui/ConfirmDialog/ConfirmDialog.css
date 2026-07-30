@@ -1,0 +1,116 @@
+.bkConfirmOverlay {
+    position: fixed;
+    inset: 0;
+    z-index: 4000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    box-sizing: border-box;
+    background: rgba(15, 23, 42, 0.55);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    animation: bk-fade-in 0.2s var(--ease-out);
+}
+
+.bkConfirmDialog {
+    width: min(100%, 420px);
+    box-sizing: border-box;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-xl);
+    padding: 1.75rem 1.5rem 1.5rem;
+    text-align: center;
+    animation: bk-pop-in 0.24s var(--ease-out);
+}
+
+.bkConfirmIcon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 3rem;
+    height: 3rem;
+    margin: 0 auto 1rem;
+    border-radius: var(--radius-pill);
+    border: 1px solid transparent;
+    font-size: 1.35rem;
+    font-weight: 800;
+    line-height: 1;
+}
+
+.bkConfirmIcon--warning {
+    background: var(--warning-50);
+    border-color: var(--warning-200);
+    color: var(--warning-700);
+}
+
+.bkConfirmIcon--error {
+    background: var(--danger-50);
+    border-color: var(--danger-200);
+    color: var(--danger-700);
+}
+
+.bkConfirmIcon--success {
+    background: var(--success-50);
+    border-color: var(--success-200);
+    color: var(--success-700);
+}
+
+.bkConfirmIcon--info {
+    background: var(--info-50);
+    border-color: var(--info-200);
+    color: var(--info-600);
+}
+
+.bkConfirmTitle {
+    margin: 0;
+    font-size: 1.2rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: var(--color-text);
+    line-height: 1.35;
+}
+
+.bkConfirmMessage {
+    margin: 0.75rem 0 0;
+    font-size: 0.95rem;
+    line-height: 1.55;
+    color: var(--color-text-muted);
+}
+
+.bkConfirmActions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.65rem;
+    margin-top: 1.5rem;
+}
+
+.bkConfirmActions .button {
+    flex: 1 1 140px;
+    max-width: 100%;
+}
+
+body.bk-confirm-open {
+    overflow: hidden;
+}
+
+@media (max-width: 420px) {
+    .bkConfirmDialog {
+        padding: 1.4rem 1.15rem 1.15rem;
+    }
+
+    .bkConfirmTitle {
+        font-size: 1.1rem;
+    }
+
+    .bkConfirmActions {
+        flex-direction: column-reverse;
+    }
+
+    .bkConfirmActions .button {
+        flex: 1 1 auto;
+        width: 100%;
+    }
+}

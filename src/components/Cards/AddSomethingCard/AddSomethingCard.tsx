@@ -15,9 +15,9 @@ const AddSomethingCard: React.FC<Props> = ({ label, onClick }) => {
             onClick={onClick}
         >
             <PlusIcon
-                width="50"
-                height="50"
-                fill="#457B9D"
+                width="44"
+                height="44"
+                fill="currentColor"
             />
             <p>{label}</p>
         </div>

@@ -1,5 +1,6 @@
 import "./ProcessingPayment.css"
 import { useEffect, useState } from "react";
+import LoadingSpinner from "../../common/LoadingSpinner/LoadingSpinner";
 
 const ProcessingPayment = () => {
 
@@ -23,9 +24,7 @@ const ProcessingPayment = () => {
         setIsLoading(false)
     }, [])
 
-    if (isLoading) return <div>
-        <h1>Cargando...</h1>
-    </div>
+    if (isLoading) return <LoadingSpinner text="Cargando..." />
 
     return (
         <div className="processingPaymentContainer">

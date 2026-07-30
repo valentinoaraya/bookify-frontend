@@ -9,16 +9,30 @@ interface Props {
     dataCompany: CompanyToUser;
     children?: React.ReactNode;
     scheduledAppointments?: Appointment[];
+    servicesLength?: number;
+    /** @deprecated use servicesLength */
     servicesLenght?: number;
-    isModalOpen: boolean
-    setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>
-    active: string
-    setActive: React.Dispatch<SetStateAction<string>>
+    variant?: "user" | "company";
+    isModalOpen?: boolean
+    setIsModalOpen?: React.Dispatch<React.SetStateAction<boolean>>
+    active?: string
+    setActive?: React.Dispatch<SetStateAction<string>>
 }
 
-const DataCompany: React.FC<Props> = ({ dataCompany, children, scheduledAppointments, servicesLenght, isModalOpen, setIsModalOpen, active, setActive }) => {
-
-    const location = window.location.pathname;
+const DataCompany: React.FC<Props> = ({
+    dataCompany,
+    children,
+    scheduledAppointments,
+    servicesLength,
+    servicesLenght,
+    variant = "user",
+    isModalOpen = false,
+    setIsModalOpen,
+    active = "",
+    setActive,
+}) => {
+    const servicesCount = servicesLength ?? servicesLenght ?? 0
+    const isCompany = variant === "company"
 
     const todayAppointments = scheduledAppointments
         ? scheduledAppointments.filter(appointment => {
@@ -30,8 +44,38 @@ const DataCompany: React.FC<Props> = ({ dataCompany, children, scheduledAppointm
         })
         : [];
 
+    const openSettings = () => {
+        if (!setActive || !setIsModalOpen) return
+        setActive("profile")
+        setIsModalOpen(true)
+    }
+
     return (
-        <div className={`dataCompanyPanel ${location.split("/")[1] === "c" ? "user" : ""}`}>
+        <div className={`dataCompanyPanel ${variant === "user" ? "user" : ""}`}>
+            <div className="dataCompanyMobileHeader">
+                <div className="dataCompanyMobileHeaderText">
+                    <h2 className="h2TitleCompanyPanel">{dataCompany.name}</h2>
+                    <p>{isCompany ? "Gestioná tus turnos y servicios" : "Reservá tu turno"}</p>
+                </div>
+                {isCompany && setIsModalOpen && setActive && (
+                    <Button
+                        iconSVG={
+                            <SettingsIcon
+                                width="22px"
+                                height="22px"
+                                fill="white"
+                            />
+                        }
+                        padding="0.75rem"
+                        width="auto"
+                        variant="primary"
+                        fontSize="1rem"
+                        fontWeight="600"
+                        margin="0"
+                        onSubmit={openSettings}
+                    />
+                )}
+            </div>
             <div className="dataContent">
                 <div className="titleContainer">
                     <h2 className="h2TitleCompanyPanel">{dataCompany.name}</h2>
@@ -119,39 +163,15 @@ const DataCompany: React.FC<Props> = ({ dataCompany, children, scheduledAppointm
                                 height="20px"
                                 fill="#1282A2"
                             />
-                            <h2>{servicesLenght}</h2>
+                            <h2>{servicesCount}</h2>
                         </div>
-                        <h2 className="iconContainer">{servicesLenght}</h2>
+                        <h2 className="iconContainer">{servicesCount}</h2>
                         <h3>Servicios activos</h3>
                     </div>
                 </div>
-                {
-                    window.location.pathname === "/company-panel" &&
-                    <div className="divButtonSettingsMobile">
-                        <Button
-                            iconSVG={
-                                <SettingsIcon
-                                    width={window.innerWidth >= 740 ? "30px" : "25px"}
-                                    height={window.innerWidth >= 740 ? "30px" : "25px"}
-                                    fill="white"
-                                />
-                            }
-                            padding="1rem"
-                            backgroundColor="#1282A2"
-                            fontSize="1rem"
-                            fontWeight="600"
-                            margin="0"
-                            onSubmit={() => {
-                                setActive("profile")
-                                setIsModalOpen(true)
-                            }}
-                        >
-                        </Button>
-                    </div>
-                }
             </div>
             {
-                window.location.pathname === "/company-panel" &&
+                isCompany && setIsModalOpen && setActive &&
                 <>
                     <div className="divButtonSettings">
                         <Button
@@ -162,14 +182,11 @@ const DataCompany: React.FC<Props> = ({ dataCompany, children, scheduledAppointm
                                     fill="white"
                                 />
                             }
-                            backgroundColor="#1282A2"
+                            variant="primary"
                             fontSize="1rem"
                             fontWeight="600"
                             margin="0"
-                            onSubmit={() => {
-                                setActive("profile")
-                                setIsModalOpen(true)
-                            }}
+                            onSubmit={openSettings}
                         >
                             Configuración
                         </Button>

@@ -4,102 +4,117 @@ import { useDataForm } from "../../../../../hooks/useDataForm";
 import { notifyError, notifySuccess } from "../../../../../utils/notifications";
 import { ClipboardIcon, MemoryIcon, UserXIcon } from "../../../../../common/Icons/Icons";
 import Button from "../../../../../common/Button/Button";
-import { BACKEND_API_URL } from "../../../../../config";
+import { updateCompany } from "@/shared/api/companies";
 import { useCompany } from "../../../../../hooks/useCompany";
-import { useEffect, useState } from "react";
-import { useAuthenticatedPut } from "../../../../../hooks/useAuthenticatedFetch";
+import { useMemo, useState } from "react";
+import { logout } from "../../../../../utils/tokenManager";
 
 interface Props {
     data: Company
 }
 
+type ProfileFields = {
+    name: string
+    phone: string
+    email: string
+    city: string
+    street: string
+    number: string | number
+    company_id: string
+}
+
+const normalizeProfile = (fields: ProfileFields) => ({
+    name: String(fields.name ?? "").trim(),
+    phone: String(fields.phone ?? "").trim(),
+    email: String(fields.email ?? "").trim(),
+    city: String(fields.city ?? "").trim(),
+    street: String(fields.street ?? "").trim(),
+    number: Number(fields.number),
+    company_id: String(fields.company_id ?? "").trim(),
+})
+
+const profilesEqual = (a: ProfileFields, b: ProfileFields) => {
+    const left = normalizeProfile(a)
+    const right = normalizeProfile(b)
+    return (
+        left.name === right.name &&
+        left.phone === right.phone &&
+        left.email === right.email &&
+        left.city === right.city &&
+        left.street === right.street &&
+        left.number === right.number &&
+        left.company_id === right.company_id
+    )
+}
+
 const ProfileSettings: React.FC<Props> = ({ data }) => {
     const { updateCompanyData } = useCompany()
-    const [isDisabled, setIsDisabled] = useState(true)
-    const { dataForm, handleChange } = useDataForm({
+    const initial = {
         name: data.name,
         phone: data.phone,
         email: data.email,
         city: data.city,
         street: data.street,
         number: data.number,
-        company_id: data.company_id
-    })
-    const { isLoading, error, put } = useAuthenticatedPut()
-    const urlUpdateCompany = `${BACKEND_API_URL}/companies/update-company`
+        company_id: data.company_id,
+    }
+    const { dataForm, handleChange } = useDataForm(initial)
+    const [isLoading, setIsLoading] = useState(false)
+    const [copied, setCopied] = useState(false)
 
-    if (error) notifyError("Error al actualizar los datos. Inténtalo de nuevo más tarde.")
+    const hasChanges = useMemo(
+        () => !profilesEqual(initial, dataForm as ProfileFields),
+        [dataForm, data.name, data.phone, data.email, data.city, data.street, data.number, data.company_id]
+    )
 
-    useEffect(() => {
-        const checkData = () => {
-            if (JSON.stringify({
-                name: data.name,
-                phone: data.phone,
-                email: data.email,
-                city: data.city,
-                street: data.street,
-                number: data.number,
-                company_id: data.company_id
-            }) === JSON.stringify(dataForm)) {
-                setIsDisabled(true)
-                return
-            }
-            setIsDisabled(false)
-        }
-
-        checkData()
-    }, [dataForm])
+    const publicPath = `/c/${String(dataForm["company_id"] ?? "").trim() || "…"}`
+    const publicUrl = `${window.location.origin}${publicPath}`
 
     const updateData = async () => {
-        if (JSON.stringify({
-            name: data.name,
-            phone: data.phone,
-            email: data.email,
-            city: data.city,
-            street: data.street,
-            number: data.number,
-            company_id: data.company_id
-        }) === JSON.stringify({
-            name: (dataForm["name"] as string).trim(),
-            phone: (dataForm["phone"] as string).trim(),
-            email: (dataForm["email"] as string).trim(),
-            city: (dataForm["city"] as string).trim(),
-            street: (dataForm["street"] as string).trim(),
-            number: dataForm["number"],
-            company_id: (dataForm["company_id"] as string).trim()
-        })) {
-            notifyError("No hay cambios para guardar")
-            return
-        }
+        if (!hasChanges) return
 
-        if ((dataForm["name"] as string).trim() === "" ||
-            (dataForm["phone"] as string).trim() === "" ||
-            (dataForm["email"] as string).trim() === "" ||
-            (dataForm["city"] as string).trim() === "" ||
-            (dataForm["street"] as string).trim() === "" ||
-            (dataForm["company_id"] as string).trim() === "" ||
-            !dataForm["number"]
+        const next = normalizeProfile(dataForm as ProfileFields)
+
+        if (
+            !next.name ||
+            !next.phone ||
+            !next.email ||
+            !next.city ||
+            !next.street ||
+            !next.company_id ||
+            !Number.isFinite(next.number)
         ) {
             notifyError("Por favor, completa todos los campos")
             return
         }
 
-        const response = await put(urlUpdateCompany, dataForm)
-        if (response?.data) {
-            updateCompanyData(response.data.data)
-            notifySuccess("Datos actualizados")
+        setIsLoading(true)
+        try {
+            const response = await updateCompany(next)
+            if (response?.data) {
+                updateCompanyData(response.data.data)
+                notifySuccess("Datos actualizados")
+            }
+            if (response?.error) notifyError(response.error)
+        } finally {
+            setIsLoading(false)
         }
-        if (response?.error) notifySuccess(response.error)
     }
 
     const handleLogout = async () => {
-        localStorage.removeItem("access_token")
+        await logout()
         window.location.href = "/"
     }
 
-    const copyToClipboard = () => {
-        navigator.clipboard.writeText(`https://bookify.aedestec.com/c/${data.company_id}`);
-        notifySuccess("¡Link copiado!")
+    const copyToClipboard = async () => {
+        try {
+            await navigator.clipboard.writeText(`${window.location.origin}/c/${data.company_id}`)
+            setCopied(true)
+            notifySuccess("¡Link copiado!")
+            window.setTimeout(() => setCopied(false), 1800)
+        } catch {
+            notifyError("No se pudo copiar el link")
+        }
     }
 
     return (
@@ -109,38 +124,72 @@ const ProfileSettings: React.FC<Props> = ({ data }) => {
                 <p>Edita los datos de contacto y ubicación de tu empresa.</p>
             </div>
             <div className="profile-settings">
-                <div className="link-for-clients">
-                    <h3>Link para tus clientes:</h3>
-                    <div className="link-copy-container">
-                        <div className="link-copy">
-                            <label className="label-link">bookify.aedestec.com/c/</label>
+                <section className="profileLinkCard">
+                    <div className="profileLinkCardHeader">
+                        <div>
+                            <h3>Link para tus clientes</h3>
+                            <p>Compartí este enlace para que reserven turnos online.</p>
+                        </div>
+                        <div className="profileLinkActions">
+                            <button
+                                type="button"
+                                className={`profileLinkCopy ${copied ? "is-copied" : ""}`}
+                                onClick={copyToClipboard}
+                            >
+                                <ClipboardIcon
+                                    width="16"
+                                    height="16"
+                                    fill="currentColor"
+                                />
+                                {copied ? "Copiado" : "Copiar link"}
+                            </button>
+                            <a
+                                className="profileLinkOpen"
+                                href={publicUrl}
+                                target="_blank"
+                                rel="noreferrer"
+                            >
+                                Abrir
+                            </a>
+                        </div>
+                    </div>
+
+                    <div className="profileLinkPreview" title={publicUrl}>
+                        <span className="profileLinkPreviewHost">{window.location.host}</span>
+                        <span className="profileLinkPreviewPath">{publicPath}</span>
+                    </div>
+
+                    <div className="profileLinkSlug">
+                        <label htmlFor="company_id">Identificador del link</label>
+                        <div className="profileLinkSlugField">
+                            <span className="profileLinkSlugPrefix">/c/</span>
                             <input
-                                className="input-link"
+                                id="company_id"
+                                className="profileLinkSlugInput"
                                 name="company_id"
                                 required
                                 type="text"
                                 value={dataForm["company_id"]}
                                 onChange={handleChange}
+                                autoComplete="off"
                             />
                         </div>
-                        <button
-                            className="button-copy"
-                            onClick={copyToClipboard}
-                        >
-                            <ClipboardIcon
-                                width="16"
-                                height="16"
-                                fill="#ffffff"
-                            />
-                            Copiar
-                        </button>
+                        <p className="profileLinkSlugHint">
+                            Si lo cambiás, el link anterior dejará de funcionar.
+                        </p>
                     </div>
-                    <p>Con este link tus clientes podrán acceder a tus servicios y sacar turnos.</p>
-                </div>
-                <form>
+                </section>
+
+                <form
+                    onSubmit={(e) => {
+                        e.preventDefault()
+                        if (hasChanges && !isLoading) updateData()
+                    }}
+                >
                     <div className="profile-settings-item">
-                        <label>Nombre:</label>
+                        <label htmlFor="profile-name">Nombre</label>
                         <input
+                            id="profile-name"
                             name="name"
                             required
                             onChange={handleChange}
@@ -149,8 +198,9 @@ const ProfileSettings: React.FC<Props> = ({ data }) => {
                         />
                     </div>
                     <div className="profile-settings-item">
-                        <label>Teléfono:</label>
+                        <label htmlFor="profile-phone">Teléfono</label>
                         <input
+                            id="profile-phone"
                             name="phone"
                             required
                             onChange={handleChange}
@@ -159,8 +209,9 @@ const ProfileSettings: React.FC<Props> = ({ data }) => {
                         />
                     </div>
                     <div className="profile-settings-item">
-                        <label>Email:</label>
+                        <label htmlFor="profile-email">Email</label>
                         <input
+                            id="profile-email"
                             name="email"
                             required
                             onChange={handleChange}
@@ -169,8 +220,9 @@ const ProfileSettings: React.FC<Props> = ({ data }) => {
                         />
                     </div>
                     <div className="profile-settings-item">
-                        <label>Ciudad:</label>
+                        <label htmlFor="profile-city">Ciudad</label>
                         <input
+                            id="profile-city"
                             name="city"
                             required
                             onChange={handleChange}
@@ -179,8 +231,9 @@ const ProfileSettings: React.FC<Props> = ({ data }) => {
                         />
                     </div>
                     <div className="profile-settings-item">
-                        <label>Calle:</label>
+                        <label htmlFor="profile-street">Calle</label>
                         <input
+                            id="profile-street"
                             name="street"
                             required
                             onChange={handleChange}
@@ -189,8 +242,9 @@ const ProfileSettings: React.FC<Props> = ({ data }) => {
                         />
                     </div>
                     <div className="profile-settings-item">
-                        <label>Número de calle:</label>
+                        <label htmlFor="profile-number">Número de calle</label>
                         <input
+                            id="profile-number"
                             name="number"
                             required
                             onChange={handleChange}
@@ -201,8 +255,11 @@ const ProfileSettings: React.FC<Props> = ({ data }) => {
                 </form>
             </div>
             <div className="buttons-profile-settings">
+                {hasChanges && (
+                    <span className="profileDirtyHint">Hay cambios sin guardar</span>
+                )}
                 <Button
-                    backgroundColor="#E74C3C"
+                    variant="danger-ghost"
                     width="auto"
                     margin="0"
                     fontSize="1rem"
@@ -212,26 +269,26 @@ const ProfileSettings: React.FC<Props> = ({ data }) => {
                         <UserXIcon
                             width="16px"
                             height="16px"
-                            fill="white"
+                            fill="currentColor"
                         />
                     }
                 >
                     Cerrar sesión
                 </Button>
                 <Button
-                    backgroundColor={isDisabled ? "grey" : "#3f9f0f"}
+                    variant={hasChanges ? "success" : "neutral"}
                     width="auto"
                     margin="0"
                     fontSize="1rem"
                     padding=".5rem 1rem"
                     onSubmit={updateData}
-                    disabled={isLoading}
-                    cursor={isDisabled ? "default" : "pointer"}
+                    disabled={!hasChanges}
+                    loading={isLoading}
                     iconSVG={
                         <MemoryIcon
                             width="16px"
                             height="16px"
-                            fill="white"
+                            fill="currentColor"
                         />
                     }
                 >

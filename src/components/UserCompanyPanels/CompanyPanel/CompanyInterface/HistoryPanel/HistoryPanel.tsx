@@ -1,316 +1,253 @@
-import { useState, useEffect } from "react";
-import { DatePicker, Select, Input, Card, Empty, Statistic } from "antd";
-import { SearchOutlined, CalendarOutlined, DollarOutlined } from "@ant-design/icons";
-import dayjs, { Dayjs } from "dayjs";
-import isBetween from "dayjs/plugin/isBetween";
-import Title from "../../../../../common/Title/Title";
-import { type Company, type Appointment } from "../../../../../types";
-import { BACKEND_API_URL } from "../../../../../config";
-import "./HistoryPanel.css";
-import LoadingSpinner from "../../../../../common/LoadingSpinner/LoadingSpinner";
-import HistoryAppointmentItem from "./HistoryAppointmentItem";
-import { ArrowReturnIcon } from "../../../../../common/Icons/Icons";
-import Button from "../../../../../common/Button/Button";
-import "dayjs/locale/es";
-import localizedFormat from "dayjs/plugin/localizedFormat";
-import { useAuthenticatedFetch } from "../../../../../hooks/useAuthenticatedFetch";
+import { DatePicker, Select, Input, Card, Empty, Statistic } from "antd"
+import { SearchOutlined, CalendarOutlined, DollarOutlined } from "@ant-design/icons"
+import { dayjs, type Dayjs } from "@/shared/lib/date"
+import Title from "../../../../../common/Title/Title"
+import { type Company } from "../../../../../types"
+import "./HistoryPanel.css"
+import LoadingSpinner from "../../../../../common/LoadingSpinner/LoadingSpinner"
+import HistoryAppointmentItem from "./HistoryAppointmentItem"
+import { ArrowReturnIcon } from "../../../../../common/Icons/Icons"
+import Button from "../../../../../common/Button/Button"
+import { useCompanyHistory } from "@/features/company-panel/history/hooks/useCompanyHistory"
 
-dayjs.extend(isBetween);
-dayjs.extend(localizedFormat);
-dayjs.locale("es");
-
-const { RangePicker } = DatePicker;
-const { Option } = Select;
-const { Search } = Input;
+const { RangePicker } = DatePicker
+const { Option } = Select
+const { Search } = Input
 
 interface HistoryPanelProps {
-  company: Company;
+    company: Company
 }
 
 const HistoryPanel: React.FC<HistoryPanelProps> = ({ company }) => {
-  const [searchTerm, setSearchTerm] = useState("");
-  const { fetchWithAuth } = useAuthenticatedFetch();
-  const [selectedService, setSelectedService] = useState<string>("all");
-  const [dateRange, setDateRange] = useState<[Dayjs | null, Dayjs | null] | null>(null);
-  const [filteredAppointments, setFilteredAppointments] = useState<Appointment[]>([]);
-  const [pendingAppointments, setPendingAppointments] = useState<Appointment[]>([])
-  const [isFilterPendingAppointments, setIsFilterPendingAppointments] = useState(false)
-  const [loading, setLoading] = useState(true);
-  const [backendAppointments, setBackendAppointments] = useState<Appointment[]>([]);
-  const [page, setPage] = useState(1)
-  const [hasMore, setHasMore] = useState(false)
-  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("")
-  const [statistics, setStatistics] = useState<{
-    totalAppointments: number;
-    mostPopularService: string;
-    totalIncome: number;
-    finishedAppointmentsPercentage: number;
-  }>({
-    totalAppointments: 0,
-    mostPopularService: "N/A",
-    totalIncome: 0,
-    finishedAppointmentsPercentage: 0,
-  });
+    const {
+        searchTerm,
+        setSearchTerm,
+        selectedService,
+        setSelectedService,
+        dateRange,
+        setDateRange,
+        isFilterPendingAppointments,
+        setIsFilterPendingAppointments,
+        loading,
+        hasMore,
+        handleLoadMore,
+        backendAppointments,
+        pendingAppointments,
+        filteredAppointments,
+        statistics,
+        setStatistics,
+        setFilteredAppointments,
+        setCopyOfFilteredAppointments,
+        setPendingAppointments,
+        resetFilters,
+        refetch,
+    } = useCompanyHistory(company._id)
 
-  useEffect(() => {
-    const id = setTimeout(() => {
-      setDebouncedSearchTerm(searchTerm)
-    }, 400)
-    return () => clearTimeout(id)
-  }, [searchTerm])
+    const monthLabel =
+        dayjs().locale("es").format("MMMM")[0].toUpperCase() +
+        dayjs().locale("es").format("MMMM").slice(1)
 
-  const fetchHistoryFromBackend = async () => {
-    try {
-      setLoading(true);
-
-      const queryParams = new URLSearchParams({
-        page: "1",
-        limit: "10",
-        ...(debouncedSearchTerm ? { q: debouncedSearchTerm } : {}),
-        ...(selectedService && selectedService !== "all" ? { serviceId: selectedService } : {}),
-        ...(dateRange?.[0] ? { from: dateRange?.[0].format("YYYY-MM-DD") } : {}),
-        ...(dateRange?.[1] ? { to: dateRange?.[1].format("YYYY-MM-DD") } : {}),
-      })
-
-      const url = `${BACKEND_API_URL}/appointments/company-history/${company._id}?${queryParams.toString()}`;
-
-      const response = await fetchWithAuth(url, { method: "GET" });
-
-      if (response.data) {
-        setBackendAppointments(response.data.data || []);
-        setPendingAppointments(response.data.pendingAppointments)
-        setHasMore(response.data.hasMore)
-        setStatistics(response.data.stats || {
-          totalAppointments: 0,
-          mostPopularService: "N/A",
-          totalIncome: 0,
-          finishedAppointmentsPercentage: 0,
-        });
-
-      } else if (response.code === "SESSION_EXPIRED") {
-        window.location.href = "/login/company";
-      } else {
-        setBackendAppointments([]);
-      }
-    } catch (error) {
-      setBackendAppointments([]);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    setPage(1)
-    setIsFilterPendingAppointments(false)
-    fetchHistoryFromBackend();
-  }, [company._id, dateRange, debouncedSearchTerm, selectedService]);
-
-  const handleLoadMore = async () => {
-    try {
-      setLoading(true);
-
-      const queryParams = new URLSearchParams({
-        page: (page + 1).toString(),
-        limit: "10",
-        ...(debouncedSearchTerm ? { q: debouncedSearchTerm } : {}),
-        ...(selectedService && selectedService !== "all" ? { serviceId: selectedService } : {}),
-        ...(dateRange?.[0] ? { from: dateRange?.[0].format("YYYY-MM-DD") } : {}),
-        ...(dateRange?.[1] ? { to: dateRange?.[1].format("YYYY-MM-DD") } : {}),
-      })
-
-      const url = `${BACKEND_API_URL}/appointments/company-history/${company._id}?${queryParams.toString()}`;
-
-      const response = await fetchWithAuth(url, { method: "GET" });
-
-      if (response.data) {
-        setBackendAppointments(prev => [...prev, ...(response.data.data || [])])
-        setPage(prev => prev + 1)
-        setHasMore(response.data.hasMore)
-        setStatistics(response.data.stats || {
-          totalAppointments: 0,
-          mostPopularService: "N/A",
-          totalIncome: 0,
-          finishedAppointmentsPercentage: 0,
-        });
-      }
-    } catch (error) {
-      console.error("Error al cargar más turnos:", error);
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  useEffect(() => {
-    if (isFilterPendingAppointments) {
-      setFilteredAppointments(pendingAppointments)
-    } else {
-      setFilteredAppointments(backendAppointments)
-    }
-  }, [backendAppointments, pendingAppointments, isFilterPendingAppointments])
-
-  return (
-    <div className="history-list-container animation-section divSectionContainer">
-      <Title>Historial de Turnos</Title>
-      <div className="history-filters-container">
-        <div className="history-filters-row">
-          <div className="history-filter-item">
-            <Search
-              placeholder="Buscar por cliente o email"
-              allowClear
-              enterButton={<SearchOutlined />}
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="history-search-input"
-            />
-          </div>
-          <div className="history-filter-item">
-            <Select
-              placeholder="Filtrar por servicio"
-              value={selectedService}
-              onChange={setSelectedService}
-              className="history-filter-select"
-            >
-              <Option value="all">Todos los servicios</Option>
-              {company.services.map((service) => (
-                <Option key={service._id} value={service._id}>
-                  {service.title}
-                </Option>
-              ))}
-            </Select>
-          </div>
-          <div className="history-filter-item">
-            <RangePicker
-              placeholder={["Fecha inicio", "Fecha fin"]}
-              value={dateRange}
-              onChange={(dates) => setDateRange(dates as [Dayjs | null, Dayjs | null] | null)}
-              className="history-date-range-picker"
-              format="DD/MM/YYYY"
-            />
-          </div>
-        </div>
-      </div>
-
-      {statistics && company.suscription.plan !== "individual" && (
-        <div className="history-statistics-container">
-          <div className="history-stats-row">
-            <Card className="history-stat-card animation-section">
-              <Statistic
-                title={`Ingresos totales en ${dayjs().locale("es").format("MMMM")[0].toUpperCase() + dayjs().locale("es").format("MMMM").slice(1)}`}
-                value={statistics.totalIncome}
-                prefix={<DollarOutlined />}
-              />
-            </Card>
-            <Card className="history-stat-card animation-section">
-              <div className="history-popular-service">
-                <div className="history-stat-title">Servicio más Popular</div>
-                <div className="history-stat-value">{statistics.mostPopularService}</div>
-              </div>
-            </Card>
-            <Card className="history-stat-card animation-section">
-              <Statistic
-                title={`Total de turnos en ${dayjs().locale("es").format("MMMM")[0].toUpperCase() + dayjs().locale("es").format("MMMM").slice(1)}`}
-                value={statistics.totalAppointments}
-                prefix={<CalendarOutlined />}
-              />
-            </Card>
-            <Card className="history-stat-card animation-section">
-              <Statistic
-                title={"Porcentaje de asistencias este mes"}
-                value={statistics.finishedAppointmentsPercentage.toPrecision(4) + "%"}
-              />
-            </Card>
-          </div>
-        </div>
-      )}
-
-      <div>
-        {
-          filteredAppointments.length > 0 &&
-          <div className="divInfoAppointments">
-            {
-              (searchTerm !== "" || selectedService !== "all" || (dateRange && (dateRange[0] !== null || dateRange[1] !== null)) || isFilterPendingAppointments) ?
-                <>
-                  <div
-                    className="showAll"
-                    onClick={() => {
-                      setSearchTerm("")
-                      setSelectedService("all")
-                      setDateRange(null)
-                      setIsFilterPendingAppointments(false)
-                      setPage(1)
-                      fetchHistoryFromBackend()
-                    }}
-                  >
-                    <div className="divArrowReturnIcon">
-                      <ArrowReturnIcon
-                        width="1rem"
-                        height="1rem"
-                        fill="#1282A2"
-                      />
-                      <h3 className="showAllText">Ver todos</h3>
+    return (
+        <div className="history-list-container animation-section divSectionContainer">
+            <Title>Historial de Turnos</Title>
+            <div className="history-filters-container">
+                <div className="history-filters-row">
+                    <div className="history-filter-item">
+                        <Search
+                            placeholder="Buscar por cliente o email"
+                            allowClear
+                            enterButton={<SearchOutlined />}
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            className="history-search-input"
+                        />
                     </div>
-                    <h3 className="latestAppointmentsTitle">{filteredAppointments.length} {filteredAppointments.length === 1 ? "turno" : "turnos"} {filteredAppointments.length === 1 ? "filtrado" : "filtrados"}</h3>
-                  </div>
-                </>
-                :
-                <h3 className="latestAppointmentsTitle">{backendAppointments.length === 1 ? "Último" : "Últimos"} {backendAppointments.length === 1 ? "" : backendAppointments.length} {backendAppointments.length === 1 ? "turno" : "turnos"}</h3>
-            }
-            {
-              pendingAppointments.length > 0 &&
-              <h3 className="pendingsAppointmentsTitle" onClick={() => {
-                setIsFilterPendingAppointments(true)
-              }}>
-                Tienes {pendingAppointments.length} {pendingAppointments.length === 1 ? "turno" : "turnos"} {pendingAppointments.length === 1 ? "pendiente" : "pendientes"}
-              </h3>
-            }
-          </div>
-        }
-        <div className="history-appointments-container animation-section">
-          {loading ? (
-            <LoadingSpinner
-              text="Cargando historial..."
-              shadow="none"
-            />
-          ) : filteredAppointments.length === 0 ? (
-            <div className="history-no-services-appointments animation-section">
-              <Empty description="No se encontraron turnos en el historial" />
+                    <div className="history-filter-item">
+                        <Select
+                            placeholder="Filtrar por servicio"
+                            value={selectedService}
+                            onChange={setSelectedService}
+                            className="history-filter-select"
+                        >
+                            <Option value="all">Todos los servicios</Option>
+                            {company.services.map((service) => (
+                                <Option key={service._id} value={service._id}>
+                                    {service.title}
+                                </Option>
+                            ))}
+                        </Select>
+                    </div>
+                    <div className="history-filter-item">
+                        <RangePicker
+                            placeholder={["Fecha inicio", "Fecha fin"]}
+                            value={dateRange}
+                            onChange={(dates) =>
+                                setDateRange(
+                                    dates as [Dayjs | null, Dayjs | null] | null
+                                )
+                            }
+                            className="history-date-range-picker"
+                            format="DD/MM/YYYY"
+                        />
+                    </div>
+                </div>
             </div>
-          ) : (
-            <div className="history-appointments-list">
-              {filteredAppointments.map((appointment) => (
-                <HistoryAppointmentItem
-                  key={appointment._id}
-                  appointment={appointment}
-                  setStatistics={setStatistics}
-                  setFilteredAppointments={setFilteredAppointments}
-                  setCopyOfFilteredAppointments={setBackendAppointments}
-                  setPendingAppointments={setPendingAppointments}
-                  setIsFilteredPendingAppointments={setIsFilterPendingAppointments}
-                />
-              ))}
+
+            {statistics && company.subscription?.plan !== "individual" && (
+                <div className="history-statistics-container">
+                    <div className="history-stats-row">
+                        <Card className="history-stat-card animation-section">
+                            <Statistic
+                                title={`Ingresos totales en ${monthLabel}`}
+                                value={statistics.totalIncome}
+                                prefix={<DollarOutlined />}
+                            />
+                        </Card>
+                        <Card className="history-stat-card animation-section">
+                            <div className="history-popular-service">
+                                <div className="history-stat-title">
+                                    Servicio más Popular
+                                </div>
+                                <div className="history-stat-value">
+                                    {statistics.mostPopularService}
+                                </div>
+                            </div>
+                        </Card>
+                        <Card className="history-stat-card animation-section">
+                            <Statistic
+                                title={`Total de turnos en ${monthLabel}`}
+                                value={statistics.totalAppointments}
+                                prefix={<CalendarOutlined />}
+                            />
+                        </Card>
+                        <Card className="history-stat-card animation-section">
+                            <Statistic
+                                title={"Porcentaje de asistencias este mes"}
+                                value={
+                                    statistics.finishedAppointmentsPercentage.toPrecision(
+                                        4
+                                    ) + "%"
+                                }
+                            />
+                        </Card>
+                    </div>
+                </div>
+            )}
+
+            <div>
+                {filteredAppointments.length > 0 && (
+                    <div className="divInfoAppointments">
+                        {searchTerm !== "" ||
+                        selectedService !== "all" ||
+                        (dateRange &&
+                            (dateRange[0] !== null || dateRange[1] !== null)) ||
+                        isFilterPendingAppointments ? (
+                            <div
+                                className="showAll"
+                                onClick={() => {
+                                    resetFilters()
+                                    void refetch()
+                                }}
+                            >
+                                <div className="divArrowReturnIcon">
+                                    <ArrowReturnIcon
+                                        width="1rem"
+                                        height="1rem"
+                                        fill="#1282A2"
+                                    />
+                                    <h3 className="showAllText">Ver todos</h3>
+                                </div>
+                                <h3 className="latestAppointmentsTitle">
+                                    {filteredAppointments.length}{" "}
+                                    {filteredAppointments.length === 1
+                                        ? "turno"
+                                        : "turnos"}{" "}
+                                    {filteredAppointments.length === 1
+                                        ? "filtrado"
+                                        : "filtrados"}
+                                </h3>
+                            </div>
+                        ) : (
+                            <h3 className="latestAppointmentsTitle">
+                                {backendAppointments.length === 1
+                                    ? "Último"
+                                    : "Últimos"}{" "}
+                                {backendAppointments.length === 1
+                                    ? ""
+                                    : backendAppointments.length}{" "}
+                                {backendAppointments.length === 1
+                                    ? "turno"
+                                    : "turnos"}
+                            </h3>
+                        )}
+                        {pendingAppointments.length > 0 && (
+                            <h3
+                                className="pendingsAppointmentsTitle"
+                                onClick={() =>
+                                    setIsFilterPendingAppointments(true)
+                                }
+                            >
+                                Tienes {pendingAppointments.length}{" "}
+                                {pendingAppointments.length === 1
+                                    ? "turno"
+                                    : "turnos"}{" "}
+                                {pendingAppointments.length === 1
+                                    ? "pendiente"
+                                    : "pendientes"}
+                            </h3>
+                        )}
+                    </div>
+                )}
+                <div className="history-appointments-container animation-section">
+                    {loading && filteredAppointments.length === 0 ? (
+                        <LoadingSpinner text="Cargando historial..." shadow="none" />
+                    ) : filteredAppointments.length === 0 ? (
+                        <div className="history-no-services-appointments animation-section">
+                            <Empty description="No se encontraron turnos en el historial" />
+                        </div>
+                    ) : (
+                        <div className="history-appointments-list">
+                            {filteredAppointments.map((appointment) => (
+                                <HistoryAppointmentItem
+                                    key={appointment._id}
+                                    appointment={appointment}
+                                    setStatistics={setStatistics}
+                                    setFilteredAppointments={
+                                        setFilteredAppointments
+                                    }
+                                    setCopyOfFilteredAppointments={
+                                        setCopyOfFilteredAppointments
+                                    }
+                                    setPendingAppointments={
+                                        setPendingAppointments
+                                    }
+                                    setIsFilteredPendingAppointments={
+                                        setIsFilterPendingAppointments
+                                    }
+                                />
+                            ))}
+                        </div>
+                    )}
+                </div>
+                {hasMore && (
+                    <div className="animation-section">
+                        <Button
+                            onSubmit={() => void handleLoadMore()}
+                            padding=".2rem .5rem"
+                            width="auto"
+                            margin="1rem 0 0 0"
+                            fontSize=".8rem"
+                            fontWeight="500"
+                            variant="ghost"
+                            disabled={loading}
+                        >
+                            Ver más
+                        </Button>
+                    </div>
+                )}
             </div>
-          )}
         </div>
-        {hasMore &&
-          <div className="animation-section">
-            <Button
-              onSubmit={handleLoadMore}
-              padding=".2rem .5rem"
-              width="auto"
-              margin="1rem 0 0 0"
-              fontSize=".8rem"
-              fontWeight="500"
-              backgroundColor="#1282A2"
-              disabled={loading}
-            >
-              Ver más
-            </Button>
-          </div>
+    )
+}
 
-        }
-      </div>
-    </div>
-  );
-};
-
-export default HistoryPanel;
+export default HistoryPanel

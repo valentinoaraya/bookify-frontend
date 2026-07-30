@@ -1,16 +1,154 @@
 :root {
-  --blanco: #ffffff;
-  --azul-clarito: #1282A2;
-  --azul-oscuro: #0A4A5A;
-  --gris-claro: #FBFBFB;
+  /* ---------- Marca ---------- */
+  --brand-50: #eef8fb;
+  --brand-100: #d3edf4;
+  --brand-200: #a7dbe9;
+  --brand-300: #6cc1d8;
+  --brand-400: #2f9fbf;
+  --brand-500: #1282A2;
+  --brand-600: #0f6d89;
+  --brand-700: #0c5a72;
+  --brand-800: #0A4A5A;
+  --brand-900: #073846;
+
+  /* ---------- Neutros ---------- */
+  --neutral-0: #ffffff;
+  --neutral-25: #fcfdfe;
+  --neutral-50: #f7f9fb;
+  --neutral-100: #eef2f6;
+  --neutral-200: #e2e8f0;
+  --neutral-300: #cbd5e1;
+  --neutral-400: #94a3b8;
+  --neutral-500: #64748b;
+  --neutral-600: #475569;
+  --neutral-700: #334155;
+  --neutral-800: #1e293b;
+  --neutral-900: #0f172a;
+
+  /* ---------- Semánticos ---------- */
+  --success-50: #ecfdf3;
+  --success-100: #d1fadf;
+  --success-200: #a6f4c5;
+  --success-500: #12a150;
+  --success-600: #0e8a44;
+  --success-700: #0a6b35;
+
+  --danger-50: #fef3f2;
+  --danger-100: #fee4e2;
+  --danger-200: #fecdca;
+  --danger-500: #e5484d;
+  --danger-600: #cc3339;
+  --danger-700: #a52a2f;
+
+  --warning-50: #fffaeb;
+  --warning-100: #fef0c7;
+  --warning-200: #fedf89;
+  --warning-500: #f0930b;
+  --warning-600: #d97a06;
+  --warning-700: #b25c05;
+
+  --accent-50: #f6f2ff;
+  --accent-100: #ece4ff;
+  --accent-200: #d9c8ff;
+  --accent-500: #7c5cf0;
+  --accent-600: #6841dd;
+  --accent-700: #5432b5;
+
+  --info-50: #eff8ff;
+  --info-100: #d7ecff;
+  --info-200: #b3daff;
+  --info-500: #2b8ae6;
+  --info-600: #1f72c4;
+
+  /* ---------- Roles ---------- */
+  --color-primary: var(--brand-500);
+  --color-primary-strong: var(--brand-800);
+  --color-primary-soft: var(--brand-50);
+  --color-primary-border: var(--brand-200);
+
+  --color-success: var(--success-500);
+  --color-success-soft: var(--success-50);
+  --color-danger: var(--danger-500);
+  --color-danger-soft: var(--danger-50);
+  --color-warning: var(--warning-500);
+  --color-warning-soft: var(--warning-50);
+  --color-accent: var(--accent-500);
+  --color-accent-soft: var(--accent-50);
+
+  --color-bg: #f4f7f9;
+  --color-surface: var(--neutral-0);
+  --color-surface-muted: var(--neutral-50);
+  --color-surface-sunken: var(--neutral-100);
+  --color-border: var(--neutral-200);
+  --color-border-strong: var(--neutral-300);
+
+  --color-text: var(--neutral-800);
+  --color-text-muted: var(--neutral-500);
+  --color-text-subtle: var(--neutral-400);
+  --color-text-inverse: var(--neutral-0);
+
+  /* ---------- Gradientes ---------- */
+  --gradient-brand: linear-gradient(135deg, var(--brand-500), var(--brand-800));
+  --gradient-brand-soft: linear-gradient(135deg, var(--brand-50), var(--neutral-0));
+  --gradient-success: linear-gradient(135deg, var(--success-500), var(--success-700));
+  --gradient-danger: linear-gradient(135deg, var(--danger-500), var(--danger-700));
+  --gradient-accent: linear-gradient(135deg, var(--accent-500), var(--accent-700));
+
+  /* ---------- Radios ---------- */
+  --radius-xs: 6px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --radius-2xl: 24px;
+  --radius-pill: 999px;
+
+  /* ---------- Sombras ---------- */
+  --shadow-xs: 0 1px 2px rgba(15, 23, 42, 0.06);
+  --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.07), 0 1px 2px rgba(15, 23, 42, 0.04);
+  --shadow-md: 0 4px 12px rgba(15, 23, 42, 0.07), 0 2px 4px rgba(15, 23, 42, 0.04);
+  --shadow-lg: 0 12px 28px rgba(15, 23, 42, 0.09), 0 4px 10px rgba(15, 23, 42, 0.04);
+  --shadow-xl: 0 24px 48px rgba(15, 23, 42, 0.14), 0 8px 16px rgba(15, 23, 42, 0.06);
+  --shadow-brand: 0 8px 20px rgba(18, 130, 162, 0.24);
+  --shadow-focus: 0 0 0 3px rgba(18, 130, 162, 0.18);
+
+  /* ---------- Espaciado ---------- */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+
+  /* ---------- Movimiento ---------- */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-soft: cubic-bezier(0.33, 1, 0.68, 1);
+  --transition-fast: 200ms var(--ease-soft);
+  --transition-base: 320ms var(--ease-soft);
+  --transition-slow: 480ms var(--ease-soft);
+
+  /* ---------- Legado (no eliminar: en uso en toda la app) ---------- */
+  --blanco: var(--neutral-0);
+  --azul-clarito: var(--brand-500);
+  --azul-oscuro: var(--brand-800);
+  --gris-claro: var(--neutral-50);
+  --gris: var(--neutral-400);
 }
 
 html {
   font-size: 90%;
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
-  background-color: #F5F5F5;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
 input,
@@ -18,4 +156,65 @@ textarea,
 select {
   transform: scale(1);
   font-size: 16px;
+  color: var(--color-text);
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--color-text-subtle);
+}
+
+/* Anillo de foco accesible y consistente en toda la app */
+:where(a, button, input, select, textarea, [tabindex]):focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+  border-radius: var(--radius-xs);
+}
+
+:where(button, [role="button"]):disabled {
+  cursor: not-allowed;
+}
+
+::selection {
+  background-color: var(--brand-100);
+  color: var(--brand-900);
+}
+
+/* Scrollbars discretas (WebKit) */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--neutral-300) transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: var(--neutral-300);
+  border-radius: var(--radius-pill);
+  border: 3px solid transparent;
+  background-clip: content-box;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background-color: var(--neutral-400);
+  background-clip: content-box;
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

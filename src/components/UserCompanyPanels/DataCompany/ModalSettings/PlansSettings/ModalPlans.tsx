@@ -1,14 +1,14 @@
 import Button from "../../../../../common/Button/Button"
 import LabelInputComponent from "../../../../LoginRegisterForms/LabelInputComponent/LabelInputComponent"
-import { useAuthenticatedPost } from "../../../../../hooks/useAuthenticatedFetch"
-import React, { useState, useEffect } from "react"
+import { changeSubscriptionPlan } from "@/shared/api/subscriptions"
+import React, { useState } from "react"
 import { useDataForm } from "../../../../../hooks/useDataForm"
 import { notifyError } from "../../../../../utils/notifications"
 import { Company } from "../../../../../types"
-import { BACKEND_API_URL } from "../../../../../config"
 import { plans } from "../../../../../utils/plans"
 import { confirmDelete } from "../../../../../utils/alerts"
 import { useNavigate } from "react-router-dom"
+import ModalShell from "@/shared/ui/ModalShell"
 
 interface Props {
     data: Company
@@ -18,34 +18,9 @@ interface Props {
 }
 
 const ModalPlans: React.FC<Props> = ({ data, isModalPlansOpen, setIsModalPlansOpen, selectedPlanId }) => {
-    const { isLoading, error, post } = useAuthenticatedPost()
-    const [shouldRenderPlans, setShouldRenderPlans] = useState(false)
-    const [closingPlans, setClosingPlans] = useState(false)
+    const [isLoading, setIsLoading] = useState(false)
     const { dataForm, handleChange, deleteData } = useDataForm({ payer_email: "" })
     const navigate = useNavigate()
-
-    if (error) {
-        notifyError("Error al cambiar de plan")
-        console.log(error)
-    }
-
-    useEffect(() => {
-        if (isModalPlansOpen) {
-            setShouldRenderPlans(true)
-            setClosingPlans(false)
-            document.body.classList.add("modal-plans-open")
-        } else {
-            setClosingPlans(true)
-            document.body.classList.remove("modal-plans-open")
-
-            const timeout = setTimeout(() => {
-                setShouldRenderPlans(false)
-                setClosingPlans(false)
-            }, 300)
-
-            return () => clearTimeout(timeout)
-        }
-    }, [isModalPlansOpen])
 
     const handleCloseModal = () => {
         setIsModalPlansOpen(false)
@@ -68,7 +43,7 @@ const ModalPlans: React.FC<Props> = ({ data, isModalPlansOpen, setIsModalPlansOp
         }
 
         const planOrder = ["individual", "individual_plus", "team"]
-        const currentIndex = planOrder.indexOf(data.suscription.plan)
+        const currentIndex = planOrder.indexOf(data.subscription?.plan ?? "")
         const newIndex = planOrder.indexOf(selectedPlanId)
 
         if (newIndex === -1) {
@@ -79,15 +54,14 @@ const ModalPlans: React.FC<Props> = ({ data, isModalPlansOpen, setIsModalPlansOp
         const changeType = newIndex > currentIndex ? "upgrade" : "downgrade"
 
         try {
-            const response = await post(
-                `${BACKEND_API_URL}/suscriptions/${changeType}/${data.suscription.suscription_id}`,
+            setIsLoading(true)
+            const response = await changeSubscriptionPlan(
+                changeType,
+                data.subscription?.mpPreapprovalId ?? "",
                 {
                     companyId: data._id,
                     newPlan: selectedPlanId,
                     payer_email: email
-                },
-                {
-                    skipAuth: false
                 }
             )
 
@@ -96,17 +70,18 @@ const ModalPlans: React.FC<Props> = ({ data, isModalPlansOpen, setIsModalPlansOp
                 return
             }
 
-            if (response.data && response.data.data.init_point) {
-                window.location.href = response.data.data.init_point;
+            const payload = response.data?.data
+            if (payload && typeof payload === "object" && payload.init_point) {
+                window.location.href = payload.init_point;
             }
 
-            if (response.data && response.data.data === "Plan changed succesfully") {
+            if (payload === "Plan changed succesfully") {
                 const decision = await confirmDelete({
                     question: "Cambio de plan realizado con éxito",
                     icon: "success",
                     cancelButton: false,
                     confirmButtonText: "Aceptar",
-                    mesasge: "Vuelve a iniciar sesión y verás los cambios reflejados."
+                    message: "Vuelve a iniciar sesión y verás los cambios reflejados."
                 })
 
                 if (decision) {
@@ -115,13 +90,15 @@ const ModalPlans: React.FC<Props> = ({ data, isModalPlansOpen, setIsModalPlansOp
             }
         } catch (error) {
             notifyError("Ocurrió un error cambiando el plan")
+        } finally {
+            setIsLoading(false)
         }
     }
 
-    if (!shouldRenderPlans) return null
+    const selectedPlan = plans.find(p => p.id === selectedPlanId)
 
     return (
-        <div className={`modalFormPlansOverlay ${closingPlans ? "closing" : "opening"}`}>
+        <ModalShell isOpen={isModalPlansOpen} overlayClassName="modalFormPlansOverlay" bodyClass="modal-plans-open">
             <div className="modalFormPlansContent">
                 <button
                     className="modalFormPlansCloseButton"
@@ -137,7 +114,7 @@ const ModalPlans: React.FC<Props> = ({ data, isModalPlansOpen, setIsModalPlansOp
                 <div className="divFeaturesPlan">
                     <ul className="ulFeaturesPlan">
                         {
-                            plans.find(p => p.id === selectedPlanId)!.features.map((f, i) => <li key={i} className="liFeaturesPlan"><span className="feature-checkmark">✓</span>{f}</li>)
+                            selectedPlan?.features.map((f, i) => <li key={i} className="liFeaturesPlan"><span className="feature-checkmark">✓</span>{f}</li>)
                         }
                     </ul>
                 </div>
@@ -157,13 +134,13 @@ const ModalPlans: React.FC<Props> = ({ data, isModalPlansOpen, setIsModalPlansOp
                     <div className="modalFormPlansButtons">
                         <Button
                             type="submit"
-                            disabled={isLoading}
+                            loading={isLoading}
                         >
                             Continuar
                         </Button>
                         <Button
                             type="button"
-                            backgroundColor="#f44336"
+                            variant="neutral"
                             onSubmit={handleCloseModal}
                             disabled={isLoading}
                         >
@@ -172,7 +149,7 @@ const ModalPlans: React.FC<Props> = ({ data, isModalPlansOpen, setIsModalPlansOp
                     </div>
                 </form>
             </div>
-        </div>
+        </ModalShell>
     );
 }
 

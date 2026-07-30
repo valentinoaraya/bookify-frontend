@@ -1,78 +1,122 @@
 .dayCard {
-    background: white;
-    border: 2px solid #e0e0e0;
-    border-radius: 12px;
-    padding: 1rem;
+    appearance: none;
+    font: inherit;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: 0.9rem 0.7rem;
     cursor: pointer;
-    transition: all 0.3s ease;
-    min-width: 120px;
+    min-width: 108px;
+    max-width: 140px;
+    flex: 1 0 auto;
     text-align: center;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    max-width: 150px;
-    flex: 1;
+    box-sizing: border-box;
+    box-shadow: var(--shadow-xs);
+    color: inherit;
+    transition: transform var(--transition-base), border-color var(--transition-base), box-shadow var(--transition-base), background-color var(--transition-base);
 }
 
 .dayCard:hover {
-    border-color: #3f9f0f;
+    border-color: var(--color-primary);
     transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    box-shadow: var(--shadow-md);
+}
+
+.dayCard:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
 }
 
 .dayCard.selected {
-    border-color: #3f9f0f;
-    background-color: #f0f8f0;
-    box-shadow: 0 4px 12px rgba(63, 159, 15, 0.2);
+    border-color: var(--color-primary);
+    background-color: var(--brand-50);
+    box-shadow: var(--shadow-brand);
+}
+
+.dayCard.is-empty {
+    opacity: 0.72;
+}
+
+.dayCard.is-empty.selected {
+    opacity: 1;
 }
 
 .dayCardHeader {
     display: flex;
     flex-direction: column;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.35rem;
 }
 
 .dayName {
-    font-size: 0.9rem;
-    font-weight: 600;
-    color: #666;
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--color-text-muted);
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.06em;
+}
+
+.dayName--short {
+    display: none;
 }
 
 .dayNumber {
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: #333;
-    margin-top: 0.25rem;
+    font-size: 1.55rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    color: var(--color-text);
+    margin-top: 0.15rem;
+    line-height: 1.1;
+}
+
+.dayCard.selected .dayNumber {
+    color: var(--color-primary-strong);
 }
 
 .dayCardMonth {
-    font-size: 0.8rem;
-    color: #888;
-    margin-bottom: 0.75rem;
+    font-size: 0.72rem;
+    color: var(--color-text-subtle);
+    margin-bottom: 0.65rem;
+    text-transform: capitalize;
 }
 
 .dayCardSlots {
     display: flex;
     flex-direction: column;
     align-items: center;
+    padding-top: 0.55rem;
+    border-top: 1px solid var(--color-border);
+    min-height: 2.6rem;
+    justify-content: center;
 }
 
 .slotsCount {
-    font-size: 1.2rem;
-    font-weight: bold;
-    color: #3f9f0f;
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: var(--success-700);
+    line-height: 1.2;
 }
 
 .slotsLabel {
-    font-size: 0.75rem;
-    color: #666;
-    margin-top: 0.25rem;
+    font-size: 0.68rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: var(--color-text-subtle);
+    margin-top: 0.1rem;
+}
+
+.slotsEmpty {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: var(--color-text-subtle);
 }
 
 @media (max-width: 768px) {
     .dayCard {
-        min-width: 100px;
-        padding: 0.75rem;
+        min-width: 92px;
+        padding: 0.7rem 0.45rem;
     }
 
     .dayNumber {
@@ -80,25 +124,40 @@
     }
 
     .slotsCount {
-        font-size: 1.1rem;
+        font-size: 1rem;
     }
 }
 
 @media (max-width: 480px) {
     .dayCard {
-        min-width: 80px;
-        padding: 0.5rem;
+        min-width: 76px;
+        max-width: 96px;
+        padding: 0.55rem 0.35rem;
     }
 
-    .dayName {
-        font-size: 0.8rem;
+    .dayName--full {
+        display: none;
+    }
+
+    .dayName--short {
+        display: block;
+        font-size: 0.68rem;
     }
 
     .dayNumber {
-        font-size: 1.2rem;
+        font-size: 1.15rem;
+    }
+
+    .dayCardMonth {
+        font-size: 0.65rem;
+        margin-bottom: 0.45rem;
     }
 
     .slotsCount {
-        font-size: 1rem;
+        font-size: 0.95rem;
+    }
+
+    .slotsEmpty {
+        font-size: 0.62rem;
     }
 }

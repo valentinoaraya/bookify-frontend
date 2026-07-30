@@ -1,61 +1,66 @@
 .plans-content {
     display: flex;
     flex-direction: row;
-    gap: 1.5rem;
+    gap: 1.25rem;
     flex-wrap: wrap;
-    margin-top: 1rem;
+    margin-top: 1.5rem;
 }
 
 .plans-actions {
     display: flex;
-    justify-content: end;
-    margin-top: 2rem;
+    justify-content: flex-end;
+    margin-top: 1.5rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--color-border);
 }
 
 @keyframes modal-plans-slide-in {
     from {
         opacity: 0;
-        transform: scale(0.95);
+        transform: translateY(16px) scale(0.97);
     }
 
     to {
         opacity: 1;
-        transform: scale(1);
+        transform: translateY(0) scale(1);
     }
 }
 
 @keyframes modal-plans-slide-out {
     from {
         opacity: 1;
-        transform: scale(1);
+        transform: translateY(0) scale(1);
     }
 
     to {
         opacity: 0;
-        transform: scale(0.95);
+        transform: translateY(16px) scale(0.97);
     }
 }
 
 .modalFormPlansOverlay {
     position: fixed;
-    top: 0;
-    left: 0;
+    inset: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
     display: flex;
     align-items: center;
     justify-content: center;
+    padding: 1rem;
+    box-sizing: border-box;
     z-index: 2000;
-    padding: 0;
+    animation: bk-fade-in 0.2s var(--ease-out);
 }
 
 .modalFormPlansOverlay.opening .modalFormPlansContent {
-    animation: modal-plans-slide-in 0.3s ease forwards;
+    animation: modal-plans-slide-in 0.28s var(--ease-out) forwards;
 }
 
 .modalFormPlansOverlay.closing .modalFormPlansContent {
-    animation: modal-plans-slide-out 0.3s ease forwards;
+    animation: modal-plans-slide-out 0.22s var(--ease-out) forwards;
 }
 
 body.modal-plans-open {
@@ -63,45 +68,48 @@ body.modal-plans-open {
 }
 
 .modalFormPlansContent {
-    margin: .5rem;
-    overflow-y: auto;
+    position: relative;
     width: 100%;
-    max-width: 70vw;
-    height: 80vh;
-    background: var(--blanco);
+    max-width: 780px;
+    max-height: 88vh;
+    overflow-y: auto;
+    box-sizing: border-box;
+    background: var(--color-surface);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 2rem;
-    border-radius: 10px;
-    position: relative;
-    animation: modal-plans-slide-in 0.3s ease-in;
+    padding: 2.5rem 2rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-xl);
+    animation: modal-plans-slide-in 0.28s var(--ease-out);
 }
 
 .modalFormPlansCloseButton {
     position: absolute;
-    top: 2rem;
-    right: 2rem;
-    background: transparent;
-    border: none;
-    font-size: 3rem;
-    color: #666;
-    cursor: pointer;
-    transition: color 0.2s;
-    width: 50px;
-    height: 50px;
+    top: 1.25rem;
+    right: 1.25rem;
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 50%;
+    width: 38px;
+    height: 38px;
+    background: var(--color-surface-muted);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-pill);
+    font-size: 1.5rem;
     line-height: 1;
+    color: var(--color-text-muted);
+    cursor: pointer;
+    transition: color var(--transition-fast), background-color var(--transition-fast), border-color var(--transition-fast);
     z-index: 10;
 }
 
 .modalFormPlansCloseButton:hover {
-    color: #000;
-    background-color: rgba(0, 0, 0, 0.05);
+    color: var(--danger-600);
+    background-color: var(--danger-50);
+    border-color: var(--danger-200);
 }
 
 .modalFormPlansHeader {
@@ -110,15 +118,17 @@ body.modal-plans-open {
 }
 
 .modalFormPlansHeader h2 {
-    font-size: 2.5rem;
-    margin-bottom: 1rem;
-    color: var(--azul-oscuro);
-    font-weight: 700;
+    font-size: 2rem;
+    margin-bottom: 0.75rem;
+    color: var(--color-primary-strong);
+    font-weight: 800;
+    letter-spacing: -0.025em;
 }
 
 .modalFormPlansHeader p {
-    font-size: 1.2rem;
-    color: #666;
+    font-size: 1rem;
+    color: var(--color-text-muted);
+    line-height: 1.6;
     margin: 0;
 }
 
@@ -127,29 +137,34 @@ body.modal-plans-open {
     max-width: 500px;
     display: flex;
     flex-direction: column;
-    gap: 2rem;
+    gap: 1.5rem;
 }
 
 .modalFormPlansButtons {
     display: flex;
-    gap: 1rem;
+    gap: 0.75rem;
     justify-content: center;
-    margin-top: 1rem;
+    margin-top: 0.5rem;
+}
+
+.modalFormPlansButtons .button {
+    margin-top: 0;
+    margin-bottom: 0;
 }
 
 .spanFormPlans {
     font-style: italic;
-    color: #722ed1;
+    color: var(--accent-600);
 }
 
 .divFeaturesPlan {
-    margin: 2rem 0;
+    margin: 1.5rem 0;
 }
 
 .ulFeaturesPlan {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: 0.75rem;
     list-style: none;
 }
 
@@ -158,52 +173,50 @@ body.modal-plans-open {
     gap: .5rem;
     align-items: center;
     justify-content: center;
-    font-size: 1rem;
+    font-size: 0.95rem;
     font-weight: 600;
-    color: var(--azul-oscuro);
+    color: var(--color-primary-strong);
     text-align: center;
 
     .feature-checkmark {
-        color: #722ed1;
-    }
-}
-
-@media (max-width: 1300px) {
-    .modalFormPlansContent {
-        max-width: 90vw;
+        color: var(--accent-500);
     }
 }
 
 @media (max-width: 768px) {
 
+    .modalFormPlansContent {
+        padding: 2rem 1.25rem;
+    }
+
     .modalFormPlansCloseButton {
         top: 1rem;
         right: 1rem;
-        font-size: 2.5rem;
-        width: 40px;
-        height: 40px;
+        width: 34px;
+        height: 34px;
+        font-size: 1.3rem;
     }
 
     .modalFormPlansHeader h2 {
-        font-size: 2rem;
+        font-size: 1.6rem;
     }
 
     .modalFormPlansHeader p {
-        font-size: 1rem;
+        font-size: 0.95rem;
     }
 
     .modalFormPlansButtons {
-        flex-direction: column;
+        flex-direction: column-reverse;
     }
 }
 
 @media (max-width: 480px) {
 
     .modalFormPlansHeader h2 {
-        font-size: 1.5rem;
+        font-size: 1.4rem;
     }
 
     .modalFormPlansForm {
-        gap: 1.5rem;
+        gap: 1.25rem;
     }
 }

@@ -1,46 +1,50 @@
 @keyframes settings-slide-in {
     from {
         opacity: 0;
-        transform: translateX(-30px);
+        transform: translateY(16px) scale(0.98);
     }
 
     to {
         opacity: 1;
-        transform: translateX(0);
+        transform: translateY(0) scale(1);
     }
 }
 
 @keyframes settings-slide-out {
     from {
         opacity: 1;
-        transform: translateX(0);
+        transform: translateY(0) scale(1);
     }
 
     to {
         opacity: 0;
-        transform: translateX(-30px);
+        transform: translateY(16px) scale(0.98);
     }
 }
 
 .modalOverlaySettings {
     position: fixed;
-    top: 0;
-    left: 0;
+    inset: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(15, 23, 42, 0.55);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
     display: flex;
     align-items: center;
     justify-content: center;
+    padding: 1rem;
+    box-sizing: border-box;
     z-index: 1000;
+    animation: bk-fade-in 0.2s var(--ease-out);
 }
 
 .modalOverlaySettings.opening .modalSettingsContent {
-    animation: settings-slide-in 0.3s ease forwards;
+    animation: settings-slide-in 0.28s var(--ease-out) forwards;
 }
 
 .modalOverlaySettings.closing .modalSettingsContent {
-    animation: settings-slide-out 0.3s ease forwards;
+    animation: settings-slide-out 0.22s var(--ease-out) forwards;
 }
 
 body.settings-modal-open {
@@ -48,18 +52,28 @@ body.settings-modal-open {
 }
 
 .modalSettingsContent {
-    margin: .5rem;
-    overflow-y: auto;
-    animation: settings-slide-in .3s ease-in;
     position: relative;
     width: 100%;
-    max-width: 70vw;
+    max-width: 1100px;
+    height: 82vh;
+    box-sizing: border-box;
     display: flex;
     flex-direction: column;
-    background-color: var(--blanco);
-    padding: 2rem 1rem;
-    border-radius: 10px;
-    height: 80vh;
+    overflow-y: auto;
+    background-color: var(--color-surface);
+    padding: 2rem 1.5rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-xl);
+    animation: settings-slide-in .28s var(--ease-out);
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.modalSettingsContent::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+    display: none;
 }
 
 .modalSettingsBody {
@@ -68,12 +82,23 @@ body.settings-modal-open {
 }
 
 .icon-settings {
-    transition: all .2s ease;
+    transition: fill var(--transition-fast);
+    flex-shrink: 0;
 }
 
 .modalSettingsMainContent {
     flex: 1;
-    padding: 1rem 1rem 1rem 0;
+    min-width: 0;
+    padding: 0.5rem 0.5rem 1rem 0;
+    overflow-y: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.modalSettingsMainContent::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+    display: none;
 }
 
 .modalSettingsLateralBar {
@@ -82,88 +107,111 @@ body.settings-modal-open {
     top: 0;
     flex-direction: column;
     gap: 1rem;
-    border-right: 2px solid var(--gris-claro);
-    padding-right: 1rem;
+    border-right: 1px solid var(--color-border);
+    padding-right: 1.25rem;
     height: 80vh;
 
     ul {
         display: flex;
         flex-direction: column;
-        gap: 1rem;
+        gap: .35rem;
         list-style: none;
         padding: 0;
         margin: 0;
 
         li {
-            padding: .5rem 1rem;
-            font-size: 1.2rem;
+            padding: .6rem .9rem;
+            font-size: 1rem;
             cursor: pointer;
             font-weight: 600;
-            color: rgb(173, 173, 173);
-            transition: all .2s ease;
-            border-radius: 8px;
+            color: var(--color-text-muted);
+            transition: color var(--transition-fast), background-color var(--transition-fast);
+            border-radius: var(--radius-sm);
             user-select: none;
             display: flex;
             align-items: center;
-            gap: .5rem;
+            gap: .6rem;
+            white-space: nowrap;
+
+            .icon-settings {
+                fill: var(--color-text-subtle);
+            }
 
             &:hover {
-                color: var(--azul-clarito);
-                background-color: var(--gris-claro);
+                color: var(--color-primary);
+                background-color: var(--color-surface-muted);
 
                 .icon-settings {
-                    fill: var(--azul-clarito);
+                    fill: var(--color-primary);
                 }
             }
 
             &.active-settings {
-                color: var(--azul-clarito);
-                background-color: var(--gris-claro);
+                color: var(--color-primary-strong);
+                background-color: var(--brand-50);
 
                 .icon-settings {
-                    fill: var(--azul-clarito);
+                    fill: var(--color-primary);
                 }
             }
         }
     }
 }
 
+.modalCloseButton,
+.modalCloseButtonMobile {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    background: var(--color-surface-muted);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-pill);
+    font-size: 1.15rem;
+    line-height: 1;
+    color: var(--color-text-muted);
+    cursor: pointer;
+    transition: color var(--transition-fast), background-color var(--transition-fast), border-color var(--transition-fast);
+}
+
 .modalCloseButton {
     position: absolute;
-    top: 2rem;
-    right: 2rem;
-    background: transparent;
-    border: none;
-    font-size: 1.5rem;
-    color: #666;
-    cursor: pointer;
-    transition: color 0.2s;
+    top: 1.25rem;
+    right: 1.25rem;
+    z-index: 2;
 }
 
 .modalCloseButtonMobile {
     display: none;
-    background: transparent;
-    border: none;
-    font-size: 1.5rem;
-    color: #666;
-    cursor: pointer;
-    transition: color 0.2s;
 }
 
-.modalCloseButton:hover {
-    color: #000;
+.modalCloseButton:hover,
+.modalCloseButtonMobile:hover {
+    color: var(--danger-600);
+    background: var(--danger-50);
+    border-color: var(--danger-200);
+}
+
+/* Encabezados compartidos por los paneles de configuración */
+.modalSettingsMainContent h2,
+.modalSettingsMainContent h3 {
+    color: var(--color-text);
+    letter-spacing: -0.015em;
 }
 
 @media (max-width: 1300px) {
     .modalSettingsContent {
-        max-width: 90vw;
+        max-width: 92vw;
     }
 }
 
 @media (max-width: 740px) {
 
     .modalSettingsContent {
-        padding-top: 0;
+        padding: 0 1rem 1rem 1rem;
+        height: 88vh;
+        border-radius: var(--radius-lg);
     }
 
     .modalCloseButton {
@@ -171,29 +219,31 @@ body.settings-modal-open {
     }
 
     .modalCloseButtonMobile {
-        display: block;
+        display: flex;
     }
 
     .modalSettingsBody {
         height: 100%;
         flex-direction: column;
+        gap: 1rem;
     }
 
     .modalSettingsLateralBar {
         flex-direction: row;
         width: 100%;
         border-right: none;
-        border-bottom: 2px solid var(--gris-claro);
-        padding: 1.2rem 0 1rem 0;
+        border-bottom: 1px solid var(--color-border);
+        padding: 1rem 0;
         height: auto;
-        background-color: white;
+        background-color: var(--color-surface);
         z-index: 100;
 
         ul {
             width: 100%;
             justify-content: space-around;
             flex-direction: row;
-            gap: 1rem;
+            gap: .35rem;
+            overflow-x: auto;
 
             li {
                 white-space: nowrap;
@@ -202,6 +252,6 @@ body.settings-modal-open {
     }
 
     .modalSettingsMainContent {
-        padding: 0 1rem 1rem 1rem;
+        padding: 0 0 1rem 0;
     }
 }

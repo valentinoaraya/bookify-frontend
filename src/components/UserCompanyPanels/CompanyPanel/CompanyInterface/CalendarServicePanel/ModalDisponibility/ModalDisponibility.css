@@ -1,14 +1,18 @@
 .modalOverlayDisponibility {
     position: fixed;
-    top: 0;
-    left: 0;
+    inset: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(15, 23, 42, 0.55);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
     display: flex;
     align-items: center;
     justify-content: center;
+    padding: 1rem;
+    box-sizing: border-box;
     z-index: 1000;
+    animation: bk-fade-in 0.2s var(--ease-out);
 }
 
 body.disponibility-modal-open {
@@ -17,69 +21,107 @@ body.disponibility-modal-open {
 
 .modalDisponibilityContent {
     display: flex;
-    margin: .5rem;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    background-color: var(--blanco);
+    width: 100%;
+    max-width: 420px;
+    max-height: 85vh;
+    overflow-y: auto;
+    box-sizing: border-box;
+    background-color: var(--color-surface);
     padding: 2rem;
-    border-radius: 10px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-xl);
+    animation: bk-pop-in 0.24s var(--ease-out);
 }
 
 .appointmentsDisponibilityContainer {
     display: flex;
     flex-direction: column;
-    flex-wrap: wrap;
-    gap: 0.5rem;
+    gap: 0.4rem;
     width: 100%;
 }
 
 .disponibilitySlot {
     user-select: none;
-    color: white;
-    padding: .5rem;
-    border-radius: 4px;
-    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.08) inset;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: .55rem;
+    border-radius: var(--radius-sm);
+    border: 1px solid transparent;
+    font-size: 0.92rem;
+    font-weight: 600;
     cursor: pointer;
+    transition: background-color var(--transition-fast), border-color var(--transition-fast), transform var(--transition-fast);
 }
 
 .disponibilitySlot.available {
-    background-color: #3f9f0f;
-    transition: all .2s;
-}
-
-.disponibilitySlot.pending {
-    background-color: rgb(253, 184, 35);
-}
-
-.disponibilitySlot.taken {
-    background-color: red;
+    background-color: var(--success-50);
+    border-color: var(--success-200);
+    color: var(--success-700);
 }
 
 .disponibilitySlot.available:hover {
-    background-color: rgb(1, 196, 1);
+    background-color: var(--success-100);
+    border-color: var(--success-500);
+    transform: translateY(-1px);
+}
+
+.disponibilitySlot.pending {
+    background-color: var(--warning-50);
+    border-color: var(--warning-200);
+    color: var(--warning-700);
+}
+
+.disponibilitySlot.taken {
+    background-color: var(--danger-50);
+    border-color: var(--danger-200);
+    color: var(--danger-700);
+    cursor: default;
 }
 
 .h3ModalDisponibility {
-    margin: 1rem 0;
+    margin: 0.5rem 0 1rem 0;
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    text-align: center;
 
     span {
-        font-weight: 700;
+        font-weight: 800;
+        color: var(--color-text);
     }
 }
 
 .addAvailable {
     user-select: none;
     display: flex;
+    align-items: center;
     justify-content: center;
+    width: 100%;
+    box-sizing: border-box;
     cursor: pointer;
-    padding: .5rem;
-    border-radius: 4px;
-    margin-top: .5rem;
-    border: 1px solid black;
-    transition: all .2s;
+    padding: .6rem;
+    font-size: 0.92rem;
+    font-weight: 600;
+    color: var(--color-primary);
+    border-radius: var(--radius-sm);
+    margin-top: .75rem;
+    border: 1px dashed var(--color-primary-border);
+    transition: background-color var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast);
 }
 
 .addAvailable:hover {
-    background-color: rgb(243, 243, 243);
+    background-color: var(--brand-50);
+    border-color: var(--color-primary);
+    color: var(--color-primary-strong);
+}
+
+@media (max-width: 460px) {
+    .modalDisponibilityContent {
+        padding: 1.5rem 1.15rem;
+    }
 }

@@ -1,6 +1,30 @@
-import { AvailableAppointment, EventFullCalendar, PendingAppointment } from "../types"
+import { AvailableAppointment, EventFullCalendar, PendingAppointment, Service, Slot } from "../types"
 
-export const generateAvailableAppointmentsArray = (availableAppointments: AvailableAppointment[], pendingAppointments?: PendingAppointment[]): EventFullCalendar[] => {
+/** Preferir `slots`; fallback a availableAppointments durante la transición. */
+export const getServiceSlots = (service: Pick<Service, "slots" | "availableAppointments">): AvailableAppointment[] => {
+    if (service.slots && service.slots.length > 0) {
+        return service.slots
+    }
+    return service.availableAppointments || []
+}
+
+export const slotsToAvailable = (slots: Slot[]): AvailableAppointment[] =>
+    slots.filter(s => s.taken < s.capacity)
+
+export const slotsToScheduledDates = (slots: Slot[]): string[] => {
+    const dates: string[] = []
+    for (const slot of slots) {
+        for (let i = 0; i < (slot.taken || 0); i++) {
+            dates.push(slot.datetime)
+        }
+    }
+    return dates
+}
+
+export const generateAvailableAppointmentsArray = (
+    availableAppointments: AvailableAppointment[],
+    pendingAppointments?: PendingAppointment[]
+): EventFullCalendar[] => {
     const pendingByDatetime: Record<string, number> = {}
     if (pendingAppointments && pendingAppointments.length > 0) {
         pendingAppointments.forEach(p => {
@@ -17,8 +41,8 @@ export const generateAvailableAppointmentsArray = (availableAppointments: Availa
             return {
                 title: `${disponibility} ${disponibility === 1 ? "Disponible" : "Disponibles"}`,
                 start: availableAppointment.datetime,
-                backgroundColor: `${pendingCount > 0 && disponibility === 0 ? "orange" : "#3f9f0f"}`,
-                borderColor: `${pendingCount > 0 && disponibility === 0 ? "orange" : "#3f9f0f"}`,
+                backgroundColor: pendingCount > 0 && disponibility === 0 ? "#f0930b" : "#12a150",
+                borderColor: pendingCount > 0 && disponibility === 0 ? "#f0930b" : "#12a150",
                 extendedProps: {
                     disponibility,
                     taken: availableAppointment.taken,
@@ -30,7 +54,10 @@ export const generateAvailableAppointmentsArray = (availableAppointments: Availa
         .filter((e): e is NonNullable<typeof e> => e !== null)
 }
 
-export const generateScheudledAppointmentArray = (scheduledAppointments: string[], availableAppointments: AvailableAppointment[]): EventFullCalendar[] => {
+export const generateScheudledAppointmentArray = (
+    scheduledAppointments: string[],
+    availableAppointments: AvailableAppointment[]
+): EventFullCalendar[] => {
     const arrayEventsScheduled = scheduledAppointments.filter(date =>
         !availableAppointments.some(app => app.datetime === date)
     )
@@ -39,8 +66,8 @@ export const generateScheudledAppointmentArray = (scheduledAppointments: string[
             return {
                 title: `${count} ${count === 1 ? "Ocupado" : "Ocupados"}`,
                 start: date,
-                backgroundColor: "red",
-                borderColor: "red",
+                backgroundColor: "#e5484d",
+                borderColor: "#e5484d",
                 extendedProps: {
                     scheduledCount: count
                 }
@@ -56,4 +83,21 @@ export const generateScheudledAppointmentArray = (scheduledAppointments: string[
     })
 
     return newArrayEventsScheduled
+}
+
+/** Genera eventos de calendario a partir de slots (+ pending). */
+export const generateCalendarEventsFromService = (
+    service: Pick<Service, "slots" | "availableAppointments" | "scheduledAppointments" | "pendingAppointments">
+): { available: EventFullCalendar[]; scheduled: EventFullCalendar[] } => {
+    const slots = getServiceSlots(service)
+    const available = slotsToAvailable(slots)
+    const scheduled =
+        service.slots && service.slots.length > 0
+            ? slotsToScheduledDates(service.slots)
+            : service.scheduledAppointments || []
+
+    return {
+        available: generateAvailableAppointmentsArray(available, service.pendingAppointments),
+        scheduled: generateScheudledAppointmentArray(scheduled, available),
+    }
 }

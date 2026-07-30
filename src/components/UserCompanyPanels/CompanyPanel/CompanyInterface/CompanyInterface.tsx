@@ -1,15 +1,15 @@
 import "./CompanyInterface.css"
 import { type View } from "../../../../types";
-import { useContext, useState } from "react";
+import { useState } from "react";
 import ServicesPanel from "./ServicesPanel/ServicesPanel";
 import HistoryPanel from "./HistoryPanel/HistoryPanel";
 import ScheduledAppointmentsPanel from "./ScheduledAppointmentsPanel/ScheduledAppointmentsPanel";
 import CalendarServicePanel from "./CalendarServicePanel/CalendarServicePanel";
-import { CompanyContext } from "../../../../contexts/CompanyContext";
+import { useCompany } from "../../../../hooks/useCompany";
 import DataCompanyToCompany from "../DataCompanyToCompany/DataCompanyToCompany";
 
 const CompanyInterface = () => {
-    const { state, deleteService, deleteAppointment } = useContext(CompanyContext)
+    const { state, deleteService, deleteAppointment } = useCompany()
     const [activeView, setActiveView] = useState<View>("appointments")
     const [serviceOnCalendar, setServiceOnCalendar] = useState<string | null>(null)
 
@@ -73,7 +73,7 @@ const CompanyInterface = () => {
                                                         <HistoryPanel company={state} />
                                                         :
                                                         <ServicesPanel
-                                                            companyPlan={state.suscription.plan}
+                                                            companyPlan={state.subscription?.plan ?? "individual"}
                                                             connectedWithMP={state.connectedWithMP}
                                                             companyServices={state.services}
                                                             onDeleteService={onDeleteService}
