@@ -32,7 +32,7 @@ export interface Service extends ServiceBasicInfo {
     signPrice: number
 }
 
-export type ServiceToSchedule = Omit<Service, "description" | "duration">
+export type ServiceToSchedule = Omit<Service, "description">
 
 export interface CompanyBasicInfo {
     _id: string
