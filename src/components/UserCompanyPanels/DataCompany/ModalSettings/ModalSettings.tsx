@@ -1,5 +1,5 @@
 import "./ModalSettings.css"
-import React, { useEffect, useState } from "react"
+import React, { useState } from "react"
 import { CreditCardIcon, ClockIcon, BellIcon, UserIcon, RocketIcon } from "../../../../common/Icons/Icons"
 import ProfileSettings from "./ProfileSettings/ProfileSettings"
 import PaymentMethodsSettings from "./PaymentMethodsSettings/PaymentMethodsSettings"
@@ -8,6 +8,7 @@ import AnticipationsSettings from "./AnticipationsSettings/AnticipationsSettings
 import { useCompany } from "../../../../hooks/useCompany"
 import PlansSettings from "./PlansSettings/PlansSettings"
 import ModalPlans from "./PlansSettings/ModalPlans"
+import ModalShell from "@/shared/ui/ModalShell"
 
 interface Props {
     isOpen: boolean
@@ -17,34 +18,12 @@ interface Props {
 }
 
 const ModalSettings: React.FC<Props> = ({ isOpen, setIsOpen, active, setActive }) => {
-    const [shouldRender, setShouldRender] = useState(isOpen);
-    const [closing, setClosing] = useState(false);
     const { state } = useCompany()
     const [isModalPlansOpen, setIsModalPlansOpen] = useState(false)
     const [selectedPlanId, setSelectedPlanId] = useState<string | null>(null)
 
-    useEffect(() => {
-        if (isOpen) {
-            setShouldRender(true);
-            setClosing(false);
-            document.body.classList.add("settings-modal-open");
-        } else {
-            setClosing(true);
-            document.body.classList.remove("settings-modal-open");
-
-            const timeout = setTimeout(() => {
-                setShouldRender(false);
-                setClosing(false);
-            }, 300);
-
-            return () => clearTimeout(timeout);
-        }
-    }, [isOpen]);
-
-    if (!shouldRender) return null
-
     return (
-        <div className={`modalOverlaySettings ${closing ? "closing" : "opening"}`}>
+        <ModalShell isOpen={isOpen} overlayClassName="modalOverlaySettings" bodyClass="settings-modal-open">
             <div className="modalSettingsContent">
                 <button className="modalCloseButton" onClick={() => setIsOpen(false)} >X</button>
                 <div className="modalSettingsBody">
@@ -54,7 +33,7 @@ const ModalSettings: React.FC<Props> = ({ isOpen, setIsOpen, active, setActive }
                                 <UserIcon
                                     width="18"
                                     height="18"
-                                    fill="#adadad"
+                                    fill="currentColor"
                                 />
                                 {window.innerWidth <= 740 ? "" : "Perfil"}
                             </li>
@@ -62,7 +41,7 @@ const ModalSettings: React.FC<Props> = ({ isOpen, setIsOpen, active, setActive }
                                 <CreditCardIcon
                                     width="18"
                                     height="18"
-                                    fill="#adadad"
+                                    fill="currentColor"
                                 />
                                 {window.innerWidth <= 740 ? "" : "Medios de pago"}
                             </li>
@@ -70,7 +49,7 @@ const ModalSettings: React.FC<Props> = ({ isOpen, setIsOpen, active, setActive }
                                 <BellIcon
                                     width="18"
                                     height="18"
-                                    fill="#adadad"
+                                    fill="currentColor"
                                 />
                                 {window.innerWidth <= 740 ? "" : "Recordatorios"}
                             </li>
@@ -78,7 +57,7 @@ const ModalSettings: React.FC<Props> = ({ isOpen, setIsOpen, active, setActive }
                                 <ClockIcon
                                     width="18"
                                     height="18"
-                                    fill="#adadad"
+                                    fill="currentColor"
                                 />
                                 {window.innerWidth <= 740 ? "" : "Anticipaciones"}
                             </li>
@@ -86,7 +65,7 @@ const ModalSettings: React.FC<Props> = ({ isOpen, setIsOpen, active, setActive }
                                 <RocketIcon
                                     width="18"
                                     height="18"
-                                    fill="#adadad"
+                                    fill="currentColor"
                                 />
                                 {window.innerWidth <= 740 ? "" : "Planes"}
                             </li>
@@ -108,7 +87,7 @@ const ModalSettings: React.FC<Props> = ({ isOpen, setIsOpen, active, setActive }
                 setIsModalPlansOpen={setIsModalPlansOpen}
                 selectedPlanId={selectedPlanId}
             />
-        </div>
+        </ModalShell>
     );
 }
 

@@ -1,33 +1,46 @@
 .servicesPanelHeader {
     display: flex;
     justify-content: space-between;
-    gap: .5rem;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: .75rem;
 }
 
 .divListContainerServicePanel {
     display: flex;
     flex-direction: column;
-    gap: 2rem;
+    gap: 0.65rem;
 }
 
 .buttonAddService {
+    display: inline-flex;
+    align-items: center;
+    gap: .4rem;
     width: fit-content;
-    padding: 0.5rem 1rem;
-    font-size: 1.1rem;
+    padding: 0.55rem 1.1rem;
+    font-family: inherit;
+    font-size: 0.95rem;
+    font-weight: 600;
     margin: 0 0 1rem 0;
-    background-color: #3f9f0f;
-    color: white;
+    background: var(--color-success);
+    color: var(--color-text-inverse);
     border: none;
-    border-radius: 5px;
-    transition: all 0.3s ease;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-xs);
+    cursor: pointer;
+    transition: transform var(--transition-fast), box-shadow var(--transition-fast), filter var(--transition-fast);
 }
 
-.buttonAddService:hover {
-    background-color: #367c0c;
+.buttonAddService:hover:not(.disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(18, 161, 80, 0.24);
+    filter: brightness(1.05);
 }
 
 .buttonAddService.disabled {
-    background-color: grey;
-    cursor: default;
-    opacity: 0.6;
+    background: var(--neutral-200);
+    color: var(--color-text-subtle);
+    cursor: not-allowed;
+    box-shadow: none;
+    opacity: 0.8;
 }

@@ -1,21 +1,15 @@
 import "./ServiceToSchedulePanel.css"
 import Button from "../../../../../common/Button/Button";
-import { type UserData, type ServiceToSchedule } from "../../../../../types";
-import Title from "../../../../../common/Title/Title";
+import { type UserData } from "../../../../../types";
 import { notifyError } from "../../../../../utils/notifications";
-import { confirmDelete } from "../../../../../utils/alerts";
-import { parseDateToString } from "../../../../../utils/parseDateToString";
-import { useNavigate } from "react-router-dom";
-import { BACKEND_API_URL } from "../../../../../config";
-import { formatDate } from "../../../../../utils/formatDate";
 import ModalForm from "../../../../ModalForm/ModalForm";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import LoadingModal from "../../../../../common/LoadingModal/LoadingModal";
 import LoadingSpinner from "../../../../../common/LoadingSpinner/LoadingSpinner";
-import { useAuthenticatedGet, useAuthenticatedPost } from "../../../../../hooks/useAuthenticatedFetch";
 import DayCard from "./DayCard";
 import TimeSlotCard from "./TimeSlotCard";
 import { getServiceSlots } from "../../../../../utils/cleanAppointmentsArray";
+import { useBookAppointment } from "@/features/public-booking/hooks/useBookAppointment";
 
 interface Props {
     slotsVisibilityDays: number;
@@ -24,30 +18,43 @@ interface Props {
     setServiceToSchedule: React.Dispatch<React.SetStateAction<string | null>>;
 }
 
-const ServiceToSchedulePanel: React.FC<Props> = ({ serviceToSchedule, setServiceToSchedule, cancellationAnticipationHours, slotsVisibilityDays }) => {
+const DAY_NAMES = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"] as const
+const DAY_NAMES_SHORT = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"] as const
+const MONTH_NAMES = [
+    "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+    "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre",
+] as const
+
+const modeLabel = {
+    "in-person": "Presencial",
+    online: "Virtual",
+    "in-person-at-home": "A domicilio",
+} as const
+
+const ServiceToSchedulePanel: React.FC<Props> = ({
+    serviceToSchedule,
+    setServiceToSchedule,
+    cancellationAnticipationHours,
+    slotsVisibilityDays,
+}) => {
     const [isOpen, setIsOpen] = useState(false)
     const [dateAppointment, setDateAppointment] = useState<Date | null>(null)
-    const [isScheduling, setIsScheduling] = useState(false)
     const [selectedDay, setSelectedDay] = useState<string | null>(null)
-    const { error, isLoading, post } = useAuthenticatedPost()
-    const urlAddAppointment = `${BACKEND_API_URL}/appointments/add-appointment`
-    const { error: errorData, isLoading: isLoadingData, get } = useAuthenticatedGet()
-    const urlGetService = `${BACKEND_API_URL}/services/${serviceToSchedule}`
-    const { error: errorConfirm, isLoading: isLoadingConfirm, get: getSignPrice } = useAuthenticatedGet()
-    const urlGetSignPrice = `${BACKEND_API_URL}/services/contains-sign-price/${serviceToSchedule}`
-    const { error: errorCheckHour, isLoading: isLoadingCheckHour, post: postCheckBookingHour } = useAuthenticatedPost()
-    const urlCheckBookingHour = `${BACKEND_API_URL}/appointments/check-booking-hour`
 
-    if (error) notifyError("Error al reservar turno.")
-    if (errorData) notifyError("Error al obtener el servicio.")
-    if (errorConfirm) notifyError("Error al obtener el servicio.")
-    if (errorCheckHour) notifyError("Error al verificar dispoinibilidad del turno")
+    const {
+        serviceData: serviceToScheduleData,
+        isLoadingData,
+        isLoadingCheckHour,
+        isLoadingConfirm,
+        isScheduling,
+        checkOrderHour,
+        confirmAppointment,
+    } = useBookAppointment(serviceToSchedule, {
+        cancellationAnticipationHours,
+        onScheduled: () => setServiceToSchedule(null),
+    })
 
-    const [serviceToScheduleData, setServiceToScheduleData] = useState<ServiceToSchedule | null>(null)
-
-    const navigate = useNavigate()
-
-    const generateWeekDays = () => {
+    const weekDays = useMemo(() => {
         const days = []
         const today = new Date()
 
@@ -55,29 +62,26 @@ const ServiceToSchedulePanel: React.FC<Props> = ({ serviceToSchedule, setService
             const date = new Date(today)
             date.setDate(today.getDate() + i)
 
-            const dayNames = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado']
-            const monthNames = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
-                'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
-
             days.push({
-                date: new Intl.DateTimeFormat('es-AR', {
-                    year: 'numeric',
-                    month: '2-digit',
-                    day: '2-digit',
-                    timeZone: 'America/Argentina/Buenos_Aires'
+                date: new Intl.DateTimeFormat("es-AR", {
+                    year: "numeric",
+                    month: "2-digit",
+                    day: "2-digit",
+                    timeZone: "America/Argentina/Buenos_Aires",
                 })
                     .format(date)
-                    .split('/')
+                    .split("/")
                     .reverse()
-                    .join('-'),
-                dayName: dayNames[date.getDay()],
+                    .join("-"),
+                dayName: DAY_NAMES[date.getDay()],
+                dayNameShort: DAY_NAMES_SHORT[date.getDay()],
                 dayNumber: date.getDate(),
-                month: monthNames[date.getMonth()]
+                month: MONTH_NAMES[date.getMonth()],
             })
         }
 
         return days
-    }
+    }, [slotsVisibilityDays])
 
     const getTimeSlotsForDay = (dayDate: string) => {
         if (!serviceToScheduleData) return []
@@ -87,8 +91,6 @@ const ServiceToSchedulePanel: React.FC<Props> = ({ serviceToSchedule, setService
             appointment => appointment.datetime.startsWith(dayDate)
         )
 
-        // Los turnos retenidos por alguien que está pagando la seña no están
-        // realmente disponibles todavía.
         const now = new Date()
         const pendingByDatetime = (serviceToScheduleData.pendingAppointments || [])
             .filter(pending => new Date(pending.expiresAt) > now)
@@ -100,8 +102,7 @@ const ServiceToSchedulePanel: React.FC<Props> = ({ serviceToSchedule, setService
 
         return dayAppointments.map(appointment => {
             const date = new Date(appointment.datetime)
-            const time = `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`
-
+            const time = `${String(date.getHours()).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}`
             const pendingCount = pendingByDatetime[date.getTime()] ?? 0
             const availablePlaces = appointment.capacity - appointment.taken - pendingCount
 
@@ -110,190 +111,166 @@ const ServiceToSchedulePanel: React.FC<Props> = ({ serviceToSchedule, setService
                 time,
                 availablePlaces,
                 totalCapacity: appointment.capacity,
-                isAvailable: availablePlaces > 0 && date > now
+                isAvailable: availablePlaces > 0 && date > now,
             }
         }).sort((a, b) => a.time.localeCompare(b.time))
     }
 
     const getAvailableSlotsForDay = (dayDate: string) => {
-        const timeSlots = getTimeSlotsForDay(dayDate)
-        return timeSlots.filter(slot => slot.isAvailable).length
+        return getTimeSlotsForDay(dayDate).filter(slot => slot.isAvailable).length
     }
 
     useEffect(() => {
-        const fetchService = async () => {
-            const response = await get(urlGetService, { skipAuth: true })
-            if (response.data) {
-                setServiceToScheduleData(response.data.data)
-            } else if (response.error) {
-                notifyError("Error al obtener el servicio. Inténtelo de nuevo más tarde.")
-            }
-        }
+        setSelectedDay(null)
+    }, [serviceToSchedule])
 
-        fetchService()
-    }, [])
+    useEffect(() => {
+        if (!serviceToScheduleData || selectedDay !== null || weekDays.length === 0) return
+        const firstWithSlots = weekDays.find(day => getAvailableSlotsForDay(day.date) > 0)
+        setSelectedDay(firstWithSlots?.date ?? weekDays[0].date)
+        // Intencional: solo auto-seleccionar cuando todavía no hay día elegido
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [serviceToScheduleData, selectedDay, weekDays])
 
-    if (isLoadingData) return <div className="serviceToScheduleContainer animation-section">
-        <LoadingSpinner
-            text="Cargando servicio..."
-            shadow="none"
-        />
-    </div>
+    if (isLoadingData) {
+        return (
+            <div className="serviceToScheduleContainer">
+                <LoadingSpinner text="Cargando turnos..." shadow="none" />
+            </div>
+        )
+    }
 
-    if (!serviceToScheduleData) return <div className="serviceToScheduleContainer animation-section serviceNotFound">
-        <h1>Lo sentimos, no encontramos el servicio que buscabas...</h1>
-    </div>
+    if (!serviceToScheduleData) {
+        return (
+            <div className="serviceToScheduleContainer serviceNotFound">
+                <h2>No encontramos ese servicio</h2>
+                <p>Volvé a la lista e intentá con otro.</p>
+                <Button
+                    margin="1rem 0 0"
+                    width="auto"
+                    padding="0.65rem 1.15rem"
+                    fontSize="1rem"
+                    variant="ghost"
+                    onSubmit={() => setServiceToSchedule(null)}
+                >
+                    Volver a servicios
+                </Button>
+            </div>
+        )
+    }
 
-    const checkOrderHour = async (datetime: string) => {
+    const checkOrderHourForSlot = async (datetime: string) => {
         const startEvent = new Date(datetime)
-        const response = await postCheckBookingHour(urlCheckBookingHour, {
-            companyId: serviceToScheduleData.companyId,
-            date: startEvent
-        }, { skipAuth: true })
-        if (response.data) {
+        const canBook = await checkOrderHour(serviceToScheduleData.companyId, datetime)
+        if (canBook) {
             setDateAppointment(startEvent)
             setIsOpen(true)
         }
-        if (response.error) {
-            notifyError(response.error, true)
-        }
     }
 
-    const confirmAppointment = async (date: Date, dataUser: UserData) => {
-
-        const { stringDate, time } = parseDateToString(date)
-        const formattedDate = formatDate(stringDate)
-
-        let messageHours = ""
-        if (cancellationAnticipationHours > 24) {
-            messageHours = `${cancellationAnticipationHours / 24} ${cancellationAnticipationHours / 24 === 1 ? "día" : "días"}`
-        } else {
-            messageHours = `${cancellationAnticipationHours} ${cancellationAnticipationHours === 1 ? "hora" : "horas"}`
-        }
-
-        const decisionConfirmed = await confirmDelete({
-            question: `¿Desea reservar un turno para ${serviceToScheduleData.title} el día ${formattedDate} a las ${time} hs?`,
-            mesasge: cancellationAnticipationHours === 0 ? "Podrás cancelar el turno cuando desees." : `Solo podrás cancelar el turno con más de ${messageHours} de anticipación.`,
-            confirmButtonText: "Aceptar",
-            cancelButtonText: "Cancelar",
-            cancelButton: true
-        })
-
-        if (decisionConfirmed) {
-            const response = await getSignPrice(urlGetSignPrice, { skipAuth: true })
-            if (response.data) {
-                if (response.data.data.contains) {
-                    navigate("/checkout", {
-                        state: {
-                            date: `${stringDate} ${time}`,
-                            service: {
-                                serviceId: serviceToScheduleData._id,
-                                title: serviceToScheduleData.title,
-                                signPrice: serviceToScheduleData.signPrice,
-                                companyId: serviceToScheduleData.companyId,
-                                totalPrice: serviceToScheduleData.price,
-                                mode: serviceToScheduleData.mode
-                            },
-                            dataUser,
-                            cancellationAnticipationHours
-                        }
-                    })
-                } else {
-                    setIsScheduling(true)
-                    const response = await post(urlAddAppointment, {
-                        dataAppointment: {
-                            date: `${stringDate} ${time}`,
-                            serviceId: serviceToScheduleData._id,
-                            companyId: serviceToScheduleData.companyId
-                        },
-                        dataUser
-                    }, { skipAuth: true })
-                    setIsScheduling(false)
-                    if (response.data) {
-                        const confirm = await confirmDelete({
-                            icon: "success",
-                            question: `Turno confirmado correctamente.`,
-                            confirmButtonText: "Aceptar",
-                            cancelButton: false
-                        })
-                        if (confirm) {
-                            setServiceToSchedule(null)
-                            window.location.reload()
-                        }
-                    }
-                    if (response.error) notifyError(response.error, true)
-
-                }
-            }
-            if (response.error) notifyError("Error al verificar el servicio. Inténtelo de nuevo más tarde.")
-        }
-    }
-
-    const weekDays = generateWeekDays()
+    const selectedDayData = weekDays.find(d => d.date === selectedDay)
+    const selectedSlots = selectedDay ? getTimeSlotsForDay(selectedDay) : []
+    const availableSelectedSlots = selectedSlots.filter(slot => slot.isAvailable)
 
     return (
         <div className="serviceToScheduleContainer animation-section">
-            <div className="divTitleServiceToSchedule">
-                <Title
-                    fontSize={window.innerWidth <= 930 ? "1.5rem" : ""}
-                >
-                    Turnos disponibles para {serviceToScheduleData.title}
-                </Title>
-            </div>
-            <div className="weekDaysContainer">
-                {weekDays.map((day) => (
-                    <DayCard
-                        key={day.date}
-                        dayName={day.dayName}
-                        dayNumber={day.dayNumber}
-                        month={day.month}
-                        availableSlots={getAvailableSlotsForDay(day.date)}
-                        isSelected={selectedDay === day.date}
-                        onClick={() => setSelectedDay(selectedDay === day.date ? null : day.date)}
-                    />
-                ))}
-            </div>
-
-            {selectedDay && (
-                <div className="timeSlotsContainer animation-section">
-                    <h3 className="timeSlotsTitle animation-section">
-                        Horarios disponibles para {weekDays.find(d => d.date === selectedDay)?.dayName} {weekDays.find(d => d.date === selectedDay)?.dayNumber}
-                    </h3>
-                    <div className="timeSlotsGrid">
-                        {getTimeSlotsForDay(selectedDay).map((slot) => (
-                            <TimeSlotCard
-                                key={slot.datetime}
-                                time={slot.time}
-                                availablePlaces={slot.availablePlaces}
-                                totalCapacity={slot.totalCapacity}
-                                isAvailable={slot.isAvailable}
-                                onClick={() => checkOrderHour(slot.datetime)}
-                            />
-                        ))}
-                    </div>
-                    {getTimeSlotsForDay(selectedDay).length === 0 && (
-                        <p className="noSlotsMessage animation-section">No hay horarios disponibles para este día.</p>
+            <header className="scheduleHeader">
+                <div className="scheduleHeaderTop">
+                    <Button
+                        margin="0"
+                        width="auto"
+                        padding="0.5rem 0.95rem"
+                        fontSize="0.9rem"
+                        fontWeight="600"
+                        variant="ghost"
+                        onSubmit={() => setServiceToSchedule(null)}
+                    >
+                        ← Volver
+                    </Button>
+                </div>
+                <h1 className="scheduleTitle">{serviceToScheduleData.title}</h1>
+                <p className="scheduleSubtitle">Elegí un día y un horario para reservar</p>
+                <div className="scheduleMeta">
+                    <span className={`scheduleMode scheduleMode--${serviceToScheduleData.mode === "online" ? "online" : "presencial"}`}>
+                        {modeLabel[serviceToScheduleData.mode]}
+                    </span>
+                    <span className="scheduleMetaDot" aria-hidden="true">·</span>
+                    <span>{serviceToScheduleData.duration} min</span>
+                    <span className="scheduleMetaDot" aria-hidden="true">·</span>
+                    <span className="schedulePrice">${serviceToScheduleData.price}</span>
+                    {serviceToScheduleData.signPrice !== 0 && (
+                        <>
+                            <span className="scheduleMetaDot" aria-hidden="true">·</span>
+                            <span>Seña ${serviceToScheduleData.signPrice}</span>
+                        </>
                     )}
                 </div>
+            </header>
+
+            <section className="scheduleDaysSection" aria-label="Días disponibles">
+                <h2 className="scheduleSectionLabel">Día</h2>
+                <div className="weekDaysContainer">
+                    {weekDays.map((day) => (
+                        <DayCard
+                            key={day.date}
+                            dayName={day.dayName}
+                            dayNameShort={day.dayNameShort}
+                            dayNumber={day.dayNumber}
+                            month={day.month}
+                            availableSlots={getAvailableSlotsForDay(day.date)}
+                            isSelected={selectedDay === day.date}
+                            onClick={() => setSelectedDay(day.date)}
+                        />
+                    ))}
+                </div>
+            </section>
+
+            {selectedDay && selectedDayData && (
+                <section className="timeSlotsContainer animation-section" aria-label="Horarios disponibles">
+                    <div className="timeSlotsHeader">
+                        <h2 className="timeSlotsTitle">
+                            {selectedDayData.dayName} {selectedDayData.dayNumber} de {selectedDayData.month}
+                        </h2>
+                        <p className="timeSlotsHint">
+                            {availableSelectedSlots.length === 0
+                                ? "No hay horarios libres este día"
+                                : `${availableSelectedSlots.length} horario${availableSelectedSlots.length !== 1 ? "s" : ""} libre${availableSelectedSlots.length !== 1 ? "s" : ""}`}
+                        </p>
+                    </div>
+
+                    {selectedSlots.length === 0 ? (
+                        <p className="noSlotsMessage">No hay horarios cargados para este día.</p>
+                    ) : (
+                        <div className="timeSlotsGrid">
+                            {selectedSlots.map((slot) => (
+                                <TimeSlotCard
+                                    key={slot.datetime}
+                                    time={slot.time}
+                                    availablePlaces={slot.availablePlaces}
+                                    totalCapacity={slot.totalCapacity}
+                                    isAvailable={slot.isAvailable}
+                                    onClick={() => checkOrderHourForSlot(slot.datetime)}
+                                />
+                            ))}
+                        </div>
+                    )}
+                </section>
             )}
-            <div className="divButtonCancelServiceToSchedule">
-                <Button width="100%" padding="1rem" margin="0 2rem 2rem 2rem" onSubmit={() => setServiceToSchedule(null)}>Cancelar</Button>
-            </div>
+
             <ModalForm
                 title="Completa tus datos"
                 isOpen={isOpen}
                 inputs={
-                    serviceToScheduleData.mode === "in-person-at-home" ?
-                        [
+                    serviceToScheduleData.mode === "in-person-at-home"
+                        ? [
                             { type: "text", name: "name", placeholder: "Nombre", label: "Nombre" },
                             { type: "text", name: "lastName", placeholder: "Apellido", label: "Apellido" },
                             { type: "text", name: "email", placeholder: "Email", label: "Email" },
                             { type: "text", name: "dni", placeholder: "DNI", label: "DNI" },
                             { type: "text", name: "phone", placeholder: "Teléfono", label: "Teléfono" },
-                            { type: "text", name: "userLocation", placeholder: "El servicio es pres1encial a domicilio, coloque su dirección (calle, número y ciudad)", label: "Tu dirección" },
+                            { type: "text", name: "userLocation", placeholder: "Calle, número y ciudad", label: "Tu dirección" },
                         ]
-                        :
-                        [
+                        : [
                             { type: "text", name: "name", placeholder: "Nombre", label: "Nombre" },
                             { type: "text", name: "lastName", placeholder: "Apellido", label: "Apellido" },
                             { type: "text", name: "email", placeholder: "Email", label: "Email" },
@@ -305,17 +282,17 @@ const ServiceToSchedulePanel: React.FC<Props> = ({ serviceToSchedule, setService
                 onClose={() => setIsOpen(false)}
                 onSubmitForm={(data) => {
                     if (!dateAppointment) return notifyError("No se ha especificado una fecha para el turno.")
-                    confirmAppointment(dateAppointment, data as UserData)
+                    confirmAppointment(serviceToScheduleData, dateAppointment, data as UserData)
                     setIsOpen(false)
                 }}
-                disabledButtons={isLoading}
+                disabledButtons={isScheduling}
             />
             <LoadingModal
                 text={isLoadingConfirm ? "Verificando servicio..." : "Agendando turno..."}
                 isOpen={isScheduling || isLoadingConfirm}
             />
             <LoadingModal
-                text={"Verificando horario..."}
+                text="Verificando horario..."
                 isOpen={isLoadingCheckHour}
             />
         </div>

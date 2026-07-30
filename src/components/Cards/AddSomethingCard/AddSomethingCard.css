@@ -1,21 +1,33 @@
 .divAddSomethingCard {
-    padding: 1rem;
+    padding: 1.5rem;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    gap: 2rem;
+    gap: 1.25rem;
     min-height: 250px;
-    border: 2px solid var(--azul-clarito);
-    border-radius: 10px;
+    background: var(--color-surface);
+    color: var(--color-primary);
+    border: 2px dashed var(--color-primary-border);
+    border-radius: var(--radius-lg);
     cursor: pointer;
     text-align: center;
+    box-sizing: border-box;
+    transition: background-color var(--transition-base), border-color var(--transition-base), transform var(--transition-base), box-shadow var(--transition-base);
+}
+
+.divAddSomethingCard:hover {
+    background: var(--color-primary-soft);
+    border-color: var(--color-primary);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
 }
 
 .divAddSomethingCard p {
-    font-size: 1.4rem;
-    font-weight: bold;
-    color: var(--azul-clarito);
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--color-primary);
+    letter-spacing: -0.01em;
 }
 
 .linkAddSomething {
@@ -23,7 +35,12 @@
 }
 
 @media (max-width: 530px) {
+    .divAddSomethingCard {
+        min-height: 180px;
+        gap: 1rem;
+    }
+
     .divAddSomethingCard p {
-        font-size: 1.2rem;
+        font-size: 1.05rem;
     }
 }

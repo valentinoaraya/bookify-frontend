@@ -26,12 +26,13 @@ const LabelInputComponent: React.FC<LabelInputComponentProps> = ({ label, type, 
         <ConfigProvider
             theme={{
                 token: {
-                    colorPrimary: "#457B9D",
-                    colorBorder: "grey",
-                    colorTextPlaceholder: "grey",
-                    colorIcon: "grey",
-                    borderRadius: 10,
+                    colorPrimary: "#1282A2",
+                    colorBorder: "#e2e8f0",
+                    colorTextPlaceholder: "#94a3b8",
+                    colorIcon: "#94a3b8",
+                    borderRadius: 12,
                     fontSize: 16,
+                    fontFamily: "Archivo, sans-serif",
                 },
             }}
 
@@ -39,19 +40,14 @@ const LabelInputComponent: React.FC<LabelInputComponentProps> = ({ label, type, 
             <div className="divInput">
                 <label>{label}</label>
                 {
-                    location === "/login/company" ?
-                        <></>
-                        :
-                        name === "email" &&
-                        <p className="emailWarningParagraph">
-                            Asegurate de escribir correctamente tu dirección de correo.
-                            {
-                                location === "/register" || location === "/register/company" ?
-                                    ""
-                                    :
-                                    "Si está mal escrita no podrás recibir la confirmación del turno."
-                            }
-                        </p>
+                    location !== "/login/company" &&
+                    location !== "/register" &&
+                    location !== "/register/company" &&
+                    name === "email" &&
+                    <p className="emailWarningParagraph">
+                        Asegurate de escribir correctamente tu dirección de correo.
+                        Si está mal escrita no podrás recibir la confirmación del turno.
+                    </p>
                 }
                 {
                     type === "selectHour" ?

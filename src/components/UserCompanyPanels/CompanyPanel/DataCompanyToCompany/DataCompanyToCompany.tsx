@@ -17,9 +17,10 @@ const DataCompanyToCompany: React.FC<Props> = ({ dataCompany, servicesLength, sc
     return (
         <>
             <DataCompany
+                variant="company"
                 dataCompany={dataCompany}
                 scheduledAppointments={scheduledAppointments}
-                servicesLenght={servicesLength}
+                servicesLength={servicesLength}
                 isModalOpen={isModalOpen}
                 setIsModalOpen={setIsModalOpen}
                 active={active}

@@ -1,104 +1,146 @@
 .noServicesAppointments {
-    height: 39vh;
+    min-height: 32vh;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
+    gap: .5rem;
     text-align: center;
+    padding: 2rem 1rem;
+    border: 1px dashed var(--color-border-strong);
+    border-radius: var(--radius-lg);
+    background: var(--color-surface-muted);
 }
 
 .noServicesAppointments h3 {
-    font-size: 1.5rem;
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
 }
 
-.divListContainerScheduledAppointments {
-    display: grid;
+.agendaList {
+    display: flex;
+    flex-direction: column;
     gap: 1.5rem;
-    grid-template-columns: repeat(1, 1fr);
 }
 
-.oneCard {
-    display: grid;
-    gap: 1rem;
-    grid-template-columns: repeat(4, 1fr);
+.agendaDayGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+}
+
+.agendaDayHeader {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0 0.15rem;
+}
+
+.agendaDayLabel {
+    margin: 0;
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    font-size: 0.95rem;
+    letter-spacing: -0.01em;
+}
+
+.agendaDayPrimary {
+    font-weight: 800;
+    color: var(--color-text);
+}
+
+.agendaDaySecondary {
+    font-weight: 600;
+    font-size: 0.88rem;
+    color: var(--color-text-subtle);
+}
+
+.agendaDayCount {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--color-text-subtle);
+    white-space: nowrap;
+}
+
+.agendaDayRows {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
 }
 
 .titleAndFilterContainer {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 2rem;
-    gap: .5rem;
+    margin-bottom: 1.5rem;
+    gap: .75rem;
     flex-wrap: wrap;
 }
 
 .divFilter {
     display: flex;
     align-items: center;
-    gap: .5rem;
+    flex-wrap: wrap;
+    gap: .4rem;
+    padding: .25rem;
+    background: var(--color-surface-muted);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-pill);
 }
 
 .buttonFilter {
-    background-color: rgb(211, 211, 211);
-    color: rgb(114, 114, 114);
+    background-color: transparent;
+    color: var(--color-text-muted);
     border: none;
     cursor: pointer;
-    padding: .2rem .5rem;
-    border-radius: 5px;
-    transition: all .3s ease;
-}
-
-.activeButtonFilter {
-    color: white;
-    background-color: var(--azul-clarito);
+    font-family: inherit;
+    font-size: 0.85rem;
+    font-weight: 600;
+    padding: .35rem .85rem;
+    border-radius: var(--radius-pill);
+    transition: color var(--transition-fast), background-color var(--transition-fast), box-shadow var(--transition-fast);
 }
 
 .buttonFilter:hover {
-    color: white;
-    background-color: var(--azul-clarito);
+    color: var(--color-primary-strong);
+    background-color: var(--color-surface);
 }
 
-@media (max-width: 1200px) {
-
-    .oneCard {
-        grid-template-columns: repeat(3, 1fr);
-    }
-
-    .divListContainer {
-        grid-template-columns: repeat(3, 1fr);
-    }
-}
-
-@media (max-width: 930px) {
-
-    .oneCard {
-        grid-template-columns: repeat(1, 1fr);
-    }
-
-    .divListContainer {
-        grid-template-columns: repeat(2, 1fr);
-    }
+.buttonFilter.activeButtonFilter {
+    color: var(--color-text-inverse);
+    background-color: var(--color-primary);
+    box-shadow: var(--shadow-xs);
 }
 
 @media (max-width: 685px) {
     .noServicesAppointments h3 {
-        font-size: 1.2rem;
+        font-size: 1rem;
     }
 }
 
 @media (max-width: 530px) {
-
-    .divListContainer,
-    .oneCard {
-        gap: .7rem;
-    }
-
     .titleAndFilterContainer {
         margin-bottom: 1rem;
     }
-}
 
-@media (max-width: 370px) {
-    .divListContainer {
-        grid-template-columns: repeat(1, 1fr);
+    .divFilter {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .agendaDayHeader {
+        align-items: center;
+    }
+
+    .agendaDayLabel {
+        font-size: 0.9rem;
+    }
+
+    .agendaDaySecondary {
+        font-size: 0.82rem;
     }
 }

@@ -1,7 +1,16 @@
 import "./LabelSelectComponent.css"
-import { useFetchData } from "../../../hooks/useFetchData";
-import { PROVINCES_API_URL } from "../../../config";
+import { fetchMunicipalities, fetchProvinces } from "@/shared/api/geo";
 import { useEffect, useState } from "react";
+
+interface Province {
+    id: string
+    nombre: string
+}
+
+interface Municipality {
+    id: string
+    nombre: string
+}
 
 interface LabelSelectComponentProps {
     onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
@@ -9,26 +18,35 @@ interface LabelSelectComponentProps {
 
 const LabelSelectComponent: React.FC<LabelSelectComponentProps> = ({ onChange }) => {
 
-    const [provinces, setProvinces] = useState([])
-    const [cities, setCities] = useState([])
-    const { fetchData, error } = useFetchData(`${PROVINCES_API_URL}/provincias?campos=id,nombre`, "GET")
+    const [provinces, setProvinces] = useState<Province[]>([])
+    const [cities, setCities] = useState<Municipality[]>([])
 
     useEffect(() => {
         const getProvinces = async () => {
-            const response = await fetchData(null)
-            setProvinces(response.provincias)
+            const response = await fetchProvinces()
+            if (response.data?.provincias) {
+                setProvinces(response.data.provincias)
+            } else if (response.error) {
+                console.error(response.error)
+            }
         }
         getProvinces()
     }, [])
 
-    if (error) console.error(error)
-
     const handleChangePronvince = async (e: React.ChangeEvent<HTMLSelectElement>) => {
         try {
             if (!e.target.value) return
-            const data = await fetch(`${PROVINCES_API_URL}/departamentos?provincia=${e.target.value}&max=100&campos=id,nombre`)
-            const resopnse = await data.json()
-            setCities(resopnse.departamentos)
+            const selectedProvince = provinces.find(
+                (province) => province.nombre === e.target.value
+            )
+            if (!selectedProvince) return
+
+            const response = await fetchMunicipalities(selectedProvince.id)
+            if (response.data?.municipios) {
+                setCities(response.data.municipios)
+            } else if (response.error) {
+                console.error(response.error)
+            }
             onChange(e)
         } catch (error) {
             console.error(error)
@@ -46,7 +64,7 @@ const LabelSelectComponent: React.FC<LabelSelectComponentProps> = ({ onChange })
                 >
                     <option value="">Selecciona tu provincia...</option>
                     {
-                        provinces.map((prov: any) => {
+                        provinces.map((prov) => {
                             return <option
                                 key={prov.id}
                                 value={prov.nombre}
@@ -66,12 +84,12 @@ const LabelSelectComponent: React.FC<LabelSelectComponentProps> = ({ onChange })
                 >
                     <option value="">Selecciona tu ciudad...</option>
                     {
-                        cities.map((prov: any) => {
+                        cities.map((city) => {
                             return <option
-                                key={prov.id}
-                                value={prov.nombre}
+                                key={city.id}
+                                value={city.nombre}
                             >
-                                {prov.nombre}
+                                {city.nombre}
                             </option>
                         })
                     }

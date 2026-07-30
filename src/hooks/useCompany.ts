@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { CompanyContext } from "../contexts/CompanyContext";
+import { CompanyContext } from "@/features/company-panel/state/CompanyContext";
 
 export const useCompany = () => {
     const context = useContext(CompanyContext);
@@ -9,4 +9,4 @@ export const useCompany = () => {
     }
 
     return context;
-}; 
+};

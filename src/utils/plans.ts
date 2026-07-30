@@ -34,7 +34,7 @@ export const plans = [
         features: [
             "Incluye Plan Individual Plus por profesional",
             "Hasta 5 profesionales",
-            "Dashborard administrativo",
+            "Dashboard administrativo",
             "Gestión de agendas separadas",
             "Historial completo de movimientos por profesional",
             "Historial centralizado de clientes",

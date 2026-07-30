@@ -2,207 +2,236 @@ import "./AppointmentCard.css";
 import Button from "../../../common/Button/Button";
 import { parseDateToString } from "../../../utils/parseDateToString";
 import { confirmDelete } from "../../../utils/alerts";
-import { BACKEND_API_URL } from "../../../config";
 import { notifyError, notifySuccess } from "../../../utils/notifications";
-import { formatDate } from "../../../utils/formatDate";
 import LoadingModal from "../../../common/LoadingModal/LoadingModal";
 import { Appointment, Service } from "../../../types";
-import { CalendarOutlined } from "@ant-design/icons";
-import moment from "moment";
 import { useCompany } from "../../../hooks/useCompany";
-import { useAuthenticatedDelete, useAuthenticatedPut } from "../../../hooks/useAuthenticatedFetch";
+import { useState } from "react";
+import {
+    changeAppointmentStatus,
+    deleteAppointment as deleteAppointmentApi,
+    finishAppointment,
+} from "@/shared/api/appointments";
 
 interface Props {
     appointment: Appointment
     onCancelAppointment: (appointment: string, service: Service) => void
 }
 
+const modeLabel: Record<Appointment["mode"], string> = {
+    "in-person": "Presencial",
+    online: "Virtual",
+    "in-person-at-home": "A domicilio",
+}
+
 const AppointmentCard: React.FC<Props> = ({ appointment, onCancelAppointment }) => {
     const { deleteAppointment } = useCompany()
-    const { error, isLoading, delete: del } = useAuthenticatedDelete()
-    const { error: errorFinishAppointment, isLoading: isLoadingFinish, put } = useAuthenticatedPut()
-    const { isLoading: isLoadingChangeStatus, error: errorChangeStatus, put: changeStatus } = useAuthenticatedPut()
-    const urlDeleteAppointment = `${BACKEND_API_URL}/appointments/delete-appointment/${appointment._id}`
-    const urlFinishAppointment = `${BACKEND_API_URL}/appointments/finish-appointment/${appointment._id}`
-    const urlChangeStatus = `${BACKEND_API_URL}/appointments/change-status`
+    const [isLoading, setIsLoading] = useState(false)
+    const [isLoadingFinish, setIsLoadingFinish] = useState(false)
+    const [isLoadingChangeStatus, setIsLoadingChangeStatus] = useState(false)
+    const [detailsOpen, setDetailsOpen] = useState(false)
 
-    if (error) notifyError("Error al cancelar turno. Inténtalo de nuevo más tarde.")
-    if (errorFinishAppointment) notifyError("Error al finalizar turno. Inténtalo de nuevo más tarde.")
-    if (errorChangeStatus) notifyError("Error al cambiar el estado del turno. Inténtalo de nuevo más tarde.")
-
-    const { stringDate, time } = parseDateToString(appointment.date)
-    const formattedDate = formatDate(stringDate)
+    const { time } = parseDateToString(appointment.date)
+    const serviceTitle =
+        typeof appointment.serviceId === "object"
+            ? appointment.serviceId.title
+            : appointment.service?.title
+    const isFuture = new Date(appointment.date) > new Date()
 
     const handleCancelAppointment = async () => {
         const confirm = await confirmDelete({
             question: "¿Seguro que desea cancelar el turno?",
-            mesasge: "Si cobraste una seña por este turno, se le devolverá el dinero al cliente.",
+            message: "Si cobraste una seña por este turno, se le devolverá el dinero al cliente.",
             icon: "warning",
             cancelButton: true,
             cancelButtonText: "Cancelar",
             confirmButtonText: "Aceptar"
         })
         if (confirm) {
-            const response = await del(urlDeleteAppointment, {})
-            if (response.data) {
-                onCancelAppointment(
-                    response.data.data.appointment._id,
-                    response.data.data.service
-                )
-                notifySuccess("Turno cancelado con éxito.")
-            }
-            if (response.error) {
-                notifyError(response.error)
+            setIsLoading(true)
+            try {
+                const response = await deleteAppointmentApi(appointment._id)
+                if (response.data) {
+                    onCancelAppointment(
+                        response.data.data.appointment._id,
+                        response.data.data.service
+                    )
+                    notifySuccess("Turno cancelado con éxito.")
+                }
+                if (response.error) {
+                    notifyError(response.error)
+                }
+            } finally {
+                setIsLoading(false)
             }
         }
     }
 
     const handleFinishAppointment = async () => {
-        const response = await put(urlFinishAppointment, {})
-        if (response.data) {
-            deleteAppointment(appointment._id)
-            notifySuccess("Turno finalizado.")
-        }
-        if (response.error) {
-            notifyError(response.error)
+        setIsLoadingFinish(true)
+        try {
+            const response = await finishAppointment(appointment._id)
+            if (response.data) {
+                deleteAppointment(appointment._id)
+                notifySuccess("Turno finalizado.")
+            }
+            if (response.error) {
+                notifyError(response.error)
+            }
+        } finally {
+            setIsLoadingFinish(false)
         }
     }
 
     const handleChangeStatusAppointment = async () => {
-        const response = await changeStatus(urlChangeStatus, {
-            appointmentId: appointment._id,
-            status: "did_not_attend"
-        })
-        if (response.data) {
-            deleteAppointment(appointment._id)
-            notifySuccess("Turno modificado.")
-        }
-        if (response.error) {
-            notifyError(response.error)
+        setIsLoadingChangeStatus(true)
+        try {
+            const response = await changeAppointmentStatus({
+                appointmentId: appointment._id,
+                status: "did_not_attend"
+            })
+            if (response.data) {
+                deleteAppointment(appointment._id)
+                notifySuccess("Turno modificado.")
+            }
+            if (response.error) {
+                notifyError(response.error)
+            }
+        } finally {
+            setIsLoadingChangeStatus(false)
         }
     }
 
     return (
         <>
-            <div className="card-appointment-container">
-                <div className="card-appointment-item">
-                    <div className="cardAppointmentNameAndDateContainer">
-                        <div className="divTitleAndTodayContainer mobile">
-                            <h3 className="card-client-name">{`${appointment.name} ${appointment.lastName}`}</h3>
-                            {moment(appointment.date).isSame(moment(), 'day') && <span className="todayAppointmentSpan">Hoy</span>}
-                        </div>
-                        <div className="card-date-time-info mobile">
-                            <p className="card-appointment-date">
-                                <CalendarOutlined /> {formattedDate} {time}
-                            </p>
-                        </div>
+            <article className={`agendaRow ${detailsOpen ? "is-open" : ""}`}>
+                <div className="agendaRowMain">
+                    <time className="agendaRowTime" dateTime={appointment.date}>
+                        <span className="agendaRowTimeValue">{time}</span>
+                        <span className="agendaRowTimeUnit">hs</span>
+                    </time>
+
+                    <div className="agendaRowClient">
+                        <h3 className="agendaRowClientName">
+                            {appointment.name} {appointment.lastName}
+                        </h3>
+                        <p className="agendaRowMeta">
+                            <span className="agendaRowService">{serviceTitle}</span>
+                            <span className="agendaRowDot" aria-hidden="true">·</span>
+                            <span className={`agendaRowMode agendaRowMode--${appointment.mode === "online" ? "online" : "presencial"}`}>
+                                {modeLabel[appointment.mode]}
+                            </span>
+                            <span className="agendaRowDot" aria-hidden="true">·</span>
+                            <span>{appointment.duration} min</span>
+                        </p>
                     </div>
-                    <div className="card-appointment-main">
-                        <div className="card-appointment-header">
-                            <div className="card-client-info">
-                                <div className="divTitleAndTodayContainer">
-                                    <h3 className="card-client-name">{`${appointment.name} ${appointment.lastName}`}</h3>
-                                    {moment(appointment.date).isSame(moment(), 'day') && <span className="todayAppointmentSpan">Hoy</span>}
-                                </div>
-                                <p className="card-client-email">{appointment.email}</p>
-                                {appointment.phone && <p className="card-client-phone">{appointment.phone}</p>}
-                                <p className="card-client-phone">DNI: {appointment.dni}</p>
-                            </div>
-                        </div>
-                        <div className="card-appointment-details">
-                            <div className="card-service-info">
-                                <h4 className="card-service-title">{
-                                    typeof appointment.serviceId === "object"
-                                        ? appointment.serviceId.title
-                                        : appointment.service?.title
-                                }</h4>
-                                <div className={`appointment-mode ${appointment.mode === "online" ? "virtual" : "presencial"}`}>
-                                    <span className="appointment-mode-dot"></span>
-                                    <span className="appointment-mode-label">Modalidad</span>
-                                    <span className="appointment-mode-value">{appointment.mode === "in-person" ? "Presencial en local" : appointment.mode === "online" ? "Virtual" : "Presencial a domicilio"}</span>
-                                </div>
-                                {appointment.userLocation && <p className="card-service-duration">Domicilio: <span onClick={() => window.open(`https://www.google.com/maps/search/?api=1&query=${appointment.userLocation}`, '_blank')} className="userLocation">{appointment.userLocation}</span></p>}
-                                <p className="card-service-duration">Duración: {appointment.duration} min</p>
-                                <p className="card-service-price">Precio: ${appointment.price}</p>
-                                {appointment.totalPaidAmount && <p className="card-service-sign-price">Seña: ${appointment.totalPaidAmount}</p>}
-                            </div>
-                        </div>
-                    </div>
-                    <div className="card-appointment-header desktop">
-                        <div className="card-client-info">
-                            <div className="divTitleAndTodayContainer">
-                                <h3 className="card-client-name">{`${appointment.name} ${appointment.lastName}`}</h3>
-                                {moment(appointment.date).isSame(moment(), 'day') && <span className="todayAppointmentSpan">Hoy</span>}
-                            </div>
-                            <p className="card-client-email">{appointment.email}</p>
-                            {appointment.phone && <p className="card-client-phone">{appointment.phone}</p>}
-                            <p className="card-client-phone">DNI: {appointment.dni}</p>
-                        </div>
-                    </div>
-                    <div className="card-appointment-details desktop">
-                        <div className="card-service-info">
-                            <h4 className="card-service-title">{
-                                typeof appointment.serviceId === "object"
-                                    ? appointment.serviceId.title
-                                    : appointment.service?.title
-                            }</h4>
-                            <div className={`appointment-mode ${appointment.mode === "online" ? "virtual" : "presencial"}`}>
-                                <span className="appointment-mode-dot"></span>
-                                <span className="appointment-mode-label">Modalidad</span>
-                                <span className="appointment-mode-value">{appointment.mode === "in-person" ? "Presencial" : appointment.mode === "online" ? "Virtual" : "Presencial a domicilio"}</span>
-                            </div>
-                            {appointment.userLocation && <p className="card-service-duration">Domicilio: <span onClick={() => window.open(`https://www.google.com/maps/search/?api=1&query=${appointment.userLocation}`, '_blank')} className="userLocation">{appointment.userLocation}</span></p>}
-                            <p className="card-service-duration">Duración: {appointment.duration} min</p>
-                            <p className="card-service-price">Precio: ${appointment.price}</p>
-                            {appointment.totalPaidAmount && <p className="card-service-sign-price">Seña: ${appointment.totalPaidAmount}</p>}
-                        </div>
-                    </div>
-                    <div className="divButtonsAndDateContainer">
-                        <div className="card-date-time-info">
-                            <p className="card-appointment-date">
-                                <CalendarOutlined /> {formattedDate} {time}
-                            </p>
-                        </div>
+
+                    <div className="agendaRowActions">
                         <Button
-                            backgroundColor="#3f9f0f"
-                            fontSize={"1rem"}
+                            variant="success"
+                            fontSize="0.88rem"
                             onSubmit={handleFinishAppointment}
                             fontWeight="600"
-                            padding=".5rem"
-                            margin="0 0 0 0"
+                            padding="0.45rem 0.9rem"
+                            margin="0"
+                            width="auto"
                         >
                             Finalizar
                         </Button>
                         <button
-                            className={`button-no-show-appointment ${new Date(appointment.date) > new Date() ? "disabled" : ""}`}
-                            onClick={() => {
-                                if (new Date(appointment.date) > new Date()) {
-                                    return;
-                                }
-                                handleChangeStatusAppointment()
-                            }}
+                            type="button"
+                            className="agendaRowToggle"
+                            aria-expanded={detailsOpen}
+                            aria-label={detailsOpen ? "Ocultar detalles" : "Ver detalles"}
+                            onClick={() => setDetailsOpen((open) => !open)}
                         >
-                            No asistió
+                            {detailsOpen ? "Menos" : "Detalles"}
+                            <span className={`agendaRowChevron ${detailsOpen ? "is-open" : ""}`} aria-hidden="true" />
                         </button>
-                        <Button
-                            backgroundColor="red"
-                            fontWeight="600"
-                            onSubmit={handleCancelAppointment}
-                            fontSize={"1rem"}
-                            padding=".5rem"
-                            margin="0 0 0 0"
-                        >
-                            Cancelar
-                        </Button>
                     </div>
                 </div>
-            </div>
+
+                {detailsOpen && (
+                    <div className="agendaRowDetails">
+                        <dl className="agendaRowDetailsGrid">
+                            <div>
+                                <dt>Email</dt>
+                                <dd>{appointment.email}</dd>
+                            </div>
+                            {appointment.phone && (
+                                <div>
+                                    <dt>Teléfono</dt>
+                                    <dd>{appointment.phone}</dd>
+                                </div>
+                            )}
+                            <div>
+                                <dt>DNI</dt>
+                                <dd>{appointment.dni}</dd>
+                            </div>
+                            <div>
+                                <dt>Precio</dt>
+                                <dd>${appointment.price}</dd>
+                            </div>
+                            {appointment.totalPaidAmount != null && appointment.totalPaidAmount > 0 && (
+                                <div>
+                                    <dt>Seña</dt>
+                                    <dd>${appointment.totalPaidAmount}</dd>
+                                </div>
+                            )}
+                            {appointment.userLocation && (
+                                <div className="agendaRowDetailsFull">
+                                    <dt>Domicilio</dt>
+                                    <dd>
+                                        <button
+                                            type="button"
+                                            className="agendaRowLocation"
+                                            onClick={() =>
+                                                window.open(
+                                                    `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(appointment.userLocation!)}`,
+                                                    "_blank"
+                                                )
+                                            }
+                                        >
+                                            {appointment.userLocation}
+                                        </button>
+                                    </dd>
+                                </div>
+                            )}
+                        </dl>
+
+                        <div className="agendaRowSecondaryActions">
+                            <button
+                                type="button"
+                                className={`button-no-show-appointment ${isFuture ? "disabled" : ""}`}
+                                disabled={isFuture}
+                                title={isFuture ? "Disponible cuando llegue la hora del turno" : undefined}
+                                onClick={() => {
+                                    if (isFuture) return
+                                    handleChangeStatusAppointment()
+                                }}
+                            >
+                                No asistió
+                            </button>
+                            <Button
+                                variant="danger-ghost"
+                                fontWeight="600"
+                                onSubmit={handleCancelAppointment}
+                                fontSize="0.88rem"
+                                padding="0.45rem 0.9rem"
+                                margin="0"
+                                width="auto"
+                            >
+                                Cancelar turno
+                            </Button>
+                        </div>
+                    </div>
+                )}
+            </article>
             <LoadingModal
                 text={isLoading ? "Cancelando..." : isLoadingFinish ? "Finalizando..." : "Cargando..."}
                 isOpen={isLoading || isLoadingFinish || isLoadingChangeStatus}
             />
         </>
-
     );
 }
 

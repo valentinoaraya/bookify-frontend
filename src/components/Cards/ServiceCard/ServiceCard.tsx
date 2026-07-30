@@ -1,13 +1,12 @@
 import "./ServiceCard.css"
 import Button from "../../../common/Button/Button"
-import { BACKEND_API_URL } from "../../../config"
 import { notifyError, notifySuccess } from "../../../utils/notifications"
 import { confirmDelete } from "../../../utils/alerts"
 import ModalForm from "../../ModalForm/ModalForm"
 import { useState } from "react"
 import { View } from "../../../types"
-import { ClockIcon } from "../../../common/Icons/Icons"
-import { useAuthenticatedDelete, useAuthenticatedPut } from "../../../hooks/useAuthenticatedFetch"
+import { deleteService, editService } from "@/shared/api/services"
+import { getServiceFormInputs } from "@/features/company-panel/services/serviceFormInputs"
 
 interface Props {
     id: string
@@ -27,150 +26,169 @@ interface Props {
     onRedirectToCalendar: (id: string, view: View) => void
 }
 
-const ServiceCard: React.FC<Props> = ({ id, duration, price, title, description, mode, signPrice, connectedWithMP, scheduledAppointmentsLenght = 0, availableAppointmentsLenght = 0, capacityPerShift, onDeleteService, onUpdateService, onRedirectToCalendar, active }) => {
+const modeLabel: Record<Props["mode"], string> = {
+    "in-person": "Presencial",
+    online: "Virtual",
+    "in-person-at-home": "A domicilio",
+}
 
-    const { error, isLoading, delete: del } = useAuthenticatedDelete()
-    const { error: errorUpdate, isLoading: isLoadingUpdate, put } = useAuthenticatedPut()
-    const urlDeleteService = `${BACKEND_API_URL}/services/delete-service/${id}`
-    const urlEditService = `${BACKEND_API_URL}/services/edit-service/${id}`
+const ServiceCard: React.FC<Props> = ({
+    id,
+    duration,
+    price,
+    title,
+    description,
+    mode,
+    signPrice,
+    connectedWithMP,
+    scheduledAppointmentsLenght = 0,
+    availableAppointmentsLenght = 0,
+    capacityPerShift,
+    onDeleteService,
+    onUpdateService,
+    onRedirectToCalendar,
+    active,
+}) => {
+    const [isLoading, setIsLoading] = useState(false)
+    const [isLoadingUpdate, setIsLoadingUpdate] = useState(false)
+    const [isModalOpen, setIsModalOpen] = useState(false)
+    const [moreOpen, setMoreOpen] = useState(false)
 
-    const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
-
-    if (error || errorUpdate) {
-        console.error(error || errorUpdate)
-        notifyError('Error del servidor: Inténtalo de nuevo más tarde')
-    }
-
-    const deleteService = async () => {
+    const deleteServiceHandler = async () => {
         const deleteConfirmed = await confirmDelete({
             question: "¿Seguro que desea eliminar el servicio?",
-            mesasge: "Al eliminar el servicio se eliminarán todos los turnos pendientes de clientes relacionados a este servicio.",
+            message: "Al eliminar el servicio se eliminarán todos los turnos pendientes de clientes relacionados a este servicio.",
             icon: "warning",
             confirmButtonText: "Eliminar servicio",
             cancelButton: true,
             cancelButtonText: "Cancelar"
         })
         if (deleteConfirmed) {
-            const response = await del(urlDeleteService, {})
-            if (response?.data) {
-                onDeleteService(id, response.data.appointmentsToDelete)
-                notifySuccess("Servicio eliminado")
+            setIsLoading(true)
+            try {
+                const response = await deleteService(id)
+                if (response?.data) {
+                    onDeleteService(id, (response.data as { appointmentsToDelete?: string[] }).appointmentsToDelete ?? [])
+                    notifySuccess("Servicio eliminado")
+                }
+                if (response?.error) notifyError("Error al eliminar el servicio")
+            } finally {
+                setIsLoading(false)
             }
-            if (response?.error) notifyError("Error al eliminar el servicio")
         }
     }
 
     const updateService = async (data: { [key: string]: any }) => {
-        const response = await put(urlEditService, data)
-        setIsModalOpen(false)
-        if (response?.data) {
-            onUpdateService(response.data.data)
-            notifySuccess("Servicio actualizado")
+        setIsLoadingUpdate(true)
+        try {
+            const response = await editService(id, data)
+            setIsModalOpen(false)
+            if (response?.data) {
+                onUpdateService(response.data.data)
+                notifySuccess("Servicio actualizado")
+            }
+            if (response?.error) notifyError("Error al actualizar el servicio")
+        } finally {
+            setIsLoadingUpdate(false)
         }
-        if (response?.error) notifyError("Error al actualizar el servicio")
     }
 
     return (
         <>
-            <div className={`service-card-container ${active ? "" : "disabled"}`}>
-                <div className="service-card-item">
-                    <div className="service-card-header">
-                        <div className="service-base-info">
-                            <h3 className="service-title">{title}</h3>
-                            <p className="service-description">{description}</p>
+            <article className={`serviceCard ${active ? "" : "is-disabled"}`}>
+                <div className="serviceCardMain">
+                    <div className="serviceCardBody">
+                        <div className="serviceCardTitleRow">
+                            <h3 className="serviceCardTitle">{title}</h3>
+                            {!active && <span className="serviceCardDisabledBadge">Deshabilitado</span>}
                         </div>
-                        <div className="service-card-details">
-                            <div className="service-info">
-                                <div className="service-stats-container">
-                                    <span className="service-stat available">{availableAppointmentsLenght} disponibles</span>
-                                    <span className="service-stat scheduled">{scheduledAppointmentsLenght} agendados</span>
-                                </div>
-                                <div className="service-capacity-info">
-                                    <p className="service-capacity">{capacityPerShift} {capacityPerShift > 1 ? "personas" : "persona"} por horario</p>
-                                    {signPrice !== 0 ? (
-                                        <p className="service-sign-price"><span>Precio de la seña: $ {signPrice}</span></p>
-                                    ) : (
-                                        <p className="service-sign-price"><span>Sin seña</span></p>
-                                    )}
-                                </div>
-                                <div className={`service-mode ${mode === "online" ? "virtual" : "presencial"}`}>
-                                    <span className="service-mode-dot"></span>
-                                    <span className="service-mode-label">Modalidad</span>
-                                    <span className="service-mode-value">{mode === "in-person" ? "Presencial en local" : mode === "online" ? "Virtual" : "Presencial a domicilio"}</span>
-                                </div>
-                            </div>
-                            <div className="service-duration-price-info">
-                                <div className="service-duration">
-                                    <ClockIcon
-                                        width="18px"
-                                        height="18px"
-                                        fill="grey"
-                                    />
-                                    <p className="service-duration-text">{duration} min</p>
-                                </div>
-                                <p className="service-price"><span className="price-symbol">$</span> {price}</p>
-                            </div>
+
+                        {description && (
+                            <p className="serviceCardDescription">{description}</p>
+                        )}
+
+                        <p className="serviceCardMeta">
+                            <span className={`serviceCardMode serviceCardMode--${mode === "online" ? "online" : "presencial"}`}>
+                                {modeLabel[mode]}
+                            </span>
+                            <span className="serviceCardDot" aria-hidden="true">·</span>
+                            <span>{duration} min</span>
+                            <span className="serviceCardDot" aria-hidden="true">·</span>
+                            <span className="serviceCardPrice">${price}</span>
+                        </p>
+
+                        <div className="serviceCardStats">
+                            <span className="service-stat available">{availableAppointmentsLenght} disponibles</span>
+                            <span className="service-stat scheduled">{scheduledAppointmentsLenght} agendados</span>
+                            <span className="serviceCardExtra">
+                                {capacityPerShift} {capacityPerShift > 1 ? "personas" : "persona"}/horario
+                                <span className="serviceCardDot" aria-hidden="true">·</span>
+                                {signPrice !== 0 ? `Seña $${signPrice}` : "Sin seña"}
+                            </span>
                         </div>
                     </div>
-                    <div className="service-card-actions">
-                        {
-                            !active ?
-                                <h3 className="disabledTilte">Deshabilitado</h3>
-                                :
-                                <>
-                                    <Button
-                                        fontSize={window.innerWidth <= 930 ? "1rem" : "1.2rem"}
-                                        backgroundColor="#1282A2"
-                                        padding=".5rem 1rem"
-                                        fontWeight="600"
-                                        margin="0"
-                                        disabled={isLoading || isLoadingUpdate}
-                                        onSubmit={() => onRedirectToCalendar(id, "calendar")}
-                                    >
-                                        Habilitar turnos
-                                    </Button>
-                                    <Button
-                                        fontSize={window.innerWidth <= 930 ? "1rem" : "1.2rem"}
-                                        backgroundColor="#1282A2"
-                                        padding=".5rem 1rem"
-                                        fontWeight="600"
-                                        margin="0"
-                                        disabled={isLoading || isLoadingUpdate}
-                                        onSubmit={() => setIsModalOpen(true)}
-                                    >
-                                        Editar
-                                    </Button>
-                                    <Button
-                                        fontSize={window.innerWidth <= 930 ? "1rem" : "1.2rem"}
-                                        padding=".5rem 1rem"
-                                        fontWeight="600"
-                                        backgroundColor="rgb(231, 76, 60)"
-                                        margin="0"
-                                        onSubmit={deleteService}
-                                        disabled={isLoading || isLoadingUpdate}
-                                    >
-                                        Eliminar
-                                    </Button>
-                                </>
-                        }
+
+                    <div className="serviceCardActions">
+                        {active ? (
+                            <>
+                                <Button
+                                    fontSize="0.9rem"
+                                    variant="primary"
+                                    padding="0.5rem 1rem"
+                                    fontWeight="600"
+                                    margin="0"
+                                    width="auto"
+                                    loading={isLoading || isLoadingUpdate}
+                                    onSubmit={() => onRedirectToCalendar(id, "calendar")}
+                                >
+                                    Habilitar turnos
+                                </Button>
+                                <Button
+                                    fontSize="0.88rem"
+                                    variant="ghost"
+                                    padding="0.45rem 0.9rem"
+                                    fontWeight="600"
+                                    margin="0"
+                                    width="auto"
+                                    loading={isLoading || isLoadingUpdate}
+                                    onSubmit={() => setIsModalOpen(true)}
+                                >
+                                    Editar
+                                </Button>
+                                <button
+                                    type="button"
+                                    className="serviceCardMore"
+                                    aria-expanded={moreOpen}
+                                    onClick={() => setMoreOpen((open) => !open)}
+                                >
+                                    {moreOpen ? "Menos" : "Más"}
+                                </button>
+                            </>
+                        ) : null}
                     </div>
                 </div>
-            </div>
+
+                {active && moreOpen && (
+                    <div className="serviceCardMorePanel">
+                        <Button
+                            fontSize="0.88rem"
+                            padding="0.45rem 0.9rem"
+                            fontWeight="600"
+                            variant="danger-ghost"
+                            margin="0"
+                            width="auto"
+                            onSubmit={deleteServiceHandler}
+                            loading={isLoading || isLoadingUpdate}
+                        >
+                            Eliminar servicio
+                        </Button>
+                    </div>
+                )}
+            </article>
             <ModalForm
                 title="Editar servicio"
                 isOpen={isModalOpen}
-                inputs={[
-                    { type: "text", name: "title", placeholder: "Título", label: "Título" },
-                    { type: "text", name: "description", placeholder: "Descripción", label: "Descripción" },
-                    { type: "number", name: "price", placeholder: "Precio", label: "Precio" },
-                    { type: "select", name: "mode", label: "Modalidad", selectOptions: mode === "in-person" ? [{ label: "Presencial en local", value: "in-person" }, { label: "Virtual", value: "online" }, { label: "Presencial a domicilio", value: "in-person-at-home" }] : mode === "online" ? [{ label: "Virtual", value: "online" }, { label: "Presencial en local", value: "in-person" }, { label: "Presencial a domicilio", value: "in-person-at-home" }] : [{ label: "Presencial a domicilio", value: "in-person-at-home" }, { label: "Virtual", value: "online" }, { label: "Presencial en local", value: "in-person" }] },
-                    { type: "number", name: "capacityPerShift", placeholder: "Capacidad de personas por turno", label: "Capacidad de personas por turno" },
-                    { type: "number", name: "duration", placeholder: "Duración", label: "Duración (en minutos)" },
-                    connectedWithMP ?
-                        { type: "number", name: "signPrice", placeholder: "Precio de la seña", label: "Precio de la seña (Si no quieres cobrar señas para tus turnos deja '0')" }
-                        :
-                        { type: "none", name: "notConnectedWithMP", placeholder: "No puede cobrar señas", label: "Si quiere cobrar señas, vincule su cuenta de Mercado Pago." }
-                ]}
+                inputs={getServiceFormInputs({ connectedWithMP, currentMode: mode })}
                 initialData={{ title, description, price, mode, duration, signPrice, capacityPerShift }}
                 onClose={() => setIsModalOpen(false)}
                 onSubmitForm={(data) => updateService(data)}

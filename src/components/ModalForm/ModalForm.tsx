@@ -9,6 +9,7 @@ import { DayPicker } from "react-day-picker";
 import { es } from "react-day-picker/locale";
 import { useEffect, useState } from "react";
 import { notifyError } from "../../utils/notifications";
+import ModalShell from "@/shared/ui/ModalShell";
 
 interface Props {
     title: string;
@@ -28,27 +29,7 @@ const ModalForm: React.FC<Props> = ({ title, inputs, isOpen, onClose, onSubmitFo
 
     const { dataForm, handleChange, deleteData } = useDataForm(initialData)
     const [selectedDays, setSelectedDays] = useState<Date[] | undefined>()
-    const [shouldRender, setShouldRender] = useState(isOpen);
-    const [closing, setClosing] = useState(false);
     const [isDisabled, setIsDisabled] = useState(true)
-
-    useEffect(() => {
-        if (isOpen) {
-            setShouldRender(true);
-            setClosing(false);
-            document.body.classList.add("settings-modal-open");
-        } else {
-            setClosing(true);
-            document.body.classList.remove("settings-modal-open");
-
-            const timeout = setTimeout(() => {
-                setShouldRender(false);
-                setClosing(false);
-            }, 300);
-
-            return () => clearTimeout(timeout);
-        }
-    }, [isOpen])
 
     useEffect(() => {
         const checkData = () => {
@@ -73,10 +54,8 @@ const ModalForm: React.FC<Props> = ({ title, inputs, isOpen, onClose, onSubmitFo
         onClose()
     }
 
-    if (!shouldRender) return null
-
     return (
-        <div className={`modalOverlay ${closing ? "closing" : "opening"}`}>
+        <ModalShell isOpen={isOpen} overlayClassName="modalOverlay" bodyClass="settings-modal-open">
             <div className="modalContent">
                 <Title
                     textAlign="center"
@@ -143,13 +122,13 @@ const ModalForm: React.FC<Props> = ({ title, inputs, isOpen, onClose, onSubmitFo
                     <div className="divButtonsFormModal">
                         <Button
                             type="submit"
-                            disabled={disabledButtons}
+                            loading={disabledButtons}
                         >
                             Aceptar
                         </Button>
                         <Button
                             type="button"
-                            backgroundColor="#f44336"
+                            variant="neutral"
                             onSubmit={handleCloseForm}
                             disabled={disabledButtons}
                         >
@@ -158,7 +137,7 @@ const ModalForm: React.FC<Props> = ({ title, inputs, isOpen, onClose, onSubmitFo
                     </div>
                 </form>
             </div>
-        </div>
+        </ModalShell>
     );
 }
 

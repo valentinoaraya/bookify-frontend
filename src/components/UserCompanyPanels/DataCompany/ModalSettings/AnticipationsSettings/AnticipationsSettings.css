@@ -1,45 +1,98 @@
 .anticipations-content {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: .75rem;
     flex-wrap: wrap;
-    margin-top: 1rem;
+    margin-top: 1.5rem;
 }
 
 .anticipation-item {
-    background: #f8f9fb;
-    border: 1px solid #e6e8ec;
-    border-radius: 8px;
-    padding: 1rem;
+    background: var(--color-surface-muted);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 1rem 1.15rem;
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 1rem;
     min-width: 280px;
     flex: 1;
+    transition: border-color var(--transition-fast), background-color var(--transition-fast);
+}
+
+.anticipation-item:hover {
+    border-color: var(--color-primary-border);
+    background: var(--color-surface);
 }
 
 .anticipation-title {
     margin: 0;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--color-text);
 }
 
 .anticipation-desc {
     margin: .25rem 0 0 0;
-    color: #6b7280;
-    font-size: .9rem;
+    color: var(--color-text-muted);
+    font-size: .875rem;
+    line-height: 1.5;
 }
 
 .anticipation-select {
     cursor: pointer;
-    padding: .5rem;
-    border-radius: 6px;
-    border: 1px solid #d1d5db;
-    background: white;
+    padding: .6rem 2.2rem .6rem .8rem;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--color-border);
+    background-color: var(--color-surface);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 6l4 4 4-4'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.7rem center;
+    appearance: none;
+    -webkit-appearance: none;
     min-width: 200px;
+    font-size: 0.95rem;
+    color: var(--color-text);
+    transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.anticipation-select:hover {
+    border-color: var(--brand-300);
+}
+
+.anticipation-select:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: var(--shadow-focus);
 }
 
 .anticipations-actions {
     display: flex;
-    justify-content: end;
-    margin-top: 1rem;
+    justify-content: flex-end;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--color-border);
+}
+
+.anticipationsDirtyHint {
+    margin-right: auto;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--warning-700);
+}
+
+@media (max-width: 600px) {
+    .anticipation-item {
+        flex-direction: column;
+        align-items: stretch;
+        min-width: 0;
+    }
+
+    .anticipation-select {
+        min-width: 0;
+        width: 100%;
+    }
 }

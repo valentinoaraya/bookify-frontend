@@ -11,6 +11,7 @@ import { CompanyProvider } from './contexts/CompanyContext.tsx'
 import { UserProvider } from './contexts/UserContext.tsx'
 import CancelAppointment from './components/CancelAppointment/CancelAppointment.tsx'
 import Panel from './components/Panel/Panel.tsx'
+import ProtectedRoute from './features/auth/components/ProtectedRoute.tsx'
 
 function App() {
 
@@ -32,9 +33,11 @@ function App() {
               </UserProvider>
             } />
             <Route path='/company-panel' element={
-              <CompanyProvider>
-                <CompanyPanel />
-              </CompanyProvider>
+              <ProtectedRoute>
+                <CompanyProvider>
+                  <CompanyPanel />
+                </CompanyProvider>
+              </ProtectedRoute>
             } />
             <Route path='/checkout' element={
               <CheckoutConfirmAppointment />

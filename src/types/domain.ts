@@ -43,7 +43,13 @@ export interface CompanySubscription {
     id: string
     plan: "individual" | "individual_plus" | "team"
     pendingPlan?: "individual" | "individual_plus" | "team"
-    status: "inactive" | "active" | "pending" | "upgrading" | "downgrading" | "cancelling"
+    status:
+        | "inactive"
+        | "active"
+        | "pending"
+        | "upgrading"
+        | "downgrading"
+        | "cancelling"
     mpPreapprovalId?: string
     startDate?: Date
     nextPaymentDate?: Date | string
@@ -75,7 +81,14 @@ export interface Company extends CompanyBasicInfo {
     slotsVisibilityDays: number
 }
 
-export type CompanyToUser = Omit<Company, "scheduledAppointments" | "connectedWithMP" | "reminders" | "company_id" | "subscription">
+export type CompanyToUser = Omit<
+    Company,
+    | "scheduledAppointments"
+    | "connectedWithMP"
+    | "reminders"
+    | "company_id"
+    | "subscription"
+>
 
 export interface Appointment extends UserData {
     _id: string
@@ -92,7 +105,12 @@ export interface Appointment extends UserData {
     price: number
     duration: number
     totalPaidAmount?: number
-    status: "scheduled" | "finished" | "cancelled" | "pending_action" | "did_not_attend"
+    status:
+        | "scheduled"
+        | "finished"
+        | "cancelled"
+        | "pending_action"
+        | "did_not_attend"
     cancelledBy: "company" | "client"
     userLocation?: string
 }
@@ -118,12 +136,12 @@ export interface User {
 export type View = "appointments" | "services" | "calendar" | "history"
 
 export interface Input {
-    type: string;
-    name: string;
-    label: string;
-    placeholder?: string;
-    selectOptions?: { label: string, value: string | number }[];
-    mainSelectOption?: string;
+    type: string
+    name: string
+    label: string
+    placeholder?: string
+    selectOptions?: { label: string; value: string | number }[]
+    mainSelectOption?: string
 }
 
 export interface EventFullCalendar {

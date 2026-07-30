@@ -1,5 +1,6 @@
 import "./LoadingModal.css"
 import { useEffect } from "react"
+import { createPortal } from "react-dom"
 import LoadingSpinner from "../LoadingSpinner/LoadingSpinner"
 
 interface Props {
@@ -21,12 +22,13 @@ const LoadingModal: React.FC<Props> = ({ text, isOpen }) => {
 
     if (!isOpen) return null
 
-    return (
-        <div className="modalOverlayLoading">
+    return createPortal(
+        <div className="modalOverlayLoading" role="alertdialog" aria-busy="true" aria-live="assertive">
             <LoadingSpinner
                 text={text}
             />
-        </div>
+        </div>,
+        document.body
     );
 }
 

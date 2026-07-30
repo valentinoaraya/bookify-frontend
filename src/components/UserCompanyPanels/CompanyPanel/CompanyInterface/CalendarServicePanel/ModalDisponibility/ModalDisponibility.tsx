@@ -1,12 +1,14 @@
 import "./ModalDisponibility.css"
-import { useContext, useEffect } from "react";
+import { useEffect, useState } from "react";
 import Button from "../../../../../../common/Button/Button";
 import { type AvailableAppointmentWithPendings } from "../../../../../../types";
 import { formatDate } from "../../../../../../utils/formatDate";
-import { BACKEND_API_URL } from "../../../../../../config";
 import { notifyError, notifyWarn } from "../../../../../../utils/notifications";
-import { CompanyContext } from "../../../../../../contexts/CompanyContext";
-import { useAuthenticatedDelete, useAuthenticatedPost } from "../../../../../../hooks/useAuthenticatedFetch";
+import { useCompany } from "../../../../../../hooks/useCompany";
+import {
+    addEnableAppointment,
+    deleteServiceAppointment,
+} from "@/shared/api/services";
 
 interface Props {
     isOpen: boolean,
@@ -17,14 +19,10 @@ interface Props {
 }
 
 const ModalDisponibility: React.FC<Props> = ({ isOpen, appointment, serviceId, setIsOpen, setAppointment }) => {
-    const { updateServices } = useContext(CompanyContext)
+    const { updateServices } = useCompany()
 
-    const { isLoading, error, delete: del } = useAuthenticatedDelete()
-    const { isLoading: isLoadingAddApp, error: errorAddApp, post } = useAuthenticatedPost()
-    const urlDeleteAppointment = `${BACKEND_API_URL}/services/delete-appointment/${serviceId}`
-    const urlAddEnableAppointment = `${BACKEND_API_URL}/services/add-enable-appointment/${serviceId}`
-
-    if (error || errorAddApp) notifyError("Error al modificar los turnos")
+    const [isLoading, setIsLoading] = useState(false)
+    const [isLoadingAddApp, setIsLoadingAddApp] = useState(false)
 
     useEffect(() => {
         if (isOpen) {
@@ -38,28 +36,38 @@ const ModalDisponibility: React.FC<Props> = ({ isOpen, appointment, serviceId, s
 
     if (!isOpen) return null
 
-    const deleteAppointment = async (date: string, all: boolean) => {
-        const response = await del(urlDeleteAppointment, { date, all })
-        if (response.data) {
-            setAppointment({ ...response.data.data.appointment, pendings: pendingCount })
-            updateServices(response.data.data.service)
-        }
-        if (response.error) notifyError("Error al eliminar turno")
-    }
-
-    const addAppointment = async (date: string) => {
-        const response = await post(urlAddEnableAppointment, { date })
-        if (response.data) {
-            setAppointment({ ...response.data.data.appointment, pendings: pendingCount })
-            updateServices(response.data.data.service)
-        }
-        if (response.error) notifyError("Error al habilitar turno")
-    }
-
     const takenCount = appointment?.taken ?? 0
     const capacityCount = appointment?.capacity ?? 0
     const pendingCount = appointment?.pendings ?? 0
     const availableCount = Math.max(capacityCount - takenCount - pendingCount, 0)
+
+    const deleteAppointment = async (date: string, all: boolean) => {
+        setIsLoading(true)
+        try {
+            const response = await deleteServiceAppointment(serviceId, { date, all })
+            if (response.data) {
+                setAppointment({ ...response.data.data.appointment, pendings: pendingCount })
+                updateServices(response.data.data.service)
+            }
+            if (response.error) notifyError("Error al eliminar turno")
+        } finally {
+            setIsLoading(false)
+        }
+    }
+
+    const addAppointment = async (date: string) => {
+        setIsLoadingAddApp(true)
+        try {
+            const response = await addEnableAppointment(serviceId, { date })
+            if (response.data) {
+                setAppointment({ ...response.data.data.appointment, pendings: pendingCount })
+                updateServices(response.data.data.service)
+            }
+            if (response.error) notifyError("Error al habilitar turno")
+        } finally {
+            setIsLoadingAddApp(false)
+        }
+    }
 
     return (
         <div className="modalOverlayDisponibility">
@@ -105,7 +113,7 @@ const ModalDisponibility: React.FC<Props> = ({ isOpen, appointment, serviceId, s
                         <h3>🗑️ Eliminar todos los disponibles</h3>
                     </div>
                 </div>
-                <Button onSubmit={() => setIsOpen(false)} disabled={isLoading || isLoadingAddApp}>Aceptar</Button>
+                <Button onSubmit={() => setIsOpen(false)} loading={isLoading || isLoadingAddApp}>Aceptar</Button>
             </div>
         </div>
     );

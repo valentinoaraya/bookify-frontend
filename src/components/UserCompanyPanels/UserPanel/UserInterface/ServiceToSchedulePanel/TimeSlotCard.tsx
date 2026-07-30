@@ -16,31 +16,33 @@ const TimeSlotCard: React.FC<TimeSlotCardProps> = ({
     onClick
 }) => {
     return (
-        <div
-            className={`timeSlotCard animation-section ${isAvailable ? 'available' : 'unavailable'}`}
+        <button
+            type="button"
+            className={`timeSlotCard ${isAvailable ? "available" : "unavailable"}`}
             onClick={isAvailable ? onClick : undefined}
+            disabled={!isAvailable}
+            aria-label={
+                isAvailable
+                    ? `Reservar ${time}, ${availablePlaces} de ${totalCapacity} lugares`
+                    : `Horario ${time} no disponible`
+            }
         >
-            <div className="timeSlotTime">{time}</div>
-            <div className="timeSlotAvailability">
+            <span className="timeSlotTime">{time}</span>
+            <span className="timeSlotAvailability">
                 {isAvailable ? (
                     <>
-                        <span className="availablePlaces">{availablePlaces}</span>
+                        <span className="availablePlaces">{availablePlaces}/{totalCapacity}</span>
                         <span className="availabilityLabel">
-                            {availablePlaces === 1 ? 'lugar' : 'lugares'} disponibles
+                            {availablePlaces === 1 ? "lugar" : "lugares"}
                         </span>
-                        <span className="totalCapacity">de {totalCapacity}</span>
                     </>
                 ) : (
                     <span className="unavailableText">
-                        {
-                            availablePlaces === 0
-                                ? 'Completo'
-                                : 'Pasado'
-                        }
+                        {availablePlaces === 0 ? "Completo" : "Pasado"}
                     </span>
                 )}
-            </div>
-        </div>
+            </span>
+        </button>
     )
 }
 

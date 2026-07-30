@@ -41,8 +41,8 @@ export const generateAvailableAppointmentsArray = (
             return {
                 title: `${disponibility} ${disponibility === 1 ? "Disponible" : "Disponibles"}`,
                 start: availableAppointment.datetime,
-                backgroundColor: `${pendingCount > 0 && disponibility === 0 ? "orange" : "#3f9f0f"}`,
-                borderColor: `${pendingCount > 0 && disponibility === 0 ? "orange" : "#3f9f0f"}`,
+                backgroundColor: pendingCount > 0 && disponibility === 0 ? "#f0930b" : "#12a150",
+                borderColor: pendingCount > 0 && disponibility === 0 ? "#f0930b" : "#12a150",
                 extendedProps: {
                     disponibility,
                     taken: availableAppointment.taken,
@@ -66,8 +66,8 @@ export const generateScheudledAppointmentArray = (
             return {
                 title: `${count} ${count === 1 ? "Ocupado" : "Ocupados"}`,
                 start: date,
-                backgroundColor: "red",
-                borderColor: "red",
+                backgroundColor: "#e5484d",
+                borderColor: "#e5484d",
                 extendedProps: {
                     scheduledCount: count
                 }

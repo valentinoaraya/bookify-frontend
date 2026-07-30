@@ -1,13 +1,15 @@
 import "./CancelAppointment.css"
 import { useParams } from "react-router-dom";
-import { BACKEND_API_URL } from "../../config";
 import { useEffect, useState } from "react";
 import { formatDate } from "../../utils/formatDate";
 import { confirmDelete } from "../../utils/alerts";
 import { notifySuccess, notifyError } from "../../utils/notifications";
 import { ToastContainer } from "react-toastify";
 import LoadingSpinner from "../../common/LoadingSpinner/LoadingSpinner";
-import { useAuthenticatedDelete, useAuthenticatedGet } from "../../hooks/useAuthenticatedFetch";
+import {
+    cancelAppointmentByRef,
+    getAppointmentByRef,
+} from "@/shared/api/appointments";
 
 const isAppointmentDatePassed = (appointmentDate: string): boolean => {
     const appointmentDateTime = new Date(appointmentDate);
@@ -19,10 +21,9 @@ const CancelAppointment = () => {
 
     // Puede ser el token firmado del email o, en links viejos, el id del turno.
     const { appointmentRef } = useParams()
-    const { error, isLoading, get } = useAuthenticatedGet()
-    const { error: errorCancel, isLoading: isCancelling, delete: del } = useAuthenticatedDelete()
-    const urlGetAppointment = `${BACKEND_API_URL}/appointments/get-appointment/${appointmentRef}`
-    const urlDeleteAppointment = `${BACKEND_API_URL}/appointments/cancel-appointment/${appointmentRef}`
+    const [isLoading, setIsLoading] = useState(true)
+    const [error, setError] = useState<string | null>(null)
+    const [isCancelling, setIsCancelling] = useState(false)
 
     const [data, setData] = useState<any>(null)
     const [finalized, setFinalized] = useState(false)
@@ -30,9 +31,20 @@ const CancelAppointment = () => {
 
     useEffect(() => {
         const fetchAppointment = async () => {
-            const response = await get(urlGetAppointment, { skipAuth: true })
-            if (response.data) {
-                setData(response.data.data)
+            if (!appointmentRef) return
+
+            setIsLoading(true)
+            setError(null)
+
+            try {
+                const response = await getAppointmentByRef(appointmentRef)
+                if (response.data) {
+                    setData(response.data)
+                } else if (response.error) {
+                    setError(response.error)
+                }
+            } finally {
+                setIsLoading(false)
             }
         }
 
@@ -41,6 +53,8 @@ const CancelAppointment = () => {
     }, [appointmentRef])
 
     const handleCancelAppointment = async () => {
+        if (!appointmentRef) return
+
         if (data.requiresEmailConfirmation && !emailConfirmation.trim()) {
             notifyError("Ingresá el email con el que reservaste el turno.")
             return
@@ -54,22 +68,26 @@ const CancelAppointment = () => {
             confirmButtonText: "Aceptar"
         })
         if (confirm) {
-            const response = await del(urlDeleteAppointment, {
-                dataUser: { email: emailConfirmation.trim() }
-            }, { skipAuth: true })
+            setIsCancelling(true)
+            try {
+                const response = await cancelAppointmentByRef(appointmentRef, {
+                    dataUser: { email: emailConfirmation.trim() }
+                })
 
-            if (response?.data) {
-                notifySuccess("Turno cancelado con éxito.")
-                setFinalized(true)
-            }
-            if (response?.error) {
-                notifyError(response.error)
+                if (response?.data) {
+                    notifySuccess("Turno cancelado con éxito.")
+                    setFinalized(true)
+                }
+                if (response?.error) {
+                    notifyError(response.error)
+                }
+            } finally {
+                setIsCancelling(false)
             }
         }
     }
 
-    if (error || errorCancel) {
-        console.error(errorCancel)
+    if (error) {
         return (
             <div className="error-container">
                 <div className="error-content">

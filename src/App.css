@@ -13,3 +13,150 @@
   justify-content: center;
   min-height: 100vh;
 }
+
+/* Landing Home: full-bleed y scroll natural */
+.mainPage:has(.homePage),
+.mainPage:has(.registerPage),
+.mainPage:has(.loginPage) {
+  align-items: stretch;
+  justify-content: flex-start;
+}
+
+/* ---------- Animaciones compartidas ---------- */
+@keyframes bk-fade-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes bk-rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes bk-pop-in {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* ---------- Patrones reutilizables ---------- */
+.bk-surface {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+.bk-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.2rem 0.6rem;
+  border-radius: var(--radius-pill);
+  border: 1px solid transparent;
+  font-size: 0.8rem;
+  font-weight: 600;
+  line-height: 1.5;
+  white-space: nowrap;
+}
+
+.bk-badge--neutral {
+  background: var(--neutral-100);
+  border-color: var(--color-border);
+  color: var(--neutral-600);
+}
+
+.bk-badge--info {
+  background: var(--info-50);
+  border-color: var(--info-200);
+  color: var(--info-600);
+}
+
+.bk-badge--success {
+  background: var(--success-50);
+  border-color: var(--success-200);
+  color: var(--success-700);
+}
+
+.bk-badge--warning {
+  background: var(--warning-50);
+  border-color: var(--warning-200);
+  color: var(--warning-700);
+}
+
+.bk-badge--danger {
+  background: var(--danger-50);
+  border-color: var(--danger-200);
+  color: var(--danger-700);
+}
+
+.bk-badge--accent {
+  background: var(--accent-50);
+  border-color: var(--accent-200);
+  color: var(--accent-700);
+}
+
+/* ---------- Notificaciones (react-toastify) ---------- */
+.Toastify__toast {
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-lg);
+  font-family: "Archivo", sans-serif;
+  font-size: 0.92rem;
+  color: var(--color-text);
+}
+
+.Toastify__toast-body {
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+.Toastify__toast--success .Toastify__toast-icon svg {
+  fill: var(--color-success);
+}
+
+.Toastify__toast--error .Toastify__toast-icon svg {
+  fill: var(--color-danger);
+}
+
+.Toastify__toast--warning .Toastify__toast-icon svg {
+  fill: var(--color-warning);
+}
+
+.Toastify__toast--info .Toastify__toast-icon svg {
+  fill: var(--info-500);
+}
+
+.Toastify__progress-bar--success {
+  background: var(--color-success);
+}
+
+.Toastify__progress-bar--error {
+  background: var(--color-danger);
+}
+
+.Toastify__progress-bar--warning {
+  background: var(--color-warning);
+}
+
+.Toastify__progress-bar--info {
+  background: var(--info-500);
+}
