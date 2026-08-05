@@ -2,14 +2,13 @@ export const plans = [
     {
         id: "individual",
         name: "Individual",
-        price: "$12.000",
+        price: "Gratis",
         available: true,
         features: [
             "1 profesional",
-            "Hasta 5 servicios",
+            "Hasta 3 servicios",
             "Recordatorios y emails automáticos",
-            "Pagos online con Mercado Pago",
-            "Rembolsos automáticos",
+            "Reservas online sin seña",
             "Historial completo de movimientos",
             "Soporte por correo"
         ]
@@ -17,11 +16,13 @@ export const plans = [
     {
         id: "individual_plus",
         name: "Individual Plus",
-        price: "$18.000",
+        price: "$9.900",
         available: true,
         features: [
             "Incluye Plan Individual",
             "Servicios personalizados e ilimitados",
+            "Pagos online con Mercado Pago",
+            "Rembolsos automáticos",
             "Métricas de rendimiento (ingresos, asistencias, etc.)",
             "Soporte prioritario"
         ]
@@ -29,7 +30,7 @@ export const plans = [
     {
         id: "team",
         name: "Equipo",
-        price: "$35.000",
+        price: "$19.900",
         available: false,
         features: [
             "Incluye Plan Individual Plus por profesional",

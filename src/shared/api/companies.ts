@@ -21,7 +21,8 @@ export async function registerCompany(body: Record<string, unknown>) {
         ApiEnvelope<{
             access_token: string
             refresh_token: string
-            init_point: string
+            init_point?: string
+            requiresPayment?: boolean
         }>
     >(`${BACKEND_API_URL}/companies/register`, body, { skipAuth: true })
 }

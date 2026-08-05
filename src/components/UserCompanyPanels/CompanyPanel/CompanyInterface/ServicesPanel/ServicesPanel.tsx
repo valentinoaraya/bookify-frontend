@@ -44,8 +44,12 @@ const ServicesPanel: React.FC<Props> = ({ companyServices, connectedWithMP, comp
         updateServices({ ...serviceToUpdate!, ...data })
     }
 
+    const activeServicesCount = companyServices.filter((s) => s.active !== false).length
+    const atServiceLimit =
+        companyPlan === "individual" && activeServicesCount >= 3
+
     const verifyAddServiceLimit = () => {
-        if (companyPlan === "individual" && companyServices.length >= 5) {
+        if (atServiceLimit) {
             notifyError("Has alcanzado el límite de servicios para tu plan. Actualiza tu plan para agregar más servicios.", true)
             return false
         }
@@ -61,7 +65,7 @@ const ServicesPanel: React.FC<Props> = ({ companyServices, connectedWithMP, comp
                     Servicios activos
                 </Title>
                 <button
-                    className={`buttonAddService ${companyPlan === "individual" && companyServices.length >= 5 ? "disabled" : ""}`}
+                    className={`buttonAddService ${atServiceLimit ? "disabled" : ""}`}
                     onClick={verifyAddServiceLimit}
                 >
                     <span className="plusButton">+ </span>

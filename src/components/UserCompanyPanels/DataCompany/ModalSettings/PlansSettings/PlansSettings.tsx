@@ -83,12 +83,13 @@ const PlansSettings: React.FC<Props> = ({ data, setIsModalPlansOpen, setSelected
                                 price={p.price}
                                 isSelected={p.id === data.subscription?.plan}
                                 onClick={() => handleOpenModal(p.id)}
-                                isComingSoon={p.id === "team"}
+                                isComingSoon={!p.available}
                                 isSettings
                             />
                         })
                     }
                 </div>
+                {data.subscription?.mpPreapprovalId ? (
                 <div className="plans-actions">
                     <Button
                         variant="danger-ghost"
@@ -109,6 +110,7 @@ const PlansSettings: React.FC<Props> = ({ data, setIsModalPlansOpen, setSelected
                         Cancelar suscripción
                     </Button>
                 </div>
+                ) : null}
             </div>
             <LoadingModal
                 text="Cancelando suscripción..."

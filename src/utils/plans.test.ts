@@ -14,10 +14,17 @@ describe("plans", () => {
         expect(plans.find((p) => p.id === "team")?.available).toBe(false)
     })
 
-    it("individual allows up to 5 services in copy", () => {
+    it("individual is free with up to 3 services", () => {
         const individual = plans.find((p) => p.id === "individual")
-        expect(individual?.features.some((f) => f.includes("5 servicios"))).toBe(
+        expect(individual?.price).toBe("Gratis")
+        expect(individual?.features.some((f) => f.includes("3 servicios"))).toBe(
             true
         )
+    })
+
+    it("individual_plus costs 9900 and includes Mercado Pago", () => {
+        const plus = plans.find((p) => p.id === "individual_plus")
+        expect(plus?.price).toBe("$9.900")
+        expect(plus?.features.some((f) => f.includes("Mercado Pago"))).toBe(true)
     })
 })
