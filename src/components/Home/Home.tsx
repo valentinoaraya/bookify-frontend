@@ -91,7 +91,7 @@ const STEPS = [
 		icon: <RocketIcon width="22" height="22" fill="currentColor" />,
 		title: "Creá tu cuenta y elegí tu plan",
 		description:
-			"Registrate en minutos y activá tu suscripción. Vinculás Mercado Pago para empezar a cobrar señas.",
+			"Registrate en minutos. Empezá gratis o activá un plan de pago. Con Individual Plus o Equipo vinculás Mercado Pago para cobrar señas.",
 	},
 	{
 		icon: <CalendarCheckIcon width="22" height="22" fill="currentColor" />,
@@ -803,9 +803,9 @@ function Pricing() {
 				</div>
 
 				<p className="homePricing__note home-reveal">
-					Todos los planes incluyen cobros con Mercado Pago, panel en
-					tiempo real y actualizaciones sin costo. Precios en pesos
-					argentinos.
+					El plan Individual es gratis. Los planes de pago incluyen
+					cobros con Mercado Pago, panel en tiempo real y
+					actualizaciones sin costo. Precios en pesos argentinos.
 				</p>
 			</div>
 		</section>

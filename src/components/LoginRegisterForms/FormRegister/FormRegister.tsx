@@ -23,7 +23,7 @@ type Step = 1 | 2 | 3;
 const STEPS = [
 	{ id: 1 as const, label: "Plan", hint: "Elegí tu suscripción" },
 	{ id: 2 as const, label: "Negocio", hint: "Datos de tu empresa" },
-	{ id: 3 as const, label: "Cuenta", hint: "Acceso y pago" },
+	{ id: 3 as const, label: "Cuenta", hint: "Acceso y activación" },
 ];
 
 const FormRegister = () => {
@@ -46,6 +46,7 @@ const FormRegister = () => {
 	const [isLoading, setIsLoading] = useState(false);
 
 	const selectedPlan = plans.find((p) => p.id === dataForm.plan);
+	const isFreePlan = selectedPlan?.id === "individual";
 
 	const selectPlan = (planId: string) => {
 		handleChange({
@@ -84,8 +85,9 @@ const FormRegister = () => {
 		}
 
 		if (current === 3) {
+			const needsPayerEmail = dataForm.plan !== "individual";
 			if (
-				!dataForm.payer_email ||
+				(needsPayerEmail && !dataForm.payer_email) ||
 				!dataForm.email ||
 				!dataForm.password ||
 				!dataForm.confirmPassword
@@ -129,19 +131,26 @@ const FormRegister = () => {
 				return;
 			}
 
-			const initPoint = response.data?.data?.init_point;
-			if (!initPoint) {
+			const payload = response.data?.data;
+			if (!payload?.access_token || !payload?.refresh_token) {
 				notifyError(
-					"No pudimos iniciar el pago. Intentá de nuevo o contactá soporte.",
+					"No pudimos crear la cuenta. Intentá de nuevo o contactá soporte.",
 				);
 				return;
 			}
 
 			setTokens({
-				access_token: response.data!.data.access_token,
-				refresh_token: response.data!.data.refresh_token,
+				access_token: payload.access_token,
+				refresh_token: payload.refresh_token,
 			});
-			window.location.href = initPoint;
+
+			const initPoint = payload.init_point;
+			if (initPoint) {
+				window.location.href = initPoint;
+				return;
+			}
+
+			navigate("/company-panel");
 		} finally {
 			setIsLoading(false);
 		}
@@ -387,14 +396,27 @@ const FormRegister = () => {
 								<span className="registerStep__eyebrow">
 									Paso 3 de 3
 								</span>
-								<h2>Creá tu cuenta y activá el plan</h2>
+								<h2>
+									{isFreePlan
+										? "Creá tu cuenta gratis"
+										: "Creá tu cuenta y activá el plan"}
+								</h2>
 								<p>
 									{selectedPlan ? (
-										<>
-											Vas a suscribirte al plan{" "}
-											<strong>{selectedPlan.name}</strong>{" "}
-											({selectedPlan.price}/mes).
-										</>
+										isFreePlan ? (
+											<>
+												Vas a empezar con el plan{" "}
+												<strong>{selectedPlan.name}</strong>{" "}
+												sin costo. Podés actualizar cuando
+												quieras.
+											</>
+										) : (
+											<>
+												Vas a suscribirte al plan{" "}
+												<strong>{selectedPlan.name}</strong>{" "}
+												({selectedPlan.price}/mes).
+											</>
+										)
 									) : (
 										"Completá tus datos de acceso para finalizar."
 									)}
@@ -406,14 +428,16 @@ const FormRegister = () => {
 								onSubmit={handleSubmit}
 							>
 								<div className="registerFormGrid">
-									<LabelInputComponent
-										label="Email de Mercado Pago"
-										type="email"
-										name="payer_email"
-										value={dataForm.payer_email}
-										required
-										onChange={handleChange}
-									/>
+									{!isFreePlan && (
+										<LabelInputComponent
+											label="Email de Mercado Pago"
+											type="email"
+											name="payer_email"
+											value={dataForm.payer_email}
+											required
+											onChange={handleChange}
+										/>
+									)}
 									<LabelInputComponent
 										label="Email de contacto / login"
 										type="email"
@@ -446,20 +470,21 @@ const FormRegister = () => {
 								</p>
 
 								<div className="registerHints">
-									<div className="registerHint">
-										<strong>Email de Mercado Pago</strong>
-										<p>
-											Debe ser el mismo de la cuenta con
-											la que vas a pagar la suscripción.
-										</p>
-									</div>
+									{!isFreePlan && (
+										<div className="registerHint">
+											<strong>Email de Mercado Pago</strong>
+											<p>
+												Debe ser el mismo de la cuenta con
+												la que vas a pagar la suscripción.
+											</p>
+										</div>
+									)}
 									<div className="registerHint">
 										<strong>Email de contacto</strong>
 										<p>
-											Lo usás para iniciar sesión y
-											recibir notificaciones de Bookify.
-											Podés repetir el mismo correo en
-											ambos campos.
+											{isFreePlan
+												? "Lo usás para iniciar sesión y recibir notificaciones de Bookify."
+												: "Lo usás para iniciar sesión y recibir notificaciones de Bookify. Podés repetir el mismo correo en ambos campos."}
 										</p>
 									</div>
 								</div>
@@ -485,16 +510,26 @@ const FormRegister = () => {
 										width="auto"
 										iconSVG={
 											!isLoading ? (
-												<CreditCardIcon
-													width="18"
-													height="18"
-													fill="currentColor"
-												/>
+												isFreePlan ? (
+													<RocketIcon
+														width="18"
+														height="18"
+														fill="currentColor"
+													/>
+												) : (
+													<CreditCardIcon
+														width="18"
+														height="18"
+														fill="currentColor"
+													/>
+												)
 											) : undefined
 										}
 										reverse
 									>
-										Suscribirme con Mercado Pago
+										{isFreePlan
+											? "Crear cuenta gratis"
+											: "Suscribirme con Mercado Pago"}
 									</Button>
 								</div>
 							</form>

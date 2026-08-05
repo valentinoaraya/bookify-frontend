@@ -55,11 +55,22 @@ const PaymentMethodsSettings: React.FC<Props> = ({ data }) => {
     const [openIndex, setOpenIndex] = useState<number | null>(null)
     const [isLoading, setIsLoading] = useState(false)
 
+    const planAllowsMp =
+        data.subscription?.plan === "individual_plus" ||
+        data.subscription?.plan === "team"
+
     const toggle = (index: number) => {
         setOpenIndex((prev) => (prev === index ? null : index))
     }
 
     const vinculateMP = async () => {
+        if (!planAllowsMp) {
+            notifyError(
+                "Tu plan no incluye vinculación con Mercado Pago. Actualizá a Individual Plus."
+            )
+            return
+        }
+
         const confirm = await confirmDelete({
             question: "Al vincular con Mercado Pago...",
             message: "Al vincular con Mercado Pago podrás cobrar señas a tus clientes directamente en tu cuenta de Mercado Pago.",
@@ -86,10 +97,22 @@ const PaymentMethodsSettings: React.FC<Props> = ({ data }) => {
             <div>
                 <div className="header-settings">
                     <h2 className="titleSetting">Vincúlate para poder cobrar señas</h2>
-                    <p>Puedes vincular tu cuenta de <strong>Mercado Pago</strong> para poder cobrar señas.</p>
+                    <p>
+                        {planAllowsMp ? (
+                            <>
+                                Puedes vincular tu cuenta de{" "}
+                                <strong>Mercado Pago</strong> para poder cobrar
+                                señas.
+                            </>
+                        ) : (
+                            "La vinculación con Mercado Pago está disponible en Individual Plus y Equipo."
+                        )}
+                    </p>
                 </div>
                 <div className="divMethodsContainer">
-                    <div className={`divMethod ${data.connectedWithMP ? "connected" : ""}`}>
+                    <div
+                        className={`divMethod ${data.connectedWithMP ? "connected" : ""} ${!planAllowsMp ? "disabled" : ""}`}
+                    >
                         <div className="divMethodInfo">
                             <div>
                                 <img className="logo-pay-method" src={MercadoPagoLogo} alt="Logo Mercado Pago" />
@@ -102,7 +125,9 @@ const PaymentMethodsSettings: React.FC<Props> = ({ data }) => {
                         {
                             data.connectedWithMP ?
                                 <p className="connectedText">¡Conectado!</p>
-                                :
+                                : !planAllowsMp ? (
+                                    <p className="pComingSoon">Requiere plan Plus</p>
+                                ) : (
                                 <button
                                     className="connectButton"
                                     onClick={vinculateMP}
@@ -110,6 +135,7 @@ const PaymentMethodsSettings: React.FC<Props> = ({ data }) => {
                                 >
                                     {isLoading ? "Conectando..." : "Vincular cuenta"}
                                 </button>
+                                )
                         }
                     </div>
                 </div>
