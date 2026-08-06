@@ -75,3 +75,48 @@ export async function addEnableAppointment(
         body
     )
 }
+
+export async function updateWorkSchedule(
+    serviceId: string,
+    body: {
+        workSchedule: {
+            days: number[]
+            blocks: { start: string; end: string }[]
+            turnIntervalMinutes: number
+            graceMinutes: number
+        }
+        autoGenerateSlots: boolean
+    }
+) {
+    return httpPut<ApiEnvelope<Service>>(
+        `${BACKEND_API_URL}/services/${serviceId}/work-schedule`,
+        body
+    )
+}
+
+export async function syncWorkSchedule(serviceId: string) {
+    return httpPost<ApiEnvelope<Service>>(
+        `${BACKEND_API_URL}/services/${serviceId}/work-schedule/sync`,
+        {}
+    )
+}
+
+export async function clearAvailableSlotsByDatetimes(
+    serviceId: string,
+    datetimes: string[]
+) {
+    return httpDelete<
+        ApiEnvelope<{
+            service: Service
+            summary: {
+                requested: number
+                deleted: number
+                trimmed: number
+                keptWithHolds: number
+                notFound: number
+            }
+        }>
+    >(`${BACKEND_API_URL}/services/${serviceId}/available-slots`, {
+        datetimes,
+    })
+}

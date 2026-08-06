@@ -30,6 +30,21 @@ export interface Service extends ServiceBasicInfo {
     scheduledAppointments: string[]
     pendingAppointments: PendingAppointment[]
     signPrice: number
+    workSchedule?: WorkSchedule
+    autoGenerateSlots?: boolean
+}
+
+export interface WorkScheduleBlock {
+    start: string
+    end: string
+}
+
+/** days: 0=domingo … 6=sábado */
+export interface WorkSchedule {
+    days: number[]
+    blocks: WorkScheduleBlock[]
+    turnIntervalMinutes: number
+    graceMinutes: number
 }
 
 export type ServiceToSchedule = Omit<Service, "description">
@@ -149,6 +164,7 @@ export interface EventFullCalendar {
     start: string
     backgroundColor: string
     borderColor: string
+    classNames?: string[]
     extendedProps?: ExtendedProps
 }
 
