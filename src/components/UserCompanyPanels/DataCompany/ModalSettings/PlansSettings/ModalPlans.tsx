@@ -77,6 +77,7 @@ const ModalPlans: React.FC<Props> = ({ data, isModalPlansOpen, setIsModalPlansOp
 
             const payload = response.data?.data
             if (payload && typeof payload === "object" && payload.init_point) {
+                sessionStorage.setItem("paymentInProcess", "subscription")
                 window.location.href = payload.init_point
                 return
             }

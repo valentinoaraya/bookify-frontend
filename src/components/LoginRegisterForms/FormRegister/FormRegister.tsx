@@ -146,6 +146,7 @@ const FormRegister = () => {
 
 			const initPoint = payload.init_point;
 			if (initPoint) {
+				sessionStorage.setItem("paymentInProcess", "subscription");
 				window.location.href = initPoint;
 				return;
 			}
