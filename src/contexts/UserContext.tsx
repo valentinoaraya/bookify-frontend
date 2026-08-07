@@ -22,6 +22,7 @@ const initialState: CompanyToUser = {
     city: "",
     street: "",
     number: "",
+    locations: [],
     services: [],
     slotsVisibilityDays: 7,
     cancellationAnticipationHours: 0,

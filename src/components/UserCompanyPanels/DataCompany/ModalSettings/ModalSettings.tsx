@@ -1,10 +1,11 @@
 import "./ModalSettings.css"
 import React, { useState } from "react"
-import { CreditCardIcon, ClockIcon, BellIcon, UserIcon, RocketIcon } from "../../../../common/Icons/Icons"
+import { CreditCardIcon, ClockIcon, BellIcon, UserIcon, RocketIcon, MapPinIcon } from "../../../../common/Icons/Icons"
 import ProfileSettings from "./ProfileSettings/ProfileSettings"
 import PaymentMethodsSettings from "./PaymentMethodsSettings/PaymentMethodsSettings"
 import RemindersSettings from "./RemindersSettings/RemindersSettings"
 import AnticipationsSettings from "./AnticipationsSettings/AnticipationsSettings"
+import LocationsSettings from "./LocationsSettings/LocationsSettings"
 import { useCompany } from "../../../../hooks/useCompany"
 import PlansSettings from "./PlansSettings/PlansSettings"
 import ModalPlans from "./PlansSettings/ModalPlans"
@@ -36,6 +37,14 @@ const ModalSettings: React.FC<Props> = ({ isOpen, setIsOpen, active, setActive }
                                     fill="currentColor"
                                 />
                                 {window.innerWidth <= 740 ? "" : "Perfil"}
+                            </li>
+                            <li className={active === "locations" ? "active-settings" : ""} onClick={() => setActive("locations")}>
+                                <MapPinIcon
+                                    width="18"
+                                    height="18"
+                                    fill="currentColor"
+                                />
+                                {window.innerWidth <= 740 ? "" : "Sedes"}
                             </li>
                             <li className={active === "paymentmethods" ? "active-settings" : ""} onClick={() => setActive("paymentmethods")}>
                                 <CreditCardIcon
@@ -74,6 +83,7 @@ const ModalSettings: React.FC<Props> = ({ isOpen, setIsOpen, active, setActive }
                     </div>
                     <div className="modalSettingsMainContent">
                         {active === "profile" && <ProfileSettings data={state} />}
+                        {active === "locations" && <LocationsSettings data={state} />}
                         {active === "paymentmethods" && <PaymentMethodsSettings data={state} />}
                         {active === "reminders" && <RemindersSettings data={state} />}
                         {active === "anticipations" && <AnticipationsSettings data={state} />}

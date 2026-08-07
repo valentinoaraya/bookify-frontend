@@ -1,6 +1,6 @@
 import { BACKEND_API_URL } from "@/config"
 import type { Company, CompanyToUser } from "@/types"
-import { httpGet, httpPost, httpPut, unwrapData } from "./httpClient"
+import { httpDelete, httpGet, httpPost, httpPut, unwrapData } from "./httpClient"
 
 type ApiEnvelope<T> = { data: T }
 
@@ -46,5 +46,49 @@ export async function updateCompany(body: Partial<Company> | Record<string, unkn
     return httpPut<ApiEnvelope<Company>>(
         `${BACKEND_API_URL}/companies/update-company`,
         body
+    )
+}
+
+export async function addCompanyLocation(body: {
+    name: string
+    province?: string
+    city: string
+    street: string
+    number: string
+    isDefault?: boolean
+}) {
+    return httpPost<ApiEnvelope<Company>>(
+        `${BACKEND_API_URL}/companies/locations`,
+        body
+    )
+}
+
+export async function updateCompanyLocation(
+    locationId: string,
+    body: {
+        name?: string
+        province?: string
+        city?: string
+        street?: string
+        number?: string
+    }
+) {
+    return httpPut<ApiEnvelope<Company>>(
+        `${BACKEND_API_URL}/companies/locations/${locationId}`,
+        body
+    )
+}
+
+export async function deleteCompanyLocation(locationId: string) {
+    return httpDelete<ApiEnvelope<Company>>(
+        `${BACKEND_API_URL}/companies/locations/${locationId}`,
+        {}
+    )
+}
+
+export async function setDefaultCompanyLocation(locationId: string) {
+    return httpPost<ApiEnvelope<Company>>(
+        `${BACKEND_API_URL}/companies/locations/${locationId}/set-default`,
+        {}
     )
 }

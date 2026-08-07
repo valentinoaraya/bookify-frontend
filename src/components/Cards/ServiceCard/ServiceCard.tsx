@@ -3,8 +3,8 @@ import Button from "../../../common/Button/Button"
 import { notifyError, notifySuccess } from "../../../utils/notifications"
 import { confirmDelete } from "../../../utils/alerts"
 import ModalForm from "../../ModalForm/ModalForm"
-import { useState } from "react"
-import { View } from "../../../types"
+import { useMemo, useState } from "react"
+import { CompanyLocation, View } from "../../../types"
 import { deleteService, editService } from "@/shared/api/services"
 import { getServiceFormInputs } from "@/features/company-panel/services/serviceFormInputs"
 
@@ -20,6 +20,8 @@ interface Props {
     availableAppointmentsLenght?: number
     capacityPerShift: number
     mode: "in-person" | "online" | "in-person-at-home"
+    locationIds?: string[]
+    locations?: CompanyLocation[]
     active: boolean
     onDeleteService: (id: string, scheduledAppointmentsToDelete: string[]) => void
     onUpdateService: (data: { [key: string]: any }) => void
@@ -39,6 +41,8 @@ const ServiceCard: React.FC<Props> = ({
     title,
     description,
     mode,
+    locationIds = [],
+    locations = [],
     signPrice,
     connectedWithMP,
     scheduledAppointmentsLenght = 0,
@@ -53,6 +57,19 @@ const ServiceCard: React.FC<Props> = ({
     const [isLoadingUpdate, setIsLoadingUpdate] = useState(false)
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [moreOpen, setMoreOpen] = useState(false)
+
+    const serviceLocations = useMemo(() => {
+        if (mode !== "in-person" || locations.length === 0) return []
+
+        if (locationIds.length > 0) {
+            const idSet = new Set(locationIds.map(String))
+            return locations.filter((loc) => idSet.has(String(loc._id)))
+        }
+
+        // Legacy / sin locationIds: sede principal
+        const def = locations.find((loc) => loc.isDefault) ?? locations[0]
+        return def ? [def] : []
+    }, [mode, locationIds, locations])
 
     const deleteServiceHandler = async () => {
         const deleteConfirmed = await confirmDelete({
@@ -116,6 +133,20 @@ const ServiceCard: React.FC<Props> = ({
                             <span className="serviceCardDot" aria-hidden="true">·</span>
                             <span className="serviceCardPrice">${price}</span>
                         </p>
+
+                        {serviceLocations.length > 0 && (
+                            <div className="serviceCardLocations" aria-label="Sedes del servicio">
+                                {serviceLocations.map((loc) => (
+                                    <span
+                                        key={loc._id}
+                                        className="serviceCardLocationChip"
+                                        title={`${loc.street} ${loc.number}, ${loc.city}`}
+                                    >
+                                        {loc.name}
+                                    </span>
+                                ))}
+                            </div>
+                        )}
 
                         <div className="serviceCardStats">
                             <span className="service-stat available">{availableAppointmentsLenght} disponibles</span>
@@ -188,8 +219,21 @@ const ServiceCard: React.FC<Props> = ({
             <ModalForm
                 title="Editar servicio"
                 isOpen={isModalOpen}
-                inputs={getServiceFormInputs({ connectedWithMP, currentMode: mode })}
-                initialData={{ title, description, price, mode, duration, signPrice, capacityPerShift }}
+                inputs={getServiceFormInputs({
+                    connectedWithMP,
+                    currentMode: mode,
+                    locations,
+                })}
+                initialData={{
+                    title,
+                    description,
+                    price,
+                    mode,
+                    duration,
+                    signPrice,
+                    capacityPerShift,
+                    locationIds: locationIds.map(String),
+                }}
                 onClose={() => setIsModalOpen(false)}
                 onSubmitForm={(data) => updateService(data)}
                 disabledButtons={isLoading}

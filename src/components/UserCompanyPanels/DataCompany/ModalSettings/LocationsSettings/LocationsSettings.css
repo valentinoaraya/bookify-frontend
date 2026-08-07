@@ -1,0 +1,166 @@
+.locations-settings {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.locationsToolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.locationsLimitHint {
+    margin: 0;
+    color: #64748b;
+    font-size: 0.92rem;
+}
+
+.locationForm {
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 1rem 1.1rem;
+    background: #f8fafc;
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+}
+
+.locationForm h3 {
+    margin: 0;
+    font-size: 1rem;
+    color: #0f172a;
+}
+
+.locationFormGrid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+}
+
+.locationFormGrid label {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    font-size: 0.88rem;
+    color: #334155;
+    font-weight: 600;
+}
+
+.locationFormGrid input {
+    border: 1px solid #cbd5e1;
+    border-radius: 10px;
+    padding: 0.55rem 0.75rem;
+    font: inherit;
+    background: #fff;
+}
+
+.locationFormActions {
+    display: flex;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+}
+
+.locationsList {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.locationsEmpty {
+    margin: 0;
+    color: #64748b;
+}
+
+.locationCard {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.95rem 1rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    background: #fff;
+}
+
+.locationCardMain {
+    min-width: 0;
+}
+
+.locationCardTitleRow {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 0.25rem;
+}
+
+.locationCardTitleRow h3 {
+    margin: 0;
+    font-size: 1rem;
+    color: #0f172a;
+}
+
+.locationCardMain p {
+    margin: 0;
+    color: #64748b;
+    font-size: 0.92rem;
+}
+
+.locationDefaultBadge {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #0e7490;
+    background: #ecfeff;
+    border: 1px solid #a5f3fc;
+    border-radius: 999px;
+    padding: 0.15rem 0.55rem;
+}
+
+.locationCardActions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    justify-content: flex-end;
+}
+
+.locationActionBtn {
+    border: 1px solid #e2e8f0;
+    background: #fff;
+    color: #334155;
+    border-radius: 8px;
+    padding: 0.35rem 0.65rem;
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.locationActionBtn:hover:not(:disabled) {
+    border-color: #94a3b8;
+}
+
+.locationActionBtn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.locationActionBtn--danger {
+    color: #b91c1c;
+    border-color: #fecaca;
+}
+
+@media (max-width: 740px) {
+    .locationFormGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .locationCard {
+        flex-direction: column;
+    }
+
+    .locationCardActions {
+        justify-content: flex-start;
+    }
+}

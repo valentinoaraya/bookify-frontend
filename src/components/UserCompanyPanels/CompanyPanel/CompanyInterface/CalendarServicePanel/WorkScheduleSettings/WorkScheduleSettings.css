@@ -1,0 +1,269 @@
+.workScheduleSettings {
+	margin: 1rem 0 1.25rem;
+	padding: 1.25rem 1.35rem;
+	border-radius: var(--radius-md);
+	border: 1px solid var(--color-border);
+	background: var(--color-surface-muted);
+	display: flex;
+	flex-direction: column;
+	gap: 1.15rem;
+}
+
+.workScheduleHeader {
+	display: flex;
+	flex-direction: column;
+	gap: 0.35rem;
+}
+
+.workScheduleTitle {
+	margin: 0;
+	font-size: 1.05rem;
+	font-weight: 700;
+	color: var(--color-text);
+}
+
+.workScheduleDesc {
+	margin: 0;
+	font-size: 0.875rem;
+	line-height: 1.5;
+	color: var(--color-text-muted);
+}
+
+.workScheduleLabel {
+	display: block;
+	font-size: 0.8rem;
+	font-weight: 700;
+	letter-spacing: 0.03em;
+	text-transform: uppercase;
+	color: var(--color-text-muted);
+	margin-bottom: 0.5rem;
+}
+
+.workScheduleDayChips {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.45rem;
+}
+
+.workScheduleDayChip {
+	border: 1px solid var(--color-border);
+	background: var(--color-surface);
+	color: var(--color-text);
+	border-radius: var(--radius-sm);
+	padding: 0.45rem 0.7rem;
+	cursor: pointer;
+	font: inherit;
+	transition:
+		border-color var(--transition-fast),
+		background-color var(--transition-fast),
+		color var(--transition-fast);
+}
+
+.workScheduleDayChip:hover {
+	border-color: var(--brand-300);
+}
+
+.workScheduleDayChip.is-active {
+	background: var(--success-500);
+	border-color: var(--success-500);
+	color: #fff;
+}
+
+.workScheduleDayShort {
+	display: none;
+	font-weight: 700;
+}
+
+.workScheduleDayFull {
+	display: inline;
+	font-size: 0.9rem;
+	font-weight: 600;
+}
+
+.workScheduleBlocksHeader {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 0.75rem;
+	margin-bottom: 0.5rem;
+}
+
+.workScheduleBlocksHeader .workScheduleLabel {
+	margin-bottom: 0;
+}
+
+.workScheduleLinkBtn {
+	border: none;
+	background: transparent;
+	color: var(--color-primary-strong);
+	font: inherit;
+	font-size: 0.9rem;
+	font-weight: 650;
+	cursor: pointer;
+	padding: 0;
+}
+
+.workScheduleLinkBtn:hover {
+	text-decoration: underline;
+}
+
+.workScheduleBlockRow {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: flex-end;
+	gap: 0.75rem;
+	margin-bottom: 0.65rem;
+}
+
+.workScheduleField {
+	display: flex;
+	flex-direction: column;
+	gap: 0.3rem;
+	min-width: 7.5rem;
+	flex: 1;
+}
+
+.workScheduleField span {
+	font-size: 0.8rem;
+	font-weight: 600;
+	color: var(--color-text-muted);
+}
+
+.workScheduleField input[type="time"],
+.workScheduleField input[type="number"] {
+	font: inherit;
+	padding: 0.55rem 0.7rem;
+	border-radius: var(--radius-sm);
+	border: 1px solid var(--color-border);
+	background: var(--color-surface);
+	color: var(--color-text);
+}
+
+.workScheduleField input:focus {
+	outline: none;
+	border-color: var(--color-primary);
+	box-shadow: var(--shadow-focus);
+}
+
+.workScheduleRemoveBtn {
+	border: 1px solid var(--color-border);
+	background: var(--color-surface);
+	color: var(--color-text-muted);
+	border-radius: var(--radius-sm);
+	padding: 0.55rem 0.8rem;
+	font: inherit;
+	font-size: 0.85rem;
+	font-weight: 600;
+	cursor: pointer;
+}
+
+.workScheduleRemoveBtn:hover {
+	border-color: var(--danger-300, #fca5a5);
+	color: var(--danger-700, #b91c1c);
+}
+
+.workScheduleNumbers {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.75rem;
+	align-items: flex-end;
+}
+
+.workScheduleStepHint {
+	font-size: 0.875rem;
+	color: var(--color-text-muted);
+	padding-bottom: 0.55rem;
+}
+
+.workScheduleToggle {
+	display: flex;
+	gap: 0.75rem;
+	align-items: flex-start;
+	padding: 0.9rem 1rem;
+	border-radius: var(--radius-sm);
+	border: 1px solid var(--color-border);
+	background: var(--color-surface);
+	cursor: pointer;
+}
+
+.workScheduleToggle input {
+	margin-top: 0.2rem;
+	width: 1.05rem;
+	height: 1.05rem;
+	accent-color: var(--color-primary);
+}
+
+.workScheduleToggle span {
+	display: flex;
+	flex-direction: column;
+	gap: 0.25rem;
+	font-size: 0.95rem;
+	font-weight: 650;
+	color: var(--color-text);
+}
+
+.workScheduleToggle small {
+	font-size: 0.8rem;
+	font-weight: 500;
+	line-height: 1.45;
+	color: var(--color-text-muted);
+}
+
+.workScheduleActions {
+	display: flex;
+	justify-content: flex-end;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: 0.75rem;
+	padding-top: 0.35rem;
+	border-top: 1px solid var(--color-border);
+}
+
+.workScheduleDirtyHint {
+	margin-right: auto;
+	font-size: 0.85rem;
+	font-weight: 600;
+	color: var(--warning-700);
+}
+
+@media (max-width: 600px) {
+	.workScheduleSettings {
+		padding: 1rem;
+	}
+
+	.workScheduleDayShort {
+		display: inline;
+	}
+
+	.workScheduleDayFull {
+		display: none;
+	}
+
+	.workScheduleDayChip {
+		min-width: 2.4rem;
+		justify-content: center;
+		display: inline-flex;
+	}
+
+	.workScheduleBlockRow {
+		flex-direction: column;
+		align-items: stretch;
+	}
+
+	.workScheduleRemoveBtn {
+		width: 100%;
+	}
+
+	.workScheduleActions {
+		flex-direction: column;
+		align-items: stretch;
+	}
+
+	.workScheduleDirtyHint {
+		margin-right: 0;
+	}
+
+	.workScheduleActions .button {
+		width: 100%;
+	}
+}

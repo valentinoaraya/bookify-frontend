@@ -69,7 +69,8 @@ export function useBookAppointment(
     const confirmAppointment = async (
         serviceData: ServiceToSchedule,
         date: Date,
-        dataUser: UserData
+        dataUser: UserData,
+        locationId?: string
     ) => {
         const { stringDate, time } = parseDateToString(date)
         const formattedDate = formatDate(stringDate)
@@ -113,6 +114,7 @@ export function useBookAppointment(
                             companyId: serviceData.companyId,
                             totalPrice: serviceData.price,
                             mode: serviceData.mode,
+                            locationId,
                         },
                         dataUser,
                         cancellationAnticipationHours,
@@ -128,6 +130,7 @@ export function useBookAppointment(
                         date: `${stringDate} ${time}`,
                         serviceId: serviceData._id,
                         companyId: serviceData.companyId,
+                        ...(locationId ? { locationId } : {}),
                     },
                     dataUser,
                 })

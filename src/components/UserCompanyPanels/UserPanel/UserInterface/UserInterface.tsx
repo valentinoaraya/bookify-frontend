@@ -27,6 +27,7 @@ const UserInterface: React.FC<Props> = ({ company }) => {
                 <div className={`userServicesContent ${serviceToScheduleId ? "is-scheduling" : ""}`}>
                     {serviceToScheduleId ? (
                         <ServiceToSchedulePanel
+                            company={company}
                             slotsVisibilityDays={company.slotsVisibilityDays}
                             cancellationAnticipationHours={company.cancellationAnticipationHours}
                             serviceToSchedule={serviceToScheduleId}

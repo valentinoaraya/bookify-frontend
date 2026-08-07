@@ -1,4 +1,4 @@
-import type { Input, Service } from "@/types"
+import type { CompanyLocation, Input, Service } from "@/types"
 
 type ServiceMode = Service["mode"]
 
@@ -37,11 +37,16 @@ export function getSignPriceInput(connectedWithMP: boolean): Input {
 interface ServiceFormInputsOptions {
     connectedWithMP: boolean
     currentMode?: ServiceMode
+    locations?: CompanyLocation[]
 }
 
 /** Config de inputs compartida entre el alta y la edición de servicios. */
-export function getServiceFormInputs({ connectedWithMP, currentMode }: ServiceFormInputsOptions): Input[] {
-    return [
+export function getServiceFormInputs({
+    connectedWithMP,
+    currentMode,
+    locations = [],
+}: ServiceFormInputsOptions): Input[] {
+    const inputs: Input[] = [
         { type: "text", name: "title", placeholder: "Título", label: "Título" },
         { type: "text", name: "description", placeholder: "Descripción", label: "Descripción" },
         { type: "number", name: "price", placeholder: "Precio", label: "Precio" },
@@ -50,4 +55,19 @@ export function getServiceFormInputs({ connectedWithMP, currentMode }: ServiceFo
         { type: "number", name: "capacityPerShift", placeholder: "Capacidad de personas por turno", label: "Capacidad de personas por turno" },
         getSignPriceInput(connectedWithMP),
     ]
+
+    if (locations.length > 0) {
+        inputs.splice(4, 0, {
+            type: "multiselect",
+            name: "locationIds",
+            label: "Sedes donde se ofrece (presencial)",
+            selectOptions: locations.map((loc) => ({
+                label: `${loc.name} — ${loc.street} ${loc.number}, ${loc.city}`,
+                value: loc._id,
+            })),
+            showWhen: { field: "mode", values: ["in-person"] },
+        })
+    }
+
+    return inputs
 }

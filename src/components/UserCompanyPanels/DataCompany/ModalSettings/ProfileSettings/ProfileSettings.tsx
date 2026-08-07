@@ -2,7 +2,7 @@ import "./ProfileSettings.css"
 import { Company } from "../../../../../types";
 import { useDataForm } from "../../../../../hooks/useDataForm";
 import { notifyError, notifySuccess } from "../../../../../utils/notifications";
-import { ClipboardIcon, MemoryIcon, UserXIcon } from "../../../../../common/Icons/Icons";
+import { ClipboardIcon, UserXIcon } from "../../../../../common/Icons/Icons";
 import Button from "../../../../../common/Button/Button";
 import { updateCompany } from "@/shared/api/companies";
 import { useCompany } from "../../../../../hooks/useCompany";
@@ -17,9 +17,6 @@ type ProfileFields = {
     name: string
     phone: string
     email: string
-    city: string
-    street: string
-    number: string | number
     company_id: string
 }
 
@@ -27,9 +24,6 @@ const normalizeProfile = (fields: ProfileFields) => ({
     name: String(fields.name ?? "").trim(),
     phone: String(fields.phone ?? "").trim(),
     email: String(fields.email ?? "").trim(),
-    city: String(fields.city ?? "").trim(),
-    street: String(fields.street ?? "").trim(),
-    number: Number(fields.number),
     company_id: String(fields.company_id ?? "").trim(),
 })
 
@@ -40,9 +34,6 @@ const profilesEqual = (a: ProfileFields, b: ProfileFields) => {
         left.name === right.name &&
         left.phone === right.phone &&
         left.email === right.email &&
-        left.city === right.city &&
-        left.street === right.street &&
-        left.number === right.number &&
         left.company_id === right.company_id
     )
 }
@@ -53,9 +44,6 @@ const ProfileSettings: React.FC<Props> = ({ data }) => {
         name: data.name,
         phone: data.phone,
         email: data.email,
-        city: data.city,
-        street: data.street,
-        number: data.number,
         company_id: data.company_id,
     }
     const { dataForm, handleChange } = useDataForm(initial)
@@ -64,7 +52,7 @@ const ProfileSettings: React.FC<Props> = ({ data }) => {
 
     const hasChanges = useMemo(
         () => !profilesEqual(initial, dataForm as ProfileFields),
-        [dataForm, data.name, data.phone, data.email, data.city, data.street, data.number, data.company_id]
+        [dataForm, data.name, data.phone, data.email, data.company_id]
     )
 
     const publicPath = `/c/${String(dataForm["company_id"] ?? "").trim() || "…"}`
@@ -75,15 +63,7 @@ const ProfileSettings: React.FC<Props> = ({ data }) => {
 
         const next = normalizeProfile(dataForm as ProfileFields)
 
-        if (
-            !next.name ||
-            !next.phone ||
-            !next.email ||
-            !next.city ||
-            !next.street ||
-            !next.company_id ||
-            !Number.isFinite(next.number)
-        ) {
+        if (!next.name || !next.phone || !next.email || !next.company_id) {
             notifyError("Por favor, completa todos los campos")
             return
         }
@@ -121,7 +101,7 @@ const ProfileSettings: React.FC<Props> = ({ data }) => {
         <div className="animation-section">
             <div className="header-settings">
                 <h2 className="titleSetting">Perfil de tu empresa</h2>
-                <p>Edita los datos de contacto y ubicación de tu empresa.</p>
+                <p>Edita los datos de contacto. Las sedes se gestionan en la pestaña Sedes.</p>
             </div>
             <div className="profile-settings">
                 <section className="profileLinkCard">
@@ -219,39 +199,6 @@ const ProfileSettings: React.FC<Props> = ({ data }) => {
                             value={dataForm["email"]}
                         />
                     </div>
-                    <div className="profile-settings-item">
-                        <label htmlFor="profile-city">Ciudad</label>
-                        <input
-                            id="profile-city"
-                            name="city"
-                            required
-                            onChange={handleChange}
-                            type="text"
-                            value={dataForm["city"]}
-                        />
-                    </div>
-                    <div className="profile-settings-item">
-                        <label htmlFor="profile-street">Calle</label>
-                        <input
-                            id="profile-street"
-                            name="street"
-                            required
-                            onChange={handleChange}
-                            type="text"
-                            value={dataForm["street"]}
-                        />
-                    </div>
-                    <div className="profile-settings-item">
-                        <label htmlFor="profile-number">Número de calle</label>
-                        <input
-                            id="profile-number"
-                            name="number"
-                            required
-                            onChange={handleChange}
-                            type="number"
-                            value={dataForm["number"]}
-                        />
-                    </div>
                 </form>
             </div>
             <div className="buttons-profile-settings">
@@ -259,40 +206,21 @@ const ProfileSettings: React.FC<Props> = ({ data }) => {
                     <span className="profileDirtyHint">Hay cambios sin guardar</span>
                 )}
                 <Button
-                    variant="danger-ghost"
-                    width="auto"
-                    margin="0"
-                    fontSize="1rem"
-                    padding=".5rem 1rem"
-                    onSubmit={handleLogout}
-                    iconSVG={
-                        <UserXIcon
-                            width="16px"
-                            height="16px"
-                            fill="currentColor"
-                        />
-                    }
-                >
-                    Cerrar sesión
-                </Button>
-                <Button
-                    variant={hasChanges ? "success" : "neutral"}
-                    width="auto"
-                    margin="0"
-                    fontSize="1rem"
-                    padding=".5rem 1rem"
-                    onSubmit={updateData}
-                    disabled={!hasChanges}
+                    type="button"
                     loading={isLoading}
-                    iconSVG={
-                        <MemoryIcon
-                            width="16px"
-                            height="16px"
-                            fill="currentColor"
-                        />
-                    }
+                    disabled={!hasChanges}
+                    onSubmit={updateData}
                 >
                     Guardar cambios
+                </Button>
+                <Button
+                    type="button"
+                    variant="danger-ghost"
+                    margin="0"
+                    onSubmit={handleLogout}
+                >
+                    <UserXIcon width="16" height="16" fill="currentColor" />
+                    Cerrar sesión
                 </Button>
             </div>
         </div>

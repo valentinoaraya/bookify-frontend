@@ -20,7 +20,7 @@ interface Props {
 
 const ServicesPanel: React.FC<Props> = ({ companyServices, connectedWithMP, companyPlan, onDeleteService, handleChangeToCalendar }) => {
 
-    const { updateServices, addService } = useCompany()
+    const { updateServices, addService, state } = useCompany()
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
     const [isLoading, setIsLoading] = useState(false)
 
@@ -32,7 +32,7 @@ const ServicesPanel: React.FC<Props> = ({ companyServices, connectedWithMP, comp
             if (response?.data) addService(response.data.data)
             if (response?.error) {
                 console.error(response.error)
-                notifyError("Error al crear el servicio")
+                notifyError(response.error || "Error al crear el servicio")
             }
         } finally {
             setIsLoading(false)
@@ -100,6 +100,8 @@ const ServicesPanel: React.FC<Props> = ({ companyServices, connectedWithMP, comp
                                     signPrice={service.signPrice}
                                     connectedWithMP={connectedWithMP}
                                     mode={service.mode}
+                                    locationIds={service.locationIds}
+                                    locations={state.locations}
                                     active={service.active}
                                     availableAppointmentsLenght={slots.reduce((acc, appointment) => acc + appointment.capacity - appointment.taken, 0)}
                                     scheduledAppointmentsLenght={scheduledCount}
@@ -114,8 +116,24 @@ const ServicesPanel: React.FC<Props> = ({ companyServices, connectedWithMP, comp
             <ModalForm
                 title="Agregar servicio"
                 isOpen={isModalOpen}
-                inputs={getServiceFormInputs({ connectedWithMP })}
-                initialData={{ title: "", description: "", price: 0, duration: 0, signPrice: 0, capacityPerShift: 1, mode: "in-person" }}
+                inputs={getServiceFormInputs({
+                    connectedWithMP,
+                    locations: state.locations,
+                })}
+                initialData={{
+                    title: "",
+                    description: "",
+                    price: 0,
+                    duration: 0,
+                    signPrice: 0,
+                    capacityPerShift: 1,
+                    mode: "in-person",
+                    locationIds: (() => {
+                        const locs = state.locations ?? []
+                        const def = locs.find((l) => l.isDefault) ?? locs[0]
+                        return def ? [def._id] : []
+                    })(),
+                }}
                 onClose={() => setIsModalOpen(false)}
                 onSubmitForm={(data) => handleAddService(data)}
                 disabledButtons={isLoading}

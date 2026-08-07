@@ -173,7 +173,7 @@ const HistoryAppointmentItem: React.FC<Props> = ({
             {detailsOpen && (
                 <div className="historyAgendaDetails">
                     <dl className="historyAgendaDetailsGrid">
-                        <div>
+                        <div className="historyAgendaDetailsWide">
                             <dt>Email</dt>
                             <dd>{appointment.email}</dd>
                         </div>
@@ -212,6 +212,28 @@ const HistoryAppointmentItem: React.FC<Props> = ({
                                         }
                                     >
                                         {appointment.userLocation}
+                                    </button>
+                                </dd>
+                            </div>
+                        )}
+                        {appointment.location && (
+                            <div className="historyAgendaDetailsFull">
+                                <dt>Sede</dt>
+                                <dd>
+                                    <button
+                                        type="button"
+                                        className="historyAgendaLocation"
+                                        onClick={() =>
+                                            window.open(
+                                                `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+                                                    `${appointment.location!.street} ${appointment.location!.number} ${appointment.location!.city}`
+                                                )}`,
+                                                "_blank"
+                                            )
+                                        }
+                                    >
+                                        {appointment.location.name} · {appointment.location.street}{" "}
+                                        {appointment.location.number}, {appointment.location.city}
                                     </button>
                                 </dd>
                             </div>

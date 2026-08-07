@@ -27,7 +27,7 @@ interface Props {
 
 const ModalForm: React.FC<Props> = ({ title, inputs, isOpen, onClose, onSubmitForm, disabledButtons, initialData, dayPicker, horizontalForm }) => {
 
-    const { dataForm, handleChange, deleteData } = useDataForm(initialData)
+    const { dataForm, handleChange, deleteData, updateField } = useDataForm(initialData)
     const [selectedDays, setSelectedDays] = useState<Date[] | undefined>()
     const [isDisabled, setIsDisabled] = useState(true)
 
@@ -53,6 +53,12 @@ const ModalForm: React.FC<Props> = ({ title, inputs, isOpen, onClose, onSubmitFo
         deleteData()
         onClose()
     }
+
+    const visibleInputs = inputs.filter((input) => {
+        if (!input.showWhen) return true
+        const current = dataForm[input.showWhen.field]
+        return input.showWhen.values.map(String).includes(String(current))
+    })
 
     return (
         <ModalShell isOpen={isOpen} overlayClassName="modalOverlay" bodyClass="settings-modal-open">
@@ -81,6 +87,15 @@ const ModalForm: React.FC<Props> = ({ title, inputs, isOpen, onClose, onSubmitFo
                                 setSelectedDays(undefined)
                             }
                         } else {
+                            if (
+                                dataForm.mode === "in-person" &&
+                                Array.isArray(dataForm.locationIds) &&
+                                dataForm.locationIds.length === 0 &&
+                                visibleInputs.some((i) => i.name === "locationIds")
+                            ) {
+                                notifyError("Seleccioná al menos una sede para el servicio presencial.")
+                                return
+                            }
                             onSubmitForm(dataForm)
                             deleteData()
                         }
@@ -102,7 +117,39 @@ const ModalForm: React.FC<Props> = ({ title, inputs, isOpen, onClose, onSubmitFo
                         }
                         <div className="divInputsContainer">
                             {
-                                inputs.map(input => {
+                                visibleInputs.map(input => {
+                                    if (input.type === "multiselect") {
+                                        const selected = Array.isArray(dataForm[input.name])
+                                            ? (dataForm[input.name] as string[])
+                                            : []
+                                        return (
+                                            <div key={input.name} className="divInput multiselectInput">
+                                                <label>{input.label}</label>
+                                                <div className="multiselectOptions">
+                                                    {(input.selectOptions || []).map((opt) => {
+                                                        const value = String(opt.value)
+                                                        const checked = selected.includes(value)
+                                                        return (
+                                                            <label key={value} className="multiselectOption">
+                                                                <input
+                                                                    type="checkbox"
+                                                                    checked={checked}
+                                                                    onChange={() => {
+                                                                        const next = checked
+                                                                            ? selected.filter((id) => id !== value)
+                                                                            : [...selected, value]
+                                                                        updateField(input.name, next)
+                                                                    }}
+                                                                />
+                                                                <span>{opt.label}</span>
+                                                            </label>
+                                                        )
+                                                    })}
+                                                </div>
+                                            </div>
+                                        )
+                                    }
+
                                     return <LabelInputComponent
                                         key={input.name}
                                         label={input.label}
