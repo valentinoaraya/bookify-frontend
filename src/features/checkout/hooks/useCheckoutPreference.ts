@@ -11,6 +11,7 @@ interface CreatePreferenceParams {
     serviceId: string
     date: string
     dataUser: UserData
+    locationId?: string
 }
 
 export function useCheckoutPreference() {
@@ -19,11 +20,12 @@ export function useCheckoutPreference() {
     }, [])
 
     const mutation = useMutation({
-        mutationFn: async ({ companyId, serviceId, date, dataUser }: CreatePreferenceParams) => {
+        mutationFn: async ({ companyId, serviceId, date, dataUser, locationId }: CreatePreferenceParams) => {
             const response = await createPreference(companyId, {
                 serviceId,
                 date,
                 dataUser,
+                ...(locationId ? { locationId } : {}),
             })
 
             if (response.error) throw new Error(response.error)

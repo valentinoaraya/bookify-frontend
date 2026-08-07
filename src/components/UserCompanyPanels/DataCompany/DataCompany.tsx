@@ -91,11 +91,30 @@ const DataCompany: React.FC<Props> = ({
                         {dataCompany.email}
                     </p>
                     {
-                        (dataCompany.city && dataCompany.street && dataCompany.number) &&
-                        <p className="parrafData">
-                            <span>Ubicación: </span>
-                            {dataCompany.city} - {dataCompany.street} {dataCompany.number}
-                        </p>
+                        (() => {
+                            const defaultLoc =
+                                dataCompany.locations?.find((l) => l.isDefault) ??
+                                dataCompany.locations?.[0]
+                            if (defaultLoc) {
+                                return (
+                                    <p className="parrafData">
+                                        <span>Ubicación: </span>
+                                        {dataCompany.locations && dataCompany.locations.length > 1
+                                            ? `${defaultLoc.name} (+${dataCompany.locations.length - 1})`
+                                            : `${defaultLoc.city} - ${defaultLoc.street} ${defaultLoc.number}`}
+                                    </p>
+                                )
+                            }
+                            if (dataCompany.city && dataCompany.street && dataCompany.number) {
+                                return (
+                                    <p className="parrafData">
+                                        <span>Ubicación: </span>
+                                        {dataCompany.city} - {dataCompany.street} {dataCompany.number}
+                                    </p>
+                                )
+                            }
+                            return null
+                        })()
                     }
                 </div>
                 {children}

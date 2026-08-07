@@ -511,9 +511,13 @@
 
 .historyAgendaDetailsGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 0.75rem 1.25rem;
   margin: 0.9rem 0 0 0;
+}
+
+.historyAgendaDetailsGrid > div {
+  min-width: 0;
 }
 
 .historyAgendaDetailsGrid dt {
@@ -530,7 +534,17 @@
   font-size: 0.9rem;
   font-weight: 500;
   color: var(--color-text);
-  word-break: break-word;
+  overflow-wrap: break-word;
+  word-break: normal;
+}
+
+.historyAgendaDetailsWide {
+  grid-column: 1 / -1;
+}
+
+.historyAgendaDetailsWide dd {
+  overflow-wrap: break-word;
+  word-break: normal;
 }
 
 .historyAgendaDetailsFull {

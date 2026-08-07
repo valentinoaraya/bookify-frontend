@@ -154,7 +154,7 @@ const AppointmentCard: React.FC<Props> = ({ appointment, onCancelAppointment }) 
                 {detailsOpen && (
                     <div className="agendaRowDetails">
                         <dl className="agendaRowDetailsGrid">
-                            <div>
+                            <div className="agendaRowDetailsWide">
                                 <dt>Email</dt>
                                 <dd>{appointment.email}</dd>
                             </div>
@@ -193,6 +193,28 @@ const AppointmentCard: React.FC<Props> = ({ appointment, onCancelAppointment }) 
                                             }
                                         >
                                             {appointment.userLocation}
+                                        </button>
+                                    </dd>
+                                </div>
+                            )}
+                            {appointment.location && (
+                                <div className="agendaRowDetailsFull">
+                                    <dt>Sede</dt>
+                                    <dd>
+                                        <button
+                                            type="button"
+                                            className="agendaRowLocation"
+                                            onClick={() =>
+                                                window.open(
+                                                    `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+                                                        `${appointment.location!.street} ${appointment.location!.number} ${appointment.location!.city}`
+                                                    )}`,
+                                                    "_blank"
+                                                )
+                                            }
+                                        >
+                                            {appointment.location.name} · {appointment.location.street}{" "}
+                                            {appointment.location.number}, {appointment.location.city}
                                         </button>
                                     </dd>
                                 </div>

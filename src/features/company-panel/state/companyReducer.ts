@@ -19,6 +19,7 @@ export const initialState: Company = {
     city: "",
     street: "",
     number: "",
+    locations: [],
     email: "",
     payer_email: "",
     phone: "",

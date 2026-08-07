@@ -1,6 +1,6 @@
 import "./ServiceToSchedulePanel.css"
 import Button from "../../../../../common/Button/Button";
-import { type UserData } from "../../../../../types";
+import { type CompanyLocation, type CompanyToUser, type UserData } from "../../../../../types";
 import { notifyError } from "../../../../../utils/notifications";
 import ModalForm from "../../../../ModalForm/ModalForm";
 import { useEffect, useMemo, useState } from "react";
@@ -12,6 +12,7 @@ import { getServiceSlots } from "../../../../../utils/cleanAppointmentsArray";
 import { useBookAppointment } from "@/features/public-booking/hooks/useBookAppointment";
 
 interface Props {
+    company: CompanyToUser;
     slotsVisibilityDays: number;
     cancellationAnticipationHours: number;
     serviceToSchedule: string;
@@ -31,7 +32,22 @@ const modeLabel = {
     "in-person-at-home": "A domicilio",
 } as const
 
+function resolveServiceLocations(
+    company: CompanyToUser,
+    locationIds?: string[]
+): CompanyLocation[] {
+    const all = company.locations ?? []
+    if (!all.length) return []
+    if (locationIds && locationIds.length > 0) {
+        const set = new Set(locationIds.map(String))
+        return all.filter((l) => set.has(String(l._id)))
+    }
+    const def = all.find((l) => l.isDefault) ?? all[0]
+    return def ? [def] : []
+}
+
 const ServiceToSchedulePanel: React.FC<Props> = ({
+    company,
     serviceToSchedule,
     setServiceToSchedule,
     cancellationAnticipationHours,
@@ -40,6 +56,7 @@ const ServiceToSchedulePanel: React.FC<Props> = ({
     const [isOpen, setIsOpen] = useState(false)
     const [dateAppointment, setDateAppointment] = useState<Date | null>(null)
     const [selectedDay, setSelectedDay] = useState<string | null>(null)
+    const [selectedLocationId, setSelectedLocationId] = useState<string | null>(null)
 
     const {
         serviceData: serviceToScheduleData,
@@ -53,6 +70,23 @@ const ServiceToSchedulePanel: React.FC<Props> = ({
         cancellationAnticipationHours,
         onScheduled: () => setServiceToSchedule(null),
     })
+
+    const serviceLocations = useMemo(() => {
+        if (!serviceToScheduleData || serviceToScheduleData.mode !== "in-person") return []
+        return resolveServiceLocations(company, serviceToScheduleData.locationIds)
+    }, [company, serviceToScheduleData])
+
+    useEffect(() => {
+        if (serviceLocations.length === 1) {
+            setSelectedLocationId(serviceLocations[0]._id)
+        } else if (serviceLocations.length === 0) {
+            setSelectedLocationId(null)
+        } else {
+            setSelectedLocationId((prev) =>
+                prev && serviceLocations.some((l) => l._id === prev) ? prev : null
+            )
+        }
+    }, [serviceLocations])
 
     const weekDays = useMemo(() => {
         const days = []
@@ -159,11 +193,17 @@ const ServiceToSchedulePanel: React.FC<Props> = ({
         )
     }
 
+    const needsLocationChoice = serviceLocations.length > 1
+    const locationReady = !needsLocationChoice || Boolean(selectedLocationId)
+
     const checkOrderHourForSlot = async (datetime: string) => {
-        const startEvent = new Date(datetime)
+        if (needsLocationChoice && !selectedLocationId) {
+            notifyError("Elegí una sede antes de seleccionar el horario.", true)
+            return
+        }
         const canBook = await checkOrderHour(serviceToScheduleData.companyId, datetime)
         if (canBook) {
-            setDateAppointment(startEvent)
+            setDateAppointment(new Date(datetime))
             setIsOpen(true)
         }
     }
@@ -207,6 +247,68 @@ const ServiceToSchedulePanel: React.FC<Props> = ({
                 </div>
             </header>
 
+            {serviceLocations.length > 0 && (
+                <section
+                    className={`scheduleLocationsSection ${needsLocationChoice && !selectedLocationId ? "is-pending" : ""}`}
+                    aria-label="Sedes"
+                >
+                    <h2 className="scheduleSectionLabel">
+                        {needsLocationChoice ? "Elegí la sede" : "Sede"}
+                    </h2>
+                    {needsLocationChoice && !selectedLocationId && (
+                        <p className="scheduleLocationHint" role="status">
+                            Seleccioná una sede para poder elegir el horario del turno.
+                        </p>
+                    )}
+                    <div className="scheduleLocationsList">
+                        {serviceLocations.map((location) => {
+                            const isSelected = selectedLocationId === location._id
+                            const mapsQuery = `${location.street} ${location.number} ${location.city}`
+                            return (
+                                <div
+                                    key={location._id}
+                                    role={needsLocationChoice ? "button" : undefined}
+                                    tabIndex={needsLocationChoice ? 0 : undefined}
+                                    aria-pressed={needsLocationChoice ? isSelected : undefined}
+                                    className={`scheduleLocationCard ${isSelected ? "is-selected" : ""} ${needsLocationChoice ? "is-selectable" : ""}`}
+                                    onClick={() => {
+                                        if (needsLocationChoice) setSelectedLocationId(location._id)
+                                    }}
+                                    onKeyDown={(e) => {
+                                        if (!needsLocationChoice) return
+                                        if (e.key === "Enter" || e.key === " ") {
+                                            e.preventDefault()
+                                            setSelectedLocationId(location._id)
+                                        }
+                                    }}
+                                >
+                                    <div className="scheduleLocationBody">
+                                        <strong>{location.name}</strong>
+                                        <span>
+                                            {location.street} {location.number}, {location.city}
+                                        </span>
+                                    </div>
+                                    <button
+                                        type="button"
+                                        className="scheduleLocationMap"
+                                        onClick={(e) => {
+                                            e.stopPropagation()
+                                            window.open(
+                                                `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(mapsQuery)}`,
+                                                "_blank",
+                                                "noopener,noreferrer"
+                                            )
+                                        }}
+                                    >
+                                        Ver mapa
+                                    </button>
+                                </div>
+                            )
+                        })}
+                    </div>
+                </section>
+            )}
+
             <section className="scheduleDaysSection" aria-label="Días disponibles">
                 <h2 className="scheduleSectionLabel">Día</h2>
                 <div className="weekDaysContainer">
@@ -231,8 +333,10 @@ const ServiceToSchedulePanel: React.FC<Props> = ({
                         <h2 className="timeSlotsTitle">
                             {selectedDayData.dayName} {selectedDayData.dayNumber} de {selectedDayData.month}
                         </h2>
-                        <p className="timeSlotsHint">
-                            {availableSelectedSlots.length === 0
+                        <p className={`timeSlotsHint ${!locationReady ? "is-warning" : ""}`}>
+                            {!locationReady
+                                ? "Primero seleccioná una sede arriba para habilitar los horarios"
+                                : availableSelectedSlots.length === 0
                                 ? "No hay horarios libres este día"
                                 : `${availableSelectedSlots.length} horario${availableSelectedSlots.length !== 1 ? "s" : ""} libre${availableSelectedSlots.length !== 1 ? "s" : ""}`}
                         </p>
@@ -248,7 +352,7 @@ const ServiceToSchedulePanel: React.FC<Props> = ({
                                     time={slot.time}
                                     availablePlaces={slot.availablePlaces}
                                     totalCapacity={slot.totalCapacity}
-                                    isAvailable={slot.isAvailable}
+                                    isAvailable={slot.isAvailable && locationReady}
                                     onClick={() => checkOrderHourForSlot(slot.datetime)}
                                 />
                             ))}
@@ -282,7 +386,12 @@ const ServiceToSchedulePanel: React.FC<Props> = ({
                 onClose={() => setIsOpen(false)}
                 onSubmitForm={(data) => {
                     if (!dateAppointment) return notifyError("No se ha especificado una fecha para el turno.")
-                    confirmAppointment(serviceToScheduleData, dateAppointment, data as UserData)
+                    confirmAppointment(
+                        serviceToScheduleData,
+                        dateAppointment,
+                        data as UserData,
+                        selectedLocationId ?? undefined
+                    )
                     setIsOpen(false)
                 }}
                 disabledButtons={isScheduling}

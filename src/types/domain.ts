@@ -24,6 +24,8 @@ export interface Service extends ServiceBasicInfo {
     mode: "in-person" | "online" | "in-person-at-home"
     active: boolean
     companyId: string
+    /** Sedes donde se ofrece (presencial). */
+    locationIds?: string[]
     /** Preferir slots; availableAppointments se deriva del backend para transición. */
     slots?: Slot[]
     availableAppointments: AvailableAppointment[]
@@ -70,11 +72,32 @@ export interface CompanySubscription {
     nextPaymentDate?: Date | string
 }
 
+export interface CompanyLocation {
+    _id: string
+    name: string
+    province?: string
+    city: string
+    street: string
+    number: string
+    isDefault: boolean
+}
+
+export interface AppointmentLocationSnapshot {
+    locationId?: string
+    name: string
+    province?: string
+    city: string
+    street: string
+    number: string
+}
+
 export interface Company extends CompanyBasicInfo {
     type: "company"
     city: string
     street: string
     number: string
+    province?: string
+    locations?: CompanyLocation[]
     email: string
     /** Email de la cuenta de Mercado Pago usada para la suscripción SaaS. */
     payer_email?: string
@@ -128,6 +151,7 @@ export interface Appointment extends UserData {
         | "did_not_attend"
     cancelledBy: "company" | "client"
     userLocation?: string
+    location?: AppointmentLocationSnapshot
 }
 
 export interface UserData {
@@ -157,6 +181,8 @@ export interface Input {
     placeholder?: string
     selectOptions?: { label: string; value: string | number }[]
     mainSelectOption?: string
+    /** Mostrar solo cuando otro campo del form tiene uno de estos valores. */
+    showWhen?: { field: string; values: Array<string | number> }
 }
 
 export interface EventFullCalendar {

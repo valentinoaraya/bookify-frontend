@@ -24,6 +24,7 @@ const CheckoutConfirmAppointment = () => {
             serviceId: service.serviceId,
             date,
             dataUser,
+            locationId: service.locationId,
         })
     }
 

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 interface DataForm {
-    [key: string]: string | number;
+    [key: string]: any;
 }
 
 export const useDataForm = (initialState: DataForm) => {
@@ -21,6 +21,12 @@ export const useDataForm = (initialState: DataForm) => {
                 ...dataForm,
                 [e.target.name]: parseFloat(e.target.value)
             })
+        } else if (e.target.type === "checkbox") {
+            // no-op for native; multiselect uses updateField
+            setDataForm({
+                ...dataForm,
+                [e.target.name]: e.target.value
+            });
         } else {
             setDataForm({
                 ...dataForm,
@@ -29,7 +35,7 @@ export const useDataForm = (initialState: DataForm) => {
         }
     }
 
-    const updateField = (name: string, value: string | number) => {
+    const updateField = (name: string, value: any) => {
         setDataForm({
             ...dataForm,
             [name]: value
@@ -40,6 +46,7 @@ export const useDataForm = (initialState: DataForm) => {
         dataForm,
         handleChange,
         deleteData,
-        updateField
+        updateField,
+        setDataForm,
     }
 }
