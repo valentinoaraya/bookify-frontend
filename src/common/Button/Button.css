@@ -117,7 +117,7 @@
 	box-shadow: none;
 }
 
-.button--ghost p {
+.button p {
 	display: flex;
 	align-items: center;
 	justify-content: center;
