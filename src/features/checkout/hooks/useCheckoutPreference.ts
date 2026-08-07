@@ -39,7 +39,7 @@ export function useCheckoutPreference() {
             return initPoint
         },
         onSuccess: (initPoint) => {
-            sessionStorage.setItem("paymentInProcess", "true")
+            sessionStorage.setItem("paymentInProcess", "appointment")
             window.location.href = initPoint
         },
         onError: (err: Error) => {

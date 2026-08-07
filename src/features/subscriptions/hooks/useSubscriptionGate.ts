@@ -17,6 +17,7 @@ const redirectToCheckout = (initPoint: string | undefined) => {
         )
         return
     }
+    sessionStorage.setItem("paymentInProcess", "subscription")
     window.location.href = initPoint
 }
 
